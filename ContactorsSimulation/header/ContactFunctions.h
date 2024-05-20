@@ -1,3 +1,8 @@
+/*
+ * File: ContactFunctions.h
+ * Author: Subhendu Mishra
+ * License: GPL
+ */
 #ifndef CONTACT_FUNCTIONS_H
 #define CONTACT_FUNCTIONS_H
 
