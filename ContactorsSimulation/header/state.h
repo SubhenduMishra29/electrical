@@ -1,3 +1,8 @@
+/*
+ * File: ErrorHandling.h
+ * Author: Subhendu Mishra
+ * License: GPL
+ */
 #ifndef STATE_H
 #define STATE_H
 
