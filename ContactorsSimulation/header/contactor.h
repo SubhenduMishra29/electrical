@@ -1,7 +1,7 @@
 /*
  * File: Contactor.h
  * Author: Subhendu Mishra
- * Description: Definition of the Contactor class representing a contactor in an electrical system.
+ * Description: Definition of the Contactor class representing an electrical contactor.
  * License: GPL
  */
 
@@ -10,78 +10,76 @@
 
 #include <iostream>
 #include <vector>
-#include "MainContact.h"
-#include "AuxiliaryContact.h"
-#include "State.h"
+#include <string>
 
+/**
+ * @brief Class representing an electrical contactor.
+ */
 class Contactor {
 private:
-    std::string manufacturer; // Manufacturer of the contactor
-    std::string model; // Model of the contactor
-    State state; // State of the contactor (coil and contacts)
-    std::vector<MainContact> mainContacts; // Main contacts of the contactor
-    std::vector<AuxiliaryContact> auxiliaryContacts; // Auxiliary contacts of the contactor
-    double maxCurrent; // Maximum rated current for main contacts
+    std::string manufacturer; /**< Manufacturer of the contactor */
+    std::string model; /**< Model of the contactor */
+    std::string type; /**< Type of the contactor (e.g., 3RT20, 3RT10, 3RT20 NEMA) */
+    std::string size; /**< Size of the contactor (e.g., S00, S0, S1, NEMA size 0) */
+    std::string connectionType; /**< Type of connections (screw, spring, ring lug, etc.) */
+    bool supportsAC; /**< Indicates whether AC operation is supported */
+    bool supportsDC; /**< Indicates whether DC operation is supported */
+    std::vector<std::string> accessories; /**< List of available accessories */
+    std::vector<std::string> spareParts; /**< List of available spare parts */
 
 public:
-    // Constructor
-    Contactor(const std::string& manuf, const std::string& mdl, double maxCurr)
-        : manufacturer(manuf), model(mdl), state(false, false, false), maxCurrent(maxCurr) {} // Initialize member variables
+    /**
+     * @brief Constructor.
+     * @param manuf Manufacturer of the contactor.
+     * @param mdl Model of the contactor.
+     * @param typ Type of the contactor.
+     * @param sz Size of the contactor.
+     * @param connType Type of connections.
+     * @param ac Indicates whether AC operation is supported.
+     * @param dc Indicates whether DC operation is supported.
+     */
+    Contactor(const std::string& manuf, const std::string& mdl, const std::string& typ, const std::string& sz,
+              const std::string& connType, bool ac, bool dc)
+        : manufacturer(manuf), model(mdl), type(typ), size(sz), connectionType(connType),
+          supportsAC(ac), supportsDC(dc) {}
 
-    // Method to add a main contact
-    void addMainContact(const std::string& material, double size, double currentRating, double maxCurrent) {
-        mainContacts.emplace_back(material, size, currentRating, maxCurrent, state);
+    /**
+     * @brief Method to add an accessory.
+     * @param accessory The accessory to add.
+     */
+    void addAccessory(const std::string& accessory) {
+        accessories.push_back(accessory);
     }
 
-    // Method to add an auxiliary contact
-    void addAuxiliaryContact(const std::string& type, const std::string& material, double size, double currentRating, double maxCurrent) {
-        auxiliaryContacts.emplace_back(type, material, size, currentRating, maxCurrent, state);
+    /**
+     * @brief Method to add a spare part.
+     * @param part The spare part to add.
+     */
+    void addSparePart(const std::string& part) {
+        spareParts.push_back(part);
     }
 
-    // Method to turn on/off the coil and update contacts accordingly
-    void turnOnCoil(bool on) {
-        state.setCoilState(on);
-
-        for (auto& main : mainContacts) {
-            main.setState(on);
-        }
-
-        for (auto& aux : auxiliaryContacts) {
-            if (aux.isLinked()) {
-                aux.setState(aux.getLinkedMainContact()->getState());
-            } else {
-                aux.setState(false);
-            }
-        }
-    }
-
-    // Method to print contactor details
+    /**
+     * @brief Method to print contactor details.
+     */
     void printDetails() const {
         std::cout << "Contactor Details:\n"
                   << "Manufacturer: " << manufacturer << "\n"
                   << "Model: " << model << "\n"
-                  << "Main Contact State: " << (state.getMainContactState() ? "Closed" : "Open") << "\n"
-                  << "Auxiliary Contact State: " << (state.getAuxiliaryContactState() ? "Closed" : "Open") << "\n"
-                  << "Coil State: " << (state.getCoilState() ? "On" : "Off") << std::endl;
-
-        std::cout << "Main Contacts:\n";
-        for (const auto& main : mainContacts) {
-            main.printDetails();
+                  << "Type: " << type << "\n"
+                  << "Size: " << size << "\n"
+                  << "Connection Type: " << connectionType << "\n"
+                  << "AC Operation: " << (supportsAC ? "Supported" : "Not Supported") << "\n"
+                  << "DC Operation: " << (supportsDC ? "Supported" : "Not Supported") << "\n"
+                  << "Accessories:\n";
+        for (const auto& accessory : accessories) {
+            std::cout << " - " << accessory << "\n";
         }
-
-        std::cout << "Auxiliary Contacts:\n";
-        for (const auto& aux : auxiliaryContacts) {
-            aux.printDetails();
+        std::cout << "Spare Parts:\n";
+        for (const auto& part : spareParts) {
+            std::cout << " - " << part << "\n";
         }
-    }
-
-    // Method to check if current of any main contact exceeds the maximum rated current
-    void checkMainContactsCurrent() const {
-        for (const auto& main : mainContacts) {
-            if (main.getCurrent() > maxCurrent) {
-                throw std::runtime_error("Current exceeds maximum rated current for main contact.");
-            }
-        }
+        // Print more details as needed
     }
 };
 
