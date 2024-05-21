@@ -1,8 +1,8 @@
 /*
  * File: Contactor.h
  * Author: Subhendu Mishra
- * Description: Definition of the Contactor class representing a contactor in an electrical system.
  * License: GPL
+ * Description: Definition of the Contactor class representing a contactor in an electrical system.
  */
 
 #ifndef CONTACTOR_H
@@ -10,9 +10,10 @@
 
 #include <iostream>
 #include <vector>
-#include "MainContact.h"
-#include "AuxiliaryContact.h"
-#include "State.h"
+#include "Port.h" // Include the modified Port class header file
+#include "MainContact.h" // Include the MainContact class header file
+#include "AuxiliaryContact.h" // Include the AuxiliaryContact class header file
+#include "State.h" // Include the State class header file
 
 class Contactor {
 private:
@@ -21,6 +22,7 @@ private:
     State state; // State of the contactor (coil and contacts)
     std::vector<MainContact> mainContacts; // Main contacts of the contactor
     std::vector<AuxiliaryContact> auxiliaryContacts; // Auxiliary contacts of the contactor
+    std::vector<Port> ports; // Ports of the contactor
     double maxCurrent; // Maximum rated current for main contacts
 
 public:
@@ -38,6 +40,11 @@ public:
         auxiliaryContacts.emplace_back(type, material, size, currentRating, maxCurrent, state);
     }
 
+    // Method to add a port
+    void addPort(int portInId, const std::string& portInName, int portOutId, const std::string& portOutName) {
+        ports.emplace_back(portInId, portInName, portOutId, portOutName);
+    }
+
     // Method to turn on/off the coil and update contacts accordingly
     void turnOnCoil(bool on) {
         state.setCoilState(on);
@@ -52,6 +59,10 @@ public:
             } else {
                 aux.setState(false);
             }
+        }
+
+        for (auto& port : ports) {
+            port.togglePort(on);
         }
     }
 
@@ -72,6 +83,11 @@ public:
         std::cout << "Auxiliary Contacts:\n";
         for (const auto& aux : auxiliaryContacts) {
             aux.printDetails();
+        }
+
+        std::cout << "Ports:\n";
+        for (const auto& port : ports) {
+            std::cout << "Input: " << port.getInValue() << ", Output: " << port.getOutValue() << std::endl;
         }
     }
 
