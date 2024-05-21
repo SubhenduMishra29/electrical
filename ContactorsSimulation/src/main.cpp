@@ -1,5 +1,5 @@
 /*
- * File: Main.cpp
+ * File: main.cpp
  * Author: Subhendu Mishra
  * License: GPL
  */
@@ -12,8 +12,7 @@
 int main() {
     try {
         // Create a Contactor object
-        Contactor myContactor("ABC Inc.", "Model XYZ", "3RT20", "S00", "screw", true, true,
-                              "Page Selection and ordering data • AC/DC operation 2/8 • Accessories 2/66 • Spare parts  2/94", 100.0);
+        Contactor myContactor("ABC Inc.", "Model XYZ", 100.0); // Assuming 100 A as max current
 
         // Automatically add main and auxiliary contacts
         autoAddMainContacts(myContactor, 3);
