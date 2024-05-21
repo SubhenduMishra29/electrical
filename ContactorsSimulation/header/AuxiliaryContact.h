@@ -1,7 +1,7 @@
 /*
  * File: AuxiliaryContact.h
- * Author: [Author Name]
- * License: [License]
+ * Author: Subhendu Mishra
+ * License: GPL
  * Description: Definition of the AuxiliaryContact class for representing an auxiliary contact in a contactor.
  */
 
