@@ -8,21 +8,23 @@
 #ifndef PORT_H
 #define PORT_H
 
-#include <string>
-
 /**
  * @brief Class representing a port with input and output connections.
  */
 class Port {
 private:
-    double inValue; /**< Input value */
+    double inValue;  /**< Input value */
     double outValue; /**< Output value */
+    bool state;      /**< State of the port */
 
 public:
     /**
      * @brief Constructor for Port.
+     * Initializes inValue and state with provided values.
+     * @param inVal Initial input value.
+     * @param portState Initial state of the port.
      */
-    Port() : inValue(0.0), outValue(0.0) {}
+    Port(double inVal, bool portState) : inValue(inVal), state(portState), outValue(0.0) {}
 
     /**
      * @brief Set the input value of the port.
@@ -43,11 +45,22 @@ public:
     double getOutValue() const { return outValue; }
 
     /**
-     * @brief Toggle the port state based on the coil state.
-     * @param isOn Coil state; if true, set outValue to inValue, else set outValue to 0.
+     * @brief Get the state of the port.
+     * @return State of the port.
      */
-    void togglePort(bool isOn) {
-        if (isOn) {
+    bool getState() const { return state; }
+
+    /**
+     * @brief Set the state of the port.
+     * @param newState New state to set.
+     */
+    void setState(bool newState) { state = newState; }
+
+    /**
+     * @brief Update the output value of the port based on its state.
+     */
+    void updateOutput() {
+        if (state) {
             outValue = inValue;
         } else {
             outValue = 0.0;
