@@ -9,29 +9,30 @@
 #define MAINCONTACT_H
 
 #include "Port.h" // Include the modified Port class header file
+#include "ErrorHandling.h" // Include for error handling
 #include <stdexcept> // Include for std::runtime_error
-#include "State.h" // Include the State class header file
 
 /**
- * @brief Class representing main contacts in a contactor.
+ * @brief Class representing a main contact in a contactor.
  */
 class MainContact {
 private:
-    Port port; /**< Main contact now includes a Port */
+    Port port; /**< Main contact includes a Port */
     double maxCurrent; /**< Maximum current rating of the main contact */
     double current; /**< Current flowing through the main contact */
-    State state; /**< State of the contactor (coil and contacts) */
 
 public:
     /**
-     * @brief Constructor with port name, type, maximum current, and initial current.
-     * @param portName Name of the port.
-     * @param portType Type of the port.
-     * @param maxCurr Maximum current rating of the main contact.
-     * @param initialCurr Initial current flowing through the main contact (default is 0.0).
+     * @brief Constructor for MainContact.
+     * @param portInId ID of the input port.
+     * @param portInName Name of the input port.
+     * @param portOutId ID of the output port.
+     * @param portOutName Name of the output port.
+     * @param maxCurr Maximum current rating.
+     * @param initialCurr Initial current flowing through the main contact.
      */
-    MainContact(const std::string& portName, const std::string& portType, double maxCurr, double initialCurr = 0.0)
-        : port(portName, portType), maxCurrent(maxCurr), current(initialCurr) {}
+    MainContact(int portInId, const std::string& portInName, int portOutId, const std::string& portOutName, double maxCurr, double initialCurr = 0.0)
+        : port(portInId, portInName, portOutId, portOutName), maxCurrent(maxCurr), current(initialCurr) {}
 
     /**
      * @brief Method to set the current flowing through the main contact.
@@ -39,7 +40,7 @@ public:
      */
     void setCurrent(double curr) {
         if (curr > maxCurrent) {
-            throw std::runtime_error("Max Current is above capacity");
+            throw MaxCurrentExceededException("Max Current is above capacity");
         }
         current = curr;
     }
@@ -50,7 +51,17 @@ public:
      */
     double getCurrent() const { return current; }
 
-    // Other member variables and methods...
+    /**
+     * @brief Method to get the input port.
+     * @return Input port.
+     */
+    Connection getInPort() const { return port.getInPort(); }
+
+    /**
+     * @brief Method to get the output port.
+     * @return Output port.
+     */
+    Connection getOutPort() const { return port.getOutPort(); }
 };
 
 #endif // MAINCONTACT_H
