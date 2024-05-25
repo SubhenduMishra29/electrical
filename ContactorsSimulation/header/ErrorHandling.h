@@ -3,21 +3,31 @@
  * Author: Subhendu Mishra
  * License: GPL
  */
+
 #ifndef ERROR_HANDLING_H
 #define ERROR_HANDLING_H
 
+#include <iostream>
 #include <stdexcept>
-#include <string>
 
-// Custom exception class for maximum current exceeded error
-class MaxCurrentExceededException : public std::invalid_argument {
+/**
+ * @brief Exception class for maximum current exceeded error.
+ */
+class MaxCurrentExceededException : public std::runtime_error {
 public:
-    explicit MaxCurrentExceededException(const std::string& message) : std::invalid_argument(message) {}
+    /**
+     * @brief Constructor for MaxCurrentExceededException.
+     * @param message Error message.
+     */
+    explicit MaxCurrentExceededException(const std::string& message) : std::runtime_error(message) {}
 };
 
-// Utility function for error handling
+/**
+ * @brief Function to handle exceptions.
+ * @param e The exception object.
+ */
 void handleException(const std::exception& e) {
-    std::cerr << "Error: " << e.what() << std::endl;
+    std::cerr << "Exception: " << e.what() << std::endl;
 }
 
 #endif // ERROR_HANDLING_H
