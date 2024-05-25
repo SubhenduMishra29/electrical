@@ -17,22 +17,21 @@
  */
 class MainContact {
 private:
-    Port port; /**< Main contact includes a Port */
-    double maxCurrent; /**< Maximum current rating of the main contact */
-    double current; /**< Current flowing through the main contact */
+    Port port;
+    double maxCurrent;
+    double current;
 
 public:
     /**
      * @brief Constructor for MainContact.
-     * @param portInId ID of the input port.
-     * @param portInName Name of the input port.
-     * @param portOutId ID of the output port.
-     * @param portOutName Name of the output port.
+     * @param initialInValue0 Initial input value 0 for the port.
+     * @param initialInValue1 Initial input value 1 for the port.
+     * @param initialState Initial state for the contact.
      * @param maxCurr Maximum current rating.
      * @param initialCurr Initial current flowing through the main contact.
      */
-    MainContact(int portInId, const std::string& portInName, int portOutId, const std::string& portOutName, double maxCurr, double initialCurr = 0.0)
-        : port(portInId, portInName, portOutId, portOutName), maxCurrent(maxCurr), current(initialCurr) {}
+    MainContact(double initialInValue0, double initialInValue1, bool initialState, double maxCurr, double initialCurr = 0.0)
+        : port(initialInValue0, initialInValue1, initialState), maxCurrent(maxCurr), current(initialCurr) {}
 
     /**
      * @brief Method to set the current flowing through the main contact.
@@ -40,7 +39,7 @@ public:
      */
     void setCurrent(double curr) {
         if (curr > maxCurrent) {
-            throw MaxCurrentExceededException("Max Current is above capacity");
+            throw MaxCurrentExceededException("Current exceeds maximum current for main contact.");
         }
         current = curr;
     }
