@@ -13,36 +13,52 @@
  */
 class Port {
 private:
-    double inValue;  /**< Input value */
-    double outValue; /**< Output value */
-    bool state;      /**< State of the port */
+    double inValue0;  /**< Input value 0 */
+    double outValue0; /**< Output value 0 */
+    double inValue1;  /**< Input value 1 */
+    double outValue1; /**< Output value 1 */
+    bool state;       /**< State of the port */
 
 public:
     /**
      * @brief Constructor for Port.
      * Initializes inValue and state with provided values.
-     * @param inVal Initial input value.
+     * @param inVal0 Initial input value 0.
+     * @param inVal1 Initial input value 1.
      * @param portState Initial state of the port.
      */
-    Port(double inVal, bool portState) : inValue(inVal), state(portState), outValue(0.0) {}
+    Port(double inVal0, double inVal1, bool portState) : inValue0(inVal0), inValue1(inVal1), state(portState), outValue0(0.0), outValue1(0.0) {}
 
     /**
-     * @brief Set the input value of the port.
-     * @param value Input value to set.
+     * @brief Set the input values of the port.
+     * @param value0 Input value 0 to set.
+     * @param value1 Input value 1 to set.
      */
-    void setInValue(double value) { inValue = value; }
+    void setInValues(double value0, double value1) { inValue0 = value0; inValue1 = value1; }
 
     /**
-     * @brief Get the input value of the port.
-     * @return Input value of the port.
+     * @brief Get the input value 0 of the port.
+     * @return Input value 0 of the port.
      */
-    double getInValue() const { return inValue; }
+    double getInValue0() const { return inValue0; }
 
     /**
-     * @brief Get the output value of the port.
-     * @return Output value of the port.
+     * @brief Get the input value 1 of the port.
+     * @return Input value 1 of the port.
      */
-    double getOutValue() const { return outValue; }
+    double getInValue1() const { return inValue1; }
+
+    /**
+     * @brief Get the output value 0 of the port.
+     * @return Output value 0 of the port.
+     */
+    double getOutValue0() const { return outValue0; }
+
+    /**
+     * @brief Get the output value 1 of the port.
+     * @return Output value 1 of the port.
+     */
+    double getOutValue1() const { return outValue1; }
 
     /**
      * @brief Get the state of the port.
@@ -57,13 +73,15 @@ public:
     void setState(bool newState) { state = newState; }
 
     /**
-     * @brief Update the output value of the port based on its state.
+     * @brief Update the output values of the port based on its state.
      */
     void updateOutput() {
         if (state) {
-            outValue = inValue;
+            outValue0 = inValue0;
+            outValue1 = inValue1;
         } else {
-            outValue = 0.0;
+            outValue0 = 0.0;
+            outValue1 = 0.0;
         }
     }
 };
