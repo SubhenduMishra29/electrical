@@ -28,13 +28,16 @@ private:
 public:
     /**
      * @brief Constructor for AuxiliaryContact.
+     * @param name Name of the auxiliary contact.
      * @param initialInValue0 Initial input value 0 for the port.
      * @param initialInValue1 Initial input value 1 for the port.
      * @param initialState Initial state for the contact.
      * @param contactType Type of the contact (NO or NC).
+     * @param maxCurr Maximum current rating.
+     * @param voltage Input voltage for the auxiliary contact.
      */
-    AuxiliaryContact(double initialInValue0, double initialInValue1, bool initialState, ContactType contactType)
-        : port(initialInValue0, initialInValue1, initialState), state(initialState), type(contactType), maxCurrent(0.0), inputVoltage(0.0) {}
+    AuxiliaryContact(const std::string& name, double initialInValue0, double initialInValue1, bool initialState, ContactType contactType, double maxCurr, double voltage)
+        : port(initialInValue0, initialInValue1, initialState), state(initialState), type(contactType), maxCurrent(maxCurr), inputVoltage(voltage) {}
 
     /**
      * @brief Set the input voltage for the auxiliary contact.
