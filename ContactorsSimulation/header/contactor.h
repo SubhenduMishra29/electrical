@@ -25,6 +25,29 @@ private:
     std::vector<Port> ports; // Ports of the contactor
     double maxMainCurrent; // Maximum rated current for main contacts
     double maxAuxiliaryCurrent; // Maximum rated current for auxiliary contacts
+////////////////////////////////////////////////////////////////////////////////////////////////
+    double maxUtilizationCurrentAC3;
+    double maxUtilizationCurrentAC4;
+    double maxCapacitorSwitchingCurrent;
+    double maxDC1to5Current;
+    int mechanicalLifeCycles;
+    int ac1UtilizationCategoryCycles;
+    int ac2UtilizationCategoryCycles;
+    int ac3UtilizationCategoryCycles;
+    int ac4UtilizationCategoryCycles;
+    int maxFrequencyOfOperations;
+    int serviceTemperatureMin;
+    int serviceTemperatureMax;
+    std::string mainTerminalCapacity;
+    int numberOfBuiltInAuxiliaryContacts;
+    std::string terminalCapacity;
+    std::vector<double> coilVoltageAvailable;
+    std::vector<std::string> coilVoltageLimits;
+    std::vector<double> coilVoltageVA;
+    std::vector<double> coilVoltageCosPhi;
+    std::vector<double> coilVoltageWatts;
+    std::vector<double> coilVoltagePickUp;
+    std::vector<double> coilVoltageDropOff;
 
 public:
     // Constructor
