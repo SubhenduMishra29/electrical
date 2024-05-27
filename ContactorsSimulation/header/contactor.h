@@ -32,13 +32,13 @@ public:
         : manufacturer(manuf), model(mdl), state(false, false, false), maxMainCurrent(maxMainCurr), maxAuxiliaryCurrent(maxAuxCurr) {} // Initialize member variables
 
     // Method to add a main contact
-    void addMainContact(double initialInValue0, double initialInValue1, bool initialState) {
-        mainContacts.emplace_back(initialInValue0, initialInValue1, initialState, maxMainCurrent);
+    void addMainContact(const std::string& name, double initialInValue0, double initialInValue1, double maxCurr) {
+        mainContacts.emplace_back(initialInValue0, initialInValue1, false, maxCurr); // Assuming the initial state is false (open)
     }
 
     // Method to add an auxiliary contact
-    void addAuxiliaryContact(double initialInValue0, double initialInValue1, bool initialState) {
-        auxiliaryContacts.emplace_back(initialInValue0, initialInValue1, initialState, maxAuxiliaryCurrent);
+    void addAuxiliaryContact(const std::string& type, const std::string& name, double initialInValue0, double initialInValue1, double maxCurr) {
+        auxiliaryContacts.emplace_back(initialInValue0, initialInValue1, false, (type == "NO") ? NO : NC, maxCurr); // Assuming the initial state is false (open)
     }
 
     // Method to add a port
