@@ -24,13 +24,14 @@ private:
 public:
     /**
      * @brief Constructor for MainContact.
+     * @param name Name of the contact.
      * @param initialInValue0 Initial input value 0 for the port.
      * @param initialInValue1 Initial input value 1 for the port.
      * @param initialState Initial state for the contact.
      * @param maxCurr Maximum current rating.
      * @param initialCurr Initial current flowing through the main contact.
      */
-    MainContact(double initialInValue0, double initialInValue1, bool initialState, double maxCurr, double initialCurr = 0.0)
+    MainContact(const std::string& name, double initialInValue0, double initialInValue1, bool initialState, double maxCurr, double initialCurr = 0.0)
         : port(initialInValue0, initialInValue1, initialState), maxCurrent(maxCurr), current(initialCurr) {}
 
     /**
