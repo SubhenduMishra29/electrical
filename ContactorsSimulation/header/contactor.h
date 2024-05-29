@@ -11,83 +11,78 @@
 #include <iostream>
 #include <vector>
 #include <stdexcept>
-#include "Port.h" // Include the modified Port class header file
-#include "MainContact.h" // Include the MainContact class header file
-#include "AuxiliaryContact.h" // Include the AuxiliaryContact class header file
-#include "State.h" // Include the State class header file
+#include "Port.h"
+#include "MainContact.h"
+#include "AuxiliaryContact.h"
+#include "State.h"
 
 class Contactor {
 private:
-    std::string manufacturer; // Manufacturer of the contactor
-    std::string model; // Model of the contactor
-    State state; // State of the contactor (coil and contacts)
-    std::vector<MainContact> mainContacts; // Main contacts of the contactor
-    std::vector<AuxiliaryContact> auxiliaryContacts; // Auxiliary contacts of the contactor
-    std::vector<Port> ports; // Ports of the contactor
-    double maxMainCurrent; // Maximum rated current for main contacts
-    double maxAuxiliaryCurrent; // Maximum rated current for auxiliary contacts
+    std::string manufacturer;
+    std::string model;
+    State state;
+    std::vector<MainContact> mainContacts;
+    std::vector<AuxiliaryContact> auxiliaryContacts;
+    std::vector<Port> ports;
+    double maxMainCurrent;
+    double maxAuxiliaryCurrent;
 
-    // Additional technical specifications
-    double ratedInsulationVoltage; // Rated insulation voltage, Ui
-    double ratedImpulseWithstandVoltage; // Rated impulse withstand voltage, Uimp
-    double ratedMakingCapacity; // Rated making capacity
-    double ratedBreakingCapacity; // Rated breaking capacity
-    double ratedOperationalCurrent; // Rated operational current, Ie at 55°C / Motor duty
-    double utilizationCurrentAC1; // Utilization category AC-1
-    double utilizationCurrentAC2; // Utilization category AC-2
-    double utilizationCurrentAC3; // Utilization category AC-3
-    double utilizationCurrentAC4; // Utilization category AC-4
-    double utilizationCurrentAC8b; // Utilization category AC-8b
-    int maxFrequencyOfOperations; // Maximum frequency of operations
-    long mechanicalLifeCycles; // Mechanical life, number of operating cycles
-    double permissibleShortTimeRatings; // Permissible short time ratings
-    double vibrationResistance; // Vibration resistance conforming to IEC 60068-2-6
-    double serviceTemperatureMin; // Minimum service temperature
-    double serviceTemperatureMax; // Maximum service temperature
-    double storageTemperatureMin; // Minimum storage temperature
-    double storageTemperatureMax; // Maximum storage temperature
-    int degreeOfPollution; // Degree of pollution
-    std::string protectiveTreatment; // Protective treatment as per IEC 60068-2-30
-    double altitudeWithoutDeration; // Altitude without deration
-    std::string mainTerminalCapacity; // Main terminal capacity
-    int numberOfBuiltInAuxiliaryContacts; // Number of built-in auxiliary contacts
-    std::string terminalCapacity; // Terminal capacity
-    std::vector<double> coilVoltageAvailable; // Available coil voltages
-    std::vector<std::string> coilVoltageLimits; // Coil voltage limits
-    std::vector<double> coilVoltageVA; // Coil voltage in VA
-    std::vector<double> coilVoltageCosPhi; // Coil voltage cosPhi
-    std::vector<double> coilVoltageWatts; // Coil voltage in watts
-    std::vector<double> coilVoltagePickUp; // Coil voltage pick-up
-    std::vector<double> coilVoltageDropOff; // Coil voltage drop-off
+    double ratedInsulationVoltage;
+    double ratedImpulseWithstandVoltage;
+    double ratedMakingCapacity;
+    double ratedBreakingCapacity;
+    double ratedOperationalCurrent;
+    double utilizationCurrentAC1;
+    double utilizationCurrentAC2;
+    double utilizationCurrentAC3;
+    double utilizationCurrentAC4;
+    double utilizationCurrentAC8b;
+    int maxFrequencyOfOperations;
+    long mechanicalLifeCycles;
+    double permissibleShortTimeRatings;
+    double vibrationResistance;
+    double serviceTemperatureMin;
+    double serviceTemperatureMax;
+    double storageTemperatureMin;
+    double storageTemperatureMax;
+    int degreeOfPollution;
+    std::string protectiveTreatment;
+    double altitudeWithoutDeration;
+    std::string mainTerminalCapacity;
+    int numberOfBuiltInAuxiliaryContacts;
+    std::string terminalCapacity;
+    std::vector<double> coilVoltageAvailable;
+    std::vector<std::string> coilVoltageLimits;
+    std::vector<double> coilVoltageVA;
+    std::vector<double> coilVoltageCosPhi;
+    std::vector<double> coilVoltageWatts;
+    std::vector<double> coilVoltagePickUp;
+    std::vector<double> coilVoltageDropOff;
 
 public:
-    // Constructor to initialize the contactor with basic details
-    Contactor(const std::string& manuf, const std::string& mdl, double maxMainCurr, double maxAuxCurr, double ratedInsVoltage, double ratedImpWithVoltage)
-        : manufacturer(manuf), model(mdl), state(false, false, false), maxMainCurrent(maxMainCurr), maxAuxiliaryCurrent(maxAuxCurr),
-          ratedInsulationVoltage(ratedInsVoltage), ratedImpulseWithstandVoltage(ratedImpWithVoltage), ratedMakingCapacity(0),
-          ratedBreakingCapacity(0), ratedOperationalCurrent(0), utilizationCurrentAC1(0), utilizationCurrentAC2(0), utilizationCurrentAC3(0),
-          utilizationCurrentAC4(0), utilizationCurrentAC8b(0), maxFrequencyOfOperations(0), mechanicalLifeCycles(0), permissibleShortTimeRatings(0),
-          vibrationResistance(0), serviceTemperatureMin(0), serviceTemperatureMax(0), storageTemperatureMin(0), storageTemperatureMax(0),
-          degreeOfPollution(0), protectiveTreatment(""), altitudeWithoutDeration(0), mainTerminalCapacity(""), numberOfBuiltInAuxiliaryContacts(0),
-          terminalCapacity(""), coilVoltageAvailable(), coilVoltageLimits(), coilVoltageVA(), coilVoltageCosPhi(), coilVoltageWatts(),
+    Contactor(const std::string& manuf, const std::string& mdl)
+        : manufacturer(manuf), model(mdl), state(false, false, false), maxMainCurrent(0), maxAuxiliaryCurrent(0),
+          ratedInsulationVoltage(0), ratedImpulseWithstandVoltage(0), ratedMakingCapacity(0), ratedBreakingCapacity(0),
+          ratedOperationalCurrent(0), utilizationCurrentAC1(0), utilizationCurrentAC2(0), utilizationCurrentAC3(0),
+          utilizationCurrentAC4(0), utilizationCurrentAC8b(0), maxFrequencyOfOperations(0), mechanicalLifeCycles(0),
+          permissibleShortTimeRatings(0), vibrationResistance(0), serviceTemperatureMin(0), serviceTemperatureMax(0),
+          storageTemperatureMin(0), storageTemperatureMax(0), degreeOfPollution(0), protectiveTreatment(""),
+          altitudeWithoutDeration(0), mainTerminalCapacity(""), numberOfBuiltInAuxiliaryContacts(0), terminalCapacity(""),
+          coilVoltageAvailable(), coilVoltageLimits(), coilVoltageVA(), coilVoltageCosPhi(), coilVoltageWatts(),
           coilVoltagePickUp(), coilVoltageDropOff() {}
 
-    // Method to add a main contact
     void addMainContact(const std::string& name, double initialInValue0, double initialInValue1, double maxCurr) {
-        mainContacts.emplace_back(initialInValue0, initialInValue1, false, maxCurr); // Assuming the initial state is false (open)
+        mainContacts.emplace_back(initialInValue0, initialInValue1, false, maxCurr);
     }
 
-    // Method to add an auxiliary contact
     void addAuxiliaryContact(const std::string& type, const std::string& name, double initialInValue0, double initialInValue1, double maxCurr) {
-        auxiliaryContacts.emplace_back(initialInValue0, initialInValue1, false, (type == "NO") ? NO : NC, maxCurr); // Assuming the initial state is false (open)
+        auxiliaryContacts.emplace_back(initialInValue0, initialInValue1, false, (type == "NO") ? NO : NC, maxCurr);
     }
 
-    // Method to add a port
     void addPort(double inVal0, double inVal1, bool state) {
         ports.emplace_back(inVal0, inVal1, state);
     }
 
-    // Method to turn on/off the coil and update contacts accordingly
     void turnOnCoil(bool on) {
         state.setCoilState(on);
 
@@ -104,7 +99,6 @@ public:
         }
     }
 
-    // Method to print contactor details
     void printDetails() const {
         std::cout << "Contactor Details:\n"
                   << "Manufacturer: " << manufacturer << "\n"
@@ -183,7 +177,6 @@ public:
         }
     }
 
-    // Method to check if current of any main contact exceeds the maximum rated current
     void checkMainContactsCurrent() const {
         for (const auto& main : mainContacts) {
             if (main.getCurrent() > maxMainCurrent) {
@@ -192,7 +185,6 @@ public:
         }
     }
 
-    // Method to check if current of any auxiliary contact exceeds the maximum rated current
     void checkAuxiliaryContactsCurrent() const {
         for (const auto& aux : auxiliaryContacts) {
             if (aux.getCurrent() > maxAuxiliaryCurrent) {
