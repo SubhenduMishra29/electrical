@@ -3,6 +3,8 @@
 #ifndef POTENTIAL_TRANSFORMER_H
 #define POTENTIAL_TRANSFORMER_H
 
+#include <stdexcept>
+
 class PotentialTransformer {
 private:
     double primaryVoltage;
