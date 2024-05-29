@@ -22,7 +22,7 @@ install(TARGETS ladderlogic
         RUNTIME DESTINATION bin)
 
 # Build main program
-add_executable(main test/main.cpp)
+add_executable(main src/main.cpp)
 target_link_libraries(main PRIVATE ladderlogic)
 
 # Set the output directory for the main program
