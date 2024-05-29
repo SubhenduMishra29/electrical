@@ -110,4 +110,5 @@ double PotentialTransformer::calculateTotalLoss() {
 double PotentialTransformer::calculateOutputVoltage() {
     // Calculate output voltage based on load and losses
     // For simplicity, let's assume a linear relationship between load and output voltage
+}
    
