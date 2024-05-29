@@ -110,5 +110,17 @@ double PotentialTransformer::calculateTotalLoss() {
 double PotentialTransformer::calculateOutputVoltage() {
     // Calculate output voltage based on load and losses
     // For simplicity, let's assume a linear relationship between load and output voltage
+    double outputVoltage = secondaryVoltage * (1 - load / 100);
+    return outputVoltage;
 }
-   
+
+double PotentialTransformer::calculateOutputCurrent() {
+    // Calculate output current based on load and output voltage
+    // For simplicity, let's assume a linear relationship between load and output current
+    double outputCurrent = load / 100 * (primaryVoltage / windingResistance);
+    return outputCurrent;
+}
+
+void PotentialTransformer::setBurden(double burdenValue) {
+    burden = burdenValue;
+}
