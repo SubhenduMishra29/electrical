@@ -1,19 +1,19 @@
-// rung.h
 #ifndef RUNG_H
 #define RUNG_H
 
-#include <string>
 #include <vector>
+#include <memory>
+#include "rung_element.h"
 
 class Rung {
 private:
-    std::vector<std::pair<std::string, bool>> elements;
+    std::vector<std::shared_ptr<RungElement>> elements;
 
 public:
-    Rung();
-    void addElement(std::string name, bool state);
-    bool evaluate(std::unordered_map<std::string, bool>& input_states);
+    void addElement(std::shared_ptr<RungElement> element);
+    bool evaluate(std::unordered_map<std::string, bool>& states);
+    void resetTimers();
+    std::vector<std::shared_ptr<RungElement>>& getElements();
 };
 
 #endif // RUNG_H
-
