@@ -1,7 +1,5 @@
 #include "simulator.h"
 
-Simulator::Simulator() {}
-
 void Simulator::setInput(const std::string& name, bool state) {
     input_states[name] = state;
 }
@@ -18,16 +16,11 @@ void Simulator::simulate() {
     for (auto& rung : ladder_logic) {
         bool result = rung.evaluate(input_states);
         for (auto& element : rung.getElements()) {
-            if (auto output = std::dynamic_pointer_cast<OutputElement>(element)) {
-                output_states[output->getName()] = result;
+            if (auto coil = std::dynamic_pointer_cast<Coil>(element)) {
+                output_states[coil->getName()] = result;
+            } else if (auto bulb = std::dynamic_pointer_cast<Bulb>(element)) {
+                output_states[bulb->getName()] = result;
             }
         }
     }
 }
-
-void Simulator::reset() {
-    for (auto& rung : ladder_logic) {
-        rung.resetTimers();
-    }
-}
-
