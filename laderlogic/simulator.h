@@ -13,10 +13,11 @@ private:
 
 public:
     Simulator();
-    void setInput(std::string name, bool state);
-    bool getOutput(std::string name);
+    void setInput(const std::string& name, bool state);
+    bool getOutput(const std::string& name);
     void addRung(Rung rung);
     void simulate();
+    void reset();
 };
 
 #endif // SIMULATOR_H
