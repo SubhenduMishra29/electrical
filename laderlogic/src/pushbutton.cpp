@@ -1,5 +1,5 @@
 /*
- * File: pushbutton.h
+ * File: pushbutton.cpp
  * Author: Subhendu Mishra
  * Description: Declaration of PushButton class for representing a push button element.
  * License: GPL (General Public License)
