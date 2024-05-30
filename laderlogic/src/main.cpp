@@ -14,14 +14,17 @@ int main() {
     simulator.setInput("stop_button", false); // Stop button not pressed
 
     // Define ladder logic
+
+    // Rung 1: Start button pressed AND Stop button not pressed
     Rung rung1;
     rung1.addElement(std::make_shared<Contact>("start_button", true));
     rung1.addElement(std::make_shared<Contact>("stop_button", false));
-    rung1.addElement(std::make_shared<Coil>("motor"));
+    rung1.addElement(std::make_shared<Coil>("motor")); // Turn on motor
 
+    // Rung 2: Motor is on
     Rung rung2;
-    rung2.addElement(std::make_shared<Coil>("motor"));
-    rung2.addElement(std::make_shared<Bulb>("lamp"));
+    rung2.addElement(std::make_shared<Coil>("motor")); // Motor remains on
+    rung2.addElement(std::make_shared<Bulb>("lamp")); // Turn on lamp
 
     // Add rungs to the simulator
     simulator.addRung(rung1);
