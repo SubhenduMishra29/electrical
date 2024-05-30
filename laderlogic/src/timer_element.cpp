@@ -1,23 +1,30 @@
-#include "timer_element.h"
+/*
+ * File: timer_element.h
+ * Author: Subhendu Mishra
+ * Description: Declaration of TimerElement class for managing timer functionality.
+ * License: GPL (General Public License)
+ */
 
-TimerElement::TimerElement(int duration) : duration(duration), counter(0), active(false) {}
+#ifndef TIMER_ELEMENT_H
+#define TIMER_ELEMENT_H
 
-bool TimerElement::evaluate(std::unordered_map<std::string, bool>& states) {
-    if (!active) {
-        active = true;
-        counter = 0;
-    }
+#include <unordered_map>
 
-    if (counter >= duration) {
-        active = false;
-        return true;
-    } else {
-        counter++;
-        return false;
-    }
-}
+class TimerElement {
+private:
+    int duration;
+    int counter;
+    bool active;
 
-void TimerElement::reset() {
-    counter = 0;
-    active = false;
-}
+public:
+    // Constructor initializes the timer with a given duration.
+    TimerElement(int duration);
+
+    // Evaluate the timer based on the current states.
+    bool evaluate(std::unordered_map<std::string, bool>& states);
+
+    // Reset the timer to its initial state.
+    void reset();
+};
+
+#endif /* TIMER_ELEMENT_H */
