@@ -1,21 +1,21 @@
 /*
  * File: rung.h
  * Author: Subhendu Mishra
- * Description: Declaration of Rung class representing a rung in a ladder logic program.
+ * Description: Declaration of Rung class for representing a ladder logic rung.
  * License: GPL (General Public License)
  */
 
 #ifndef RUNG_H
 #define RUNG_H
 
-#include <vector>
 #include <memory>
 #include <unordered_map>
+#include <vector>
 #include "rung_element.h"
 
 class Rung {
 private:
-    std::vector<std::shared_ptr<RungElement>> elements; // Vector to store elements of the rung
+    std::vector<std::shared_ptr<RungElement>> elements;
 
 public:
     // Add an element to the rung.
@@ -28,5 +28,4 @@ public:
     std::vector<std::shared_ptr<RungElement>>& getElements();
 };
 
-#endif // RUNG_H
-
+#endif /* RUNG_H */
