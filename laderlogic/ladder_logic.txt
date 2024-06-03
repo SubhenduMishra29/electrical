@@ -1,0 +1,4 @@
+Input Input1 true
+Input Input2 true
+Logic AND1 AND Input1 Input2
+Coil Coil1 AND1
