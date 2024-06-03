@@ -6,6 +6,7 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <memory>
 
 int main() {
     // Open the ladder logic file
@@ -43,7 +44,6 @@ int main() {
             LogicType logic_type = (logicType == "AND") ? LogicType::AND : LogicType::OR;
             auto logicElement = std::make_shared<LogicElement>(elementName, true, logic_type);
             element_map[elementName] = logicElement;
-            // Add to rung and connect inputs
             Rung rung;
             rung.addElement(element_map[input1]);
             rung.addElement(element_map[input2]);
