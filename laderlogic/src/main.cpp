@@ -1,5 +1,5 @@
 #include "simulator.h"
-#include "file_handler.h"
+#include "ladder_parser.h"
 #include "pushbutton.h"
 #include "contact.h"
 #include "coil.h"
@@ -9,31 +9,28 @@
 
 int main() {
     // Parse ladder logic file
-    std::unordered_map<std::string, bool> elements = FileHandler::parseInputFile("ladder_logic.txt");
+    std::unordered_map<std::string, bool> elements = LadderParser::parseLadderFile("ladder_logic.txt");
 
     // Create a simulator
     Simulator simulator;
 
-    std::unordered_map<std::string, std::shared_ptr<RungElement>> element_map;
+    // Process parsed elements
     for (const auto& [elementName, initialState] : elements) {
         if (elementName.find("PushButton") != std::string::npos) {
             auto pushButtonElement = std::make_shared<PushButton>(elementName, initialState);
             simulator.setInput(elementName, initialState);
-            element_map[elementName] = pushButtonElement;
         } else if (elementName.find("Contact") != std::string::npos) {
             auto contactElement = std::make_shared<Contact>(elementName, initialState);
             simulator.setInput(elementName, initialState);
-            element_map[elementName] = contactElement;
         } else if (elementName.find("Coil") != std::string::npos) {
             auto coilElement = std::make_shared<Coil>(elementName, initialState);
-            element_map[elementName] = coilElement;
         } else if (elementName.find("Rung") != std::string::npos) {
             // Extract input and output elements from elementName
             std::string inputName, outputName;
             // Parse inputName and outputName from elementName
             Rung rung;
-            rung.addElement(element_map[inputName]);
-            rung.addElement(element_map[outputName]);
+            rung.addElement(simulator.getElement(inputName));
+            rung.addElement(simulator.getElement(outputName));
             simulator.addRung(rung);
         }
     }
