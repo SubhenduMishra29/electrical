@@ -30,6 +30,9 @@ public:
 
     // Simulate the ladder logic program.
     void simulate();
+
+    // Get the output states.
+    std::unordered_map<std::string, bool> getOutputStates() const;
 };
 
 #endif // SIMULATOR_H
