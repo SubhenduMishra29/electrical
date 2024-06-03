@@ -1,53 +1,59 @@
-#include <fstream>
-#include <iostream>
-#include <sstream>
-#include <vector>
 #include "simulator.h"
 #include "pushbutton.h"
 #include "contact.h"
 #include "coil.h"
-#include "bulb.h"
+#include "logic_element.h"
+#include <iostream>
+#include <fstream>
+#include <sstream>
 
 int main() {
     // Open the ladder logic file
     std::ifstream file("ladder_logic.txt");
     if (!file.is_open()) {
-        std::cerr << "Failed to open file." << std::endl;
+        std::cerr << "Error opening file" << std::endl;
         return 1;
     }
 
     // Create a simulator
     Simulator simulator;
 
+    std::unordered_map<std::string, std::shared_ptr<RungElement>> element_map;
     std::string line;
     while (std::getline(file, line)) {
-        // Parse the line to extract information about elements
         std::istringstream iss(line);
-        std::string elementType, elementName;
-        // Extract element type and name from the line
+        std::string elementType, elementName, logicType, input1, input2;
+
         iss >> elementType >> elementName;
 
-        // Create an instance of the corresponding element class based on the type
         if (elementType == "Input") {
             bool initialState;
-            // Extract additional information (e.g., initial state) if needed
             iss >> initialState;
-            simulator.addInput(std::make_shared<PushButton>(elementName, initialState));
-        } else if (elementType == "Output") {
-            simulator.addOutput(std::make_shared<Bulb>(elementName, false)); // Initialize output with false state
+            auto inputElement = std::make_shared<PushButton>(elementName, initialState);
+            simulator.setInput(elementName, initialState);
+            element_map[elementName] = inputElement;
+        } else if (elementType == "Coil") {
+            auto coilElement = std::make_shared<Coil>(elementName, false);
+            element_map[elementName] = coilElement;
+            Rung rung;
+            rung.addElement(coilElement);
+            simulator.addRung(rung);
         } else if (elementType == "Logic") {
-            // Extract additional information (e.g., logic type) if needed
-            LogicType logicType;
-            // Parse logic type from the line and create LogicElement instance
-            simulator.addLogicElement(std::make_shared<Contact>(elementName));
+            iss >> logicType >> input1 >> input2;
+            LogicType logic_type = (logicType == "AND") ? LogicType::AND : LogicType::OR;
+            auto logicElement = std::make_shared<LogicElement>(elementName, true, logic_type);
+            element_map[elementName] = logicElement;
+            // Add to rung and connect inputs
+            Rung rung;
+            rung.addElement(element_map[input1]);
+            rung.addElement(element_map[input2]);
+            rung.addElement(logicElement);
+            simulator.addRung(rung);
         }
-        // Add support for other element types as needed (e.g., Timer)
     }
 
-    // Close the file
     file.close();
 
-    // Simulate the ladder logic program
     simulator.simulate();
 
     // Output the final state of the outputs
