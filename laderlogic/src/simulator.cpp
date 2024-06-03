@@ -1,42 +1,38 @@
-#include "simulator.h"
-#include "pushbutton.h"
-#include "contact.h"
-#include "coil.h"
-#include "bulb.h"
-#include "logic_element.h"
-#include <iostream>
-#include <fstream>
-#include <sstream>
+/*
+ * File: simulator.h
+ * Author: Subhendu Mishra
+ * Description: Declaration of Simulator class for simulating ladder logic programs.
+ * License: GPL (General Public License)
+ */
 
-void Simulator::setInput(const std::string& name, bool state) {
-    input_states[name] = state;
-}
+#ifndef SIMULATOR_H
+#define SIMULATOR_H
 
-bool Simulator::getOutput(const std::string& name) {
-    auto it = output_states.find(name);
-    return (it != output_states.end()) ? it->second : false;
-}
+#include <unordered_map>
+#include <vector>
+#include "rung.h"
 
-void Simulator::addRung(Rung rung) {
-    ladder_logic.push_back(rung);
-}
+class Simulator {
+private:
+    std::unordered_map<std::string, bool> input_states;   // Map to store input states
+    std::unordered_map<std::string, bool> output_states;  // Map to store output states
+    std::vector<Rung> ladder_logic;                       // Vector to store ladder logic rungs
 
-void Simulator::simulate() {
-    std::unordered_map<std::string, bool> updated_output_states = output_states;
+public:
+    // Set the state of an input.
+    void setInput(const std::string& name, bool state);
 
-    for (auto& rung : ladder_logic) {
-        bool result = rung.evaluate(input_states);
+    // Get the state of an output.
+    bool getOutput(const std::string& name);
 
-        for (auto& element : rung.getElements()) {
-            if (auto coil = std::dynamic_pointer_cast<Coil>(element)) {
-                updated_output_states[coil->getName()] = result;
-            }
-        }
-    }
+    // Add a rung to the ladder logic.
+    void addRung(Rung rung);
 
-    output_states = updated_output_states;
-}
+    // Simulate the ladder logic program.
+    void simulate();
 
-std::unordered_map<std::string, bool> Simulator::getOutputStates() const {
-    return output_states;
-}
+    // Get the output states.
+    std::unordered_map<std::string, bool> getOutputStates() const;
+};
+
+#endif // SIMULATOR_H
