@@ -1,31 +1,34 @@
-/*
- * File: rung.h
- * Author: Subhendu Mishra
- * Description: Declaration of Rung class for representing a ladder logic rung.
- * License: GPL (General Public License)
- */
+#include "rung.h"
+#include <stdexcept>
+#include <iostream>
 
-#ifndef RUNG_H
-#define RUNG_H
+void Rung::addElement(std::shared_ptr<RungElement> element) {
+    if (!element) {
+        throw std::invalid_argument("Cannot add a null element to the rung.");
+    }
+    elements.push_back(element);
+}
 
-#include <memory>
-#include <unordered_map>
-#include <vector>
-#include "rung_element.h"
+bool Rung::evaluate(std::unordered_map<std::string, bool>& states) {
+    try {
+        for (const auto& element : elements) {
+            if (!element) {
+                throw std::runtime_error("Encountered null element during evaluation.");
+            }
+            if (!element->evaluate(states)) {
+                return false;
+            }
+        }
+    } catch (const std::exception& e) {
+        std::cerr << "Error evaluating rung: " << e.what() << std::endl;
+        return false;
+    }
+    return true;
+}
 
-class Rung {
-private:
-    std::vector<std::shared_ptr<RungElement>> elements;
-
-public:
-    // Add an element to the rung.
-    void addElement(std::shared_ptr<RungElement> element);
-
-    // Evaluate the rung based on the current states.
-    bool evaluate(std::unordered_map<std::string, bool>& states);
-
-    // Get the elements of the rung.
-    std::vector<std::shared_ptr<RungElement>>& getElements();
-};
-
-#endif /* RUNG_H */
+std::vector<std::shared_ptr<RungElement>>& Rung::getElements() {
+    if (elements.empty()) {
+        throw std::runtime_error("No elements in the rung.");
+    }
+    return elements;
+}
