@@ -32,8 +32,3 @@ public:
 };
 
 #endif /* RUNG_H */
-
-#endif /* RUNG_H */
-
-
-#endif /* RUNG_H */
