@@ -1,7 +1,7 @@
 /*
  * File: rung.h
  * Author: Subhendu Mishra
- * Description: Declaration of Rung class for representing a ladder logic rung with branching support.
+ * Description: Declaration of Rung class for representing a ladder logic rung.
  * License: GPL (General Public License)
  */
 
@@ -12,23 +12,20 @@
 #include <unordered_map>
 #include <vector>
 #include "rung_element.h"
+#include "rung_submodule.h"
 
 class Rung {
 private:
-    std::vector<std::vector<std::shared_ptr<RungElement>>> branches; // Nested vector to represent branches
+    std::vector<std::shared_ptr<RungElement>> elements;
+    std::vector<std::shared_ptr<RungSubmodule>> submodules;
 
 public:
-    // Add an element to the main branch of the rung.
     void addElement(std::shared_ptr<RungElement> element);
-
-    // Add a branch starting from the current state.
-    void addBranch(const std::vector<std::shared_ptr<RungElement>>& branch);
-
-    // Evaluate the rung based on the current states.
+    void addSubmodule(std::shared_ptr<RungSubmodule> submodule);
     bool evaluate(std::unordered_map<std::string, bool>& states);
-
-    // Get the elements of the rung.
-    std::vector<std::vector<std::shared_ptr<RungElement>>>& getBranches();
+    std::vector<std::shared_ptr<RungElement>>& getElements();
+    std::vector<std::shared_ptr<RungSubmodule>>& getSubmodules();
 };
 
 #endif /* RUNG_H */
+
