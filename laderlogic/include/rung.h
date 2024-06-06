@@ -5,27 +5,29 @@
  * License: GPL (General Public License)
  */
 
-#ifndef RUNG_H
-#define RUNG_H
+#ifndef SIMULATOR_H
+#define SIMULATOR_H
 
-#include <memory>
 #include <unordered_map>
 #include <vector>
-#include "rung_element.h"
-#include "rung_submodule.h"
+#include <memory>
+#include "rung.h"
+#include "pushbutton.h"
+#include "contact.h"
+#include "coil.h"
 
-class Rung {
+class Simulator {
 private:
-    std::vector<std::shared_ptr<RungElement>> elements;
-    std::vector<std::shared_ptr<RungSubmodule>> submodules;
+    std::unordered_map<std::string, bool> input_states;
+    std::unordered_map<std::string, bool> output_states;
+    std::vector<Rung> ladder_logic;
 
 public:
-    void addElement(std::shared_ptr<RungElement> element);
-    void addSubmodule(std::shared_ptr<RungSubmodule> submodule);
-    bool evaluate(std::unordered_map<std::string, bool>& states);
-    std::vector<std::shared_ptr<RungElement>>& getElements();
-    std::vector<std::shared_ptr<RungSubmodule>>& getSubmodules();
+    void setInput(const std::string& name, bool state);
+    bool getOutput(const std::string& name);
+    void addRung(const Rung& rung);
+    void simulate();
+    std::unordered_map<std::string, bool> getOutputStates() const;
 };
 
-#endif /* RUNG_H */
-
+#endif // SIMULATOR_H
