@@ -1,9 +1,17 @@
+/*
+ * File: simulator.cpp
+ * Author: Subhendu Mishra
+ * Description: Implementation of Simulator class for simulating ladder logic programs.
+ * License: GPL (General Public License)
+ */
+
 #include "simulator.h"
 #include "pushbutton.h"
 #include "contact.h"
 #include "coil.h"
 #include "bulb.h"
 #include "logic_element.h"
+#include "rung_submodule.h"
 #include <iostream>
 #include <fstream>
 #include <sstream>
