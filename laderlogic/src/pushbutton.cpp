@@ -5,30 +5,45 @@
  * License: GPL (General Public License)
  */
 
-#ifndef PUSHBUTTON_H
-#define PUSHBUTTON_H
+// pushbutton.cpp
+#include "pushbutton.h"
+#include "wire.h" // Include Wire class header
 
-#include <string>
-#include <unordered_map>
-#include "rung_element.h"
+PushButton::PushButton(std::string name, bool state) : name(name), state(state) {}
 
-class PushButton : public RungElement {
-private:
-    std::string name;
-    bool state;
+bool PushButton::evaluate(std::unordered_map<std::string, bool>& states) {
+    // Evaluate the push button based on its current state
+    return state;
+}
 
-public:
-    // Constructor initializes the push button with a name and initial state.
-    PushButton(std::string name, bool state);
+std::string PushButton::getName() const {
+    return name;
+}
 
-    // Evaluate the push button and update its state in the states map.
-    bool evaluate(std::unordered_map<std::string, bool>& states) override;
+void PushButton::setState(bool state) {
+    this->state = state;
+}
 
-    // Get the name of the push button.
-    std::string getName() const;
+void PushButton::connectTo(std::shared_ptr<RungElement> element) {
+    // Create a wire and add it to connections vector
+    auto wire = std::make_shared<Wire>(shared_from_this(), element);
+    connections.push_back(wire);
+}
 
-    // Set the state of the push button.
-    void setState(bool state);
-};
+void PushButton::disconnectFrom(std::shared_ptr<RungElement> element) {
+    // Remove all wires connected to the specified element
+    connections.erase(std::remove_if(connections.begin(), connections.end(),
+        [element](const std::shared_ptr<Wire>& wire) {
+            return wire->getEndElement() == element;
+        }), connections.end());
+}
 
-#endif /* PUSHBUTTON_H */
+bool PushButton::isConnectedTo(std::shared_ptr<RungElement> element) const {
+    // Check if any wire is connected to the specified element
+    for (const auto& wire : connections) {
+        if (wire->getEndElement() == element) {
+            return true;
+        }
+    }
+    return false;
+}
