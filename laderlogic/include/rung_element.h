@@ -10,18 +10,26 @@
 
 #include <string>
 #include <unordered_map>
+#include <memory>
+#include <vector>
+
+class Wire; // Forward declaration of Wire class
 
 class RungElement {
 public:
-    // Evaluate the rung element based on the current states.
     virtual bool evaluate(std::unordered_map<std::string, bool>& states) = 0;
-
-    // Get the name of the rung element.
     virtual std::string getName() const = 0;
-
-    // Virtual destructor for proper polymorphic behavior.
     virtual ~RungElement() = default;
+
+    // Methods for managing connections
+    virtual void connectTo(std::shared_ptr<RungElement> element);
+    virtual void disconnectFrom(std::shared_ptr<RungElement> element);
+    virtual bool isConnectedTo(std::shared_ptr<RungElement> element) const;
+
+protected:
+    std::vector<std::shared_ptr<Wire>> connections; // Vector to store connections
 };
 
 #endif // RUNG_ELEMENT_H
+
 
