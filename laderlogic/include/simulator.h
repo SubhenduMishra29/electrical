@@ -10,7 +10,11 @@
 
 #include <unordered_map>
 #include <vector>
+#include <memory>
 #include "rung.h"
+#include "pushbutton.h"
+#include "contact.h"
+#include "coil.h"
 
 class Simulator {
 private:
@@ -21,7 +25,7 @@ private:
 public:
     void setInput(const std::string& name, bool state);
     bool getOutput(const std::string& name);
-    void addRung(Rung rung);
+    void addRung(const Rung& rung);
     void simulate();
     std::unordered_map<std::string, bool> getOutputStates() const;
 };
