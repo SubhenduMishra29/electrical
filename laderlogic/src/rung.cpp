@@ -8,33 +8,41 @@
 #include "rung.h"
 #include "rung_submodule.h"
 
-void Rung::addElement(std::shared_ptr<RungElement> element) {
-    elements.push_back(element);
+
+void Rung::addRail() {
+    rails.emplace_back();
 }
 
-void Rung::addSubmodule(std::shared_ptr<RungSubmodule> submodule) {
-    submodules.push_back(submodule);
+void Rung::addElementToRail(std::shared_ptr<RungElement> element, size_t railIndex) {
+    if (railIndex < rails.size()) {
+        rails[railIndex].push_back(element);
+    }
 }
 
 bool Rung::evaluate(std::unordered_map<std::string, bool>& states) {
-    for (const auto& element : elements) {
-        if (!element->evaluate(states)) {
+    // Your existing evaluation logic here
+}
+
+bool Rung::checkContinuity() {
+    // Check continuity in each rail
+    for (const auto& rail : rails) {
+        // Check continuity within the rail
+        for (size_t i = 0; i < rail.size() - 1; ++i) {
+            if (!rail[i]->isConnectedTo(rail[i + 1])) {
+                // Discontinuity found
+                return false;
+            }
+        }
+
+        // Check if the rail terminates correctly
+        if (!rail.empty() && rail.back()->isTerminatingElement()) {
+            // Rail terminates correctly
+        } else {
+            // Rail does not terminate correctly
             return false;
         }
     }
-    for (const auto& submodule : submodules) {
-        if (!submodule->evaluate(states)) {
-            return false;
-        }
-    }
+
+    // Continuity maintained in all rails and all rails terminate correctly
     return true;
 }
-
-std::vector<std::shared_ptr<RungElement>>& Rung::getElements() {
-    return elements;
-}
-
-std::vector<std::shared_ptr<RungSubmodule>>& Rung::getSubmodules() {
-    return submodules;
-}
-
