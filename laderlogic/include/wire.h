@@ -1,4 +1,10 @@
-// wire.h
+/*
+ * File: wire.h
+ * Author: Subhendu Mishra
+ * Description: Declaration of the Wire class representing a connection between rung elements.
+ * License: GPL (General Public License)
+ */
+
 #ifndef WIRE_H
 #define WIRE_H
 
