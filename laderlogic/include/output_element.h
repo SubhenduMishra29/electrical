@@ -1,8 +1,8 @@
 /*
  * File: output_element.h
  * Author: Subhendu Mishra
- * Description: Declaration of OutputElement class representing an output element in ladder logic programming.
- * License: [License Type]
+ * Description: Declaration of the OutputElement class representing an output element in ladder logic programming.
+ * License: GPL (General Public License)
  */
 
 #ifndef OUTPUT_ELEMENT_H
@@ -32,4 +32,3 @@ public:
 };
 
 #endif // OUTPUT_ELEMENT_H
-
