@@ -1,10 +1,10 @@
 /*
  * File: rung.h
  * Author: Subhendu Mishra
- * Description: Declaration of Rung class for representing a ladder logic rung.
+ * Description: Declaration of the Rung class for representing a ladder logic rung.
  * License: GPL (General Public License)
  */
-// rung.h
+
 #ifndef RUNG_H
 #define RUNG_H
 
