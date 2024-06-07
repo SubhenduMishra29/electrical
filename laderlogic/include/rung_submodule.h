@@ -1,7 +1,7 @@
 /*
  * File: rung_submodule.h
  * Author: Subhendu Mishra
- * Description: Declaration of RungSubmodule class for representing a submodule in a ladder logic rung.
+ * Description: Declaration of the RungSubmodule class for representing a submodule in a ladder logic rung.
  * License: GPL (General Public License)
  */
 
