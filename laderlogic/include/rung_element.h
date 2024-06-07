@@ -1,7 +1,7 @@
 /*
  * File: rung_element.h
  * Author: Subhendu Mishra
- * Description: Declaration of RungElement class, the base class for elements in a ladder logic rung.
+ * Description: Declaration of the RungElement class, the base class for elements in a ladder logic rung.
  * License: GPL (General Public License)
  */
 
@@ -31,5 +31,4 @@ protected:
 };
 
 #endif // RUNG_ELEMENT_H
-
 
