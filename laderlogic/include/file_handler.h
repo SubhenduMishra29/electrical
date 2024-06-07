@@ -1,3 +1,10 @@
+/*
+ * File: file_handler.h
+ * Author: Subhendu Mishra
+ * Description: Declaration of the FileHandler class for file handling operations.
+ * License: GPL (General Public License)
+ */
+
 #ifndef FILE_HANDLER_H
 #define FILE_HANDLER_H
 
@@ -15,3 +22,4 @@ public:
 };
 
 #endif // FILE_HANDLER_H
+
