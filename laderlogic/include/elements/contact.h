@@ -1,4 +1,10 @@
-// contact.h
+/*
+ * File: contact.h
+ * Author: Subhendu Mishra
+ * Description: Declaration of the Contact class representing a contact element in ladder logic programming.
+ * License: GPL (General Public License)
+ */
+
 #ifndef CONTACT_H
 #define CONTACT_H
 
@@ -17,8 +23,13 @@ private:
     std::vector<std::shared_ptr<Wire>> connections; // Vector to store connections
 
 public:
+    // Constructor initializes the contact element with a name and whether it is normally open or not.
     Contact(std::string name, bool normallyOpen);
+
+    // Evaluate the contact element based on the current states.
     bool evaluate(std::unordered_map<std::string, bool>& states) override;
+
+    // Get the name of the contact element.
     std::string getName() const override;
 
     // Methods for managing connections
@@ -28,4 +39,3 @@ public:
 };
 
 #endif // CONTACT_H
-
