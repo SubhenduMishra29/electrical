@@ -1,7 +1,7 @@
 /*
  * File: logic_element.h
  * Author: Subhendu Mishra
- * Description: Declaration of LogicElement class representing a logical element in ladder logic programming.
+ * Description: Declaration of the LogicElement class representing a logical element in ladder logic programming.
  * License: GPL (General Public License)
  */
 
@@ -28,3 +28,4 @@ public:
 };
 
 #endif // LOGIC_ELEMENT_H
+
