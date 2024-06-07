@@ -1,8 +1,8 @@
 /*
  * File: timer_element.h
  * Author: Subhendu Mishra
- * Description: Declaration of TimerElement class representing a timer element in ladder logic programming.
- * License: [License Type]
+ * Description: Declaration of the TimerElement class representing a timer element in ladder logic programming.
+ * License: GPL (General Public License)
  */
 
 #ifndef TIMER_ELEMENT_H
