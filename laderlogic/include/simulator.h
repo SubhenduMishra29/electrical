@@ -1,7 +1,7 @@
 /*
  * File: simulator.h
  * Author: Subhendu Mishra
- * Description: Declaration of Simulator class for simulating ladder logic programs.
+ * Description: Declaration of the Simulator class for simulating ladder logic programs.
  * License: GPL (General Public License)
  */
 
