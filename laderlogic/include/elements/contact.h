@@ -15,12 +15,14 @@
 #include <memory>
 
 class Wire; // Forward declaration of Wire class
+class CoilElement; // Forward declaration of CoilElement class
 
 class Contact : public RungElement {
 private:
     std::string name;
     bool normallyOpen;
     std::vector<std::shared_ptr<Wire>> connections; // Vector to store connections
+    std::shared_ptr<CoilElement> linkedCoil; // Pointer to the linked coil element
 
 public:
     // Constructor initializes the contact element with a name and whether it is normally open or not.
@@ -36,6 +38,9 @@ public:
     void connectTo(std::shared_ptr<RungElement> element) override;
     void disconnectFrom(std::shared_ptr<RungElement> element) override;
     bool isConnectedTo(std::shared_ptr<RungElement> element) const override;
+
+    // Link the contact to a coil element
+    void linkToCoil(std::shared_ptr<CoilElement> coil);
 };
 
 #endif // CONTACT_H
