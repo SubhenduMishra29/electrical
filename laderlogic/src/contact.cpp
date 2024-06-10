@@ -3,9 +3,9 @@
 // Description: Implementation of the Contact class representing a contact element in ladder logic programming.
 // License: GPL (General Public License)
 
-// contact.cpp
 #include "contact.h"
 #include "wire.h" // Include Wire class header
+#include "coil_element.h" // Include CoilElement class header
 
 Contact::Contact(std::string name, bool normallyOpen) : name(name), normallyOpen(normallyOpen) {}
 
@@ -44,4 +44,10 @@ bool Contact::isConnectedTo(std::shared_ptr<RungElement> element) const {
         }
     }
     return false;
+}
+
+void Contact::linkToCoil(std::shared_ptr<CoilElement> coil) {
+    linkedCoil = coil;
+    // Optionally, you can also connect this contact to the coil
+    connectTo(coil);
 }
