@@ -5,7 +5,7 @@
 
 #include "contact.h"
 #include "wire.h" // Include Wire class header
-#include "coil_element.h" // Include CoilElement class header
+#include "coil.h" // Include Coil class header
 
 Contact::Contact(std::string name, bool normallyOpen) : name(name), normallyOpen(normallyOpen) {}
 
@@ -48,8 +48,12 @@ bool Contact::isConnectedTo(std::shared_ptr<RungElement> element) const {
     return false;
 }
 
-void Contact::linkToCoil(std::shared_ptr<CoilElement> coil) {
+void Contact::linkToCoil(std::shared_ptr<Coil> coil) {
     linkedCoil = coil;
     // Optionally, you can also connect this contact to the coil
     connectTo(coil);
+}
+
+bool Contact::isLinkedToCoil() const {
+    return linkedCoil != nullptr;
 }
