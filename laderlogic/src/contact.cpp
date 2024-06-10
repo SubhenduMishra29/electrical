@@ -23,9 +23,11 @@ std::string Contact::getName() const {
 }
 
 void Contact::connectTo(std::shared_ptr<RungElement> element) {
-    // Create a wire and add it to connections vector
-    auto wire = std::make_shared<Wire>(shared_from_this(), element);
-    connections.push_back(wire);
+    // Create a wire only if not already connected to the same element
+    if (!isConnectedTo(element)) {
+        auto wire = std::make_shared<Wire>(shared_from_this(), element);
+        connections.push_back(wire);
+    }
 }
 
 void Contact::disconnectFrom(std::shared_ptr<RungElement> element) {
