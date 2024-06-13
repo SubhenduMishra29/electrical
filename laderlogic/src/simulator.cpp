@@ -1,52 +1,56 @@
 /*
  * File: simulator.cpp
  * Author: Subhendu Mishra
- * Description: Implementation of Simulator class for simulating ladder logic programs.
+ * Description: Implementation of the Simulator class for simulating ladder logic programs.
  * License: GPL (General Public License)
  */
 
 #include "simulator.h"
-#include "pushbutton.h"
-#include "contact.h"
-#include "coil.h"
-#include "bulb.h"
-#include "logic_element.h"
-#include "rung_submodule.h"
-#include <iostream>
-#include <fstream>
-#include <sstream>
+#include "ladder_parser.h"
+#include "parser.h"
 
+// Constructor initializes the simulator with a ladder logic file
+Simulator::Simulator(const std::string& filename) {
+    // Parse ladder logic file to initialize input states
+    input_states = LadderParser::parseLadderFile(filename);
+
+    // Parse ladder logic file to initialize ladder logic structure
+    ladder_logic = Parser::parseLadderFile(filename, input_states);
+}
+
+// Set an input state
 void Simulator::setInput(const std::string& name, bool state) {
     input_states[name] = state;
 }
 
+// Get an output state
 bool Simulator::getOutput(const std::string& name) {
-    auto it = output_states.find(name);
-    return (it != output_states.end()) ? it->second : false;
+    if (output_states.find(name) != output_states.end()) {
+        return output_states[name];
+    }
+    return false;
 }
 
-void Simulator::addRung(Rung rung) {
-    ladder_logic.push_back(rung);
-}
-
+// Run the simulation
 void Simulator::simulate() {
-    std::unordered_map<std::string, bool> updated_output_states = output_states;
+    output_states.clear(); // Clear previous output states
 
-    for (auto& rung : ladder_logic) {
-        bool result = rung.evaluate(input_states);
+    std::unordered_map<std::string, bool> states = input_states; // Copy input states for simulation
 
-        for (auto& element : rung.getElements()) {
-            if (auto coil = std::dynamic_pointer_cast<Coil>(element)) {
-                updated_output_states[coil->getName()] = result;
-            } else if (auto bulb = std::dynamic_pointer_cast<Bulb>(element)) {
-                updated_output_states[bulb->getName()] = result;
+    // Evaluate ladder logic
+    ladder_logic->evaluate(states);
+
+    // Collect output states from ladder logic elements
+    for (const auto& rung : ladder_logic->getRungs()) {
+        for (const auto& element : rung->getElements()) {
+            if (element->isTerminatingElement()) {
+                output_states[element->getName()] = states[element->getName()];
             }
         }
     }
-
-    output_states = updated_output_states;
 }
 
+// Get the output states map
 std::unordered_map<std::string, bool> Simulator::getOutputStates() const {
     return output_states;
 }

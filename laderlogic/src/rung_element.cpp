@@ -1,24 +1,28 @@
-// rung_element.cpp
+/*
+ * File: rung_element.cpp
+ * Author: Subhendu Mishra
+ * Description: Implementation of the RungElement class, the base class for elements in a ladder logic rung.
+ * License: GPL (General Public License)
+ */
+/*
+ * File: rung_element.cpp
+ * Author: Subhendu Mishra
+ * Description: Implementation of the RungElement class.
+ * License: GPL (General Public License)
+ */
+
 #include "rung_element.h"
+#include "wire.h"
 
+// Connect this element to another element
 void RungElement::connectTo(std::shared_ptr<RungElement> element) {
-    // Create a wire and add it to connections vector
-    auto wire = std::make_shared<Wire>(shared_from_this(), element);
-    connections.push_back(wire);
+    connections.push_back(std::make_shared<Wire>(shared_from_this(), element));
 }
 
-void RungElement::disconnectFrom(std::shared_ptr<RungElement> element) {
-    // Remove all wires connected to the specified element
-    connections.erase(std::remove_if(connections.begin(), connections.end(),
-        [element](const std::shared_ptr<Wire>& wire) {
-            return wire->getEndElement() == element;
-        }), connections.end());
-}
-
+// Check if this element is connected to another element
 bool RungElement::isConnectedTo(std::shared_ptr<RungElement> element) const {
-    // Check if any wire is connected to the specified element
-    for (const auto& wire : connections) {
-        if (wire->getEndElement() == element) {
+    for (const auto& connection : connections) {
+        if (connection->getEndElement() == element) {
             return true;
         }
     }

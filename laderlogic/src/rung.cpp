@@ -6,43 +6,54 @@
  */
 
 #include "rung.h"
-#include "rung_submodule.h"
 
-
-void Rung::addRail() {
-    rails.emplace_back();
+// Add an element directly to the rung
+void Rung::addElement(std::shared_ptr<RungElement> element) {
+    elements.push_back(element);
 }
 
-void Rung::addElementToRail(std::shared_ptr<RungElement> element, size_t railIndex) {
-    if (railIndex < rails.size()) {
-        rails[railIndex].push_back(element);
-    }
+// Add a submodule to the rung
+void Rung::addSubmodule(std::shared_ptr<RungSubmodule> submodule) {
+    submodules.push_back(submodule);
 }
 
+// Evaluate the rung based on the current states
 bool Rung::evaluate(std::unordered_map<std::string, bool>& states) {
-    // Your existing evaluation logic here
+    bool result = true;
+
+    // Evaluate elements directly in the rung
+    for (const auto& element : elements) {
+        result &= element->evaluate(states);
+    }
+
+    // Evaluate submodules within the rung
+    for (const auto& submodule : submodules) {
+        result &= submodule->evaluate(states);
+    }
+
+    return result;
 }
 
+// Check continuity of the rung
 bool Rung::checkContinuity() {
-    // Check continuity in each rail
-    for (const auto& rail : rails) {
-        // Check continuity within the rail
-        for (size_t i = 0; i < rail.size() - 1; ++i) {
-            if (!rail[i]->isConnectedTo(rail[i + 1])) {
-                // Discontinuity found
-                return false;
-            }
-        }
-
-        // Check if the rail terminates correctly
-        if (!rail.empty() && rail.back()->isTerminatingElement()) {
-            // Rail terminates correctly
-        } else {
-            // Rail does not terminate correctly
+    // Check continuity within the elements directly in the rung
+    for (size_t i = 0; i < elements.size() - 1; ++i) {
+        if (!elements[i]->isConnectedTo(elements[i + 1])) {
             return false;
         }
     }
 
-    // Continuity maintained in all rails and all rails terminate correctly
-    return true;
+    // Check continuity within submodules
+    for (const auto& submodule : submodules) {
+        if (!submodule->evaluate(states)) {
+            return false;
+        }
+    }
+
+    // Check if the rung terminates correctly
+    if (!elements.empty() && elements.back()->isTerminatingElement()) {
+        return true;
+    }
+
+    return false;
 }

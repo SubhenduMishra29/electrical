@@ -12,19 +12,19 @@
 #include <memory>
 #include <unordered_map>
 #include "rung_element.h"
-#include "wire.h" // Include Wire class
+#include "rung_submodule.h"
 
 class Rung {
 private:
-    std::vector<std::vector<std::shared_ptr<RungElement>>> rails; // Vector of rails
-    std::vector<std::shared_ptr<Wire>> wires; // Vector to store wires
+    std::vector<std::shared_ptr<RungElement>> elements;             // Vector to store elements directly in the rung
+    std::vector<std::shared_ptr<RungSubmodule>> submodules;         // Vector to store submodules
 
 public:
-    void addRail(); // Add a new rail
-    void addElementToRail(std::shared_ptr<RungElement> element, size_t railIndex); // Add an element to a specific rail
-    void connectElements(std::shared_ptr<RungElement> startElement, std::shared_ptr<RungElement> endElement); // Connect two rung elements with a wire
-    bool evaluate(std::unordered_map<std::string, bool>& states);
-    bool checkContinuity();
+    void addElement(std::shared_ptr<RungElement> element);          // Add an element directly to the rung
+    void addSubmodule(std::shared_ptr<RungSubmodule> submodule);    // Add a submodule to the rung
+    bool evaluate(std::unordered_map<std::string, bool>& states);   // Evaluate the rung based on the current states
+
+    // Additional methods for rung operations can be added here
 };
 
 #endif // RUNG_H

@@ -15,7 +15,7 @@
 
 class RungSubmodule {
 private:
-    std::vector<std::shared_ptr<RungElement>> elements;
+    std::vector<std::shared_ptr<RungElement>> elements; // Vector to store elements of the submodule
 
 public:
     // Add an element to the submodule.
@@ -28,4 +28,4 @@ public:
     std::vector<std::shared_ptr<RungElement>>& getElements();
 };
 
-#endif /* RUNG_SUBMODULE_H */
+#endif // RUNG_SUBMODULE_H
