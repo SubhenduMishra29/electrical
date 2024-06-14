@@ -1,3 +1,4 @@
+// powerflow.cpp
 #include "powerflow.h"
 #include <iostream>
 #include <cmath>
@@ -9,8 +10,8 @@ void solvePowerFlow(std::vector<Bus>& buses, const std::vector<Line>& lines) {
     bool converged = false;
 
     while (!converged && iteration < maxIterations) {
-        // Placeholder for calculating mismatches and updating bus voltages
-        // Implement this part according to your power flow equations
+        // Placeholder: Calculate mismatches and Jacobian matrix
+        // Implement this part according to power flow equations
 
         // Update bus voltages using Newton-Raphson iteration formula
         for (size_t i = 0; i < buses.size(); ++i) {
