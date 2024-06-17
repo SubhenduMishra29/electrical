@@ -3,7 +3,7 @@
 // Constructor
 Bus::Bus(int id, const std::string& name, BusType type)
     : id(id), name(name), type(type), voltageMagnitude(1.0), voltageAngle(0.0),
-      realPowerInjection(0.0), reactivePowerInjection(0.0) {}
+      realPowerInjection(0.0), reactivePowerInjection(0.0), isSlack(false) {}
 
 // Getters
 int Bus::getId() const {
@@ -73,4 +73,26 @@ void Bus::addGenerator(const Generator& generator) {
 
 void Bus::addLoad(const Load& load) {
     loads.push_back(load);
+}
+
+// Function to calculate total load
+std::pair<double, double> Bus::calculateTotalLoad() const {
+    double totalActivePower = 0.0;
+    double totalReactivePower = 0.0;
+    for (const auto& load : loads) {
+        totalActivePower += load.activePowerDemand;
+        totalReactivePower += load.reactivePowerDemand;
+    }
+    return {totalActivePower, totalReactivePower};
+}
+
+// Function to calculate total generation
+std::pair<double, double> Bus::calculateTotalGeneration() const {
+    double totalActivePower = 0.0;
+    double totalReactivePower = 0.0;
+    for (const auto& gen : generators) {
+        totalActivePower += gen.activePower;
+        totalReactivePower += gen.reactivePower;
+    }
+    return {totalActivePower, totalReactivePower};
 }
