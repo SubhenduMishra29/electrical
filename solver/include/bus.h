@@ -47,6 +47,13 @@ public:
     void addGenerator(const Generator& generator);
     void addLoad(const Load& load);
 
+    // Function to calculate total load
+    std::pair<double, double> calculateTotalLoad() const;
+    // Function to calculate total generation
+    std::pair<double, double> calculateTotalGeneration() const;
+
+    bool isSlack;  // Flag indicating if it's a slack bus
+
 private:
     int id;                             // Bus ID
     std::string name;                   // Bus name or identifier
