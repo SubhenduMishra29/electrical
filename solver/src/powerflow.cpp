@@ -1,10 +1,9 @@
 #include "powerflow.h"
 #include "jacobian.h"
+#include "sld.h"
 #include <iostream>
 #include <cmath>
-#include <vector>
 
-// Struct to store power mismatches (P and Q)
 struct Mismatch {
     double P;
     double Q;
@@ -41,6 +40,7 @@ std::vector<Mismatch> calculateMismatches(const std::vector<Bus>& buses, const s
     for (size_t i = 0; i < buses.size(); ++i) {
         double totalGenP = 0.0;
         double totalGenQ = 0.0;
+
         for (const auto& gen : buses[i].getGenerators()) {
             totalGenP += gen.activePower;
             totalGenQ += gen.reactivePower;
@@ -48,9 +48,25 @@ std::vector<Mismatch> calculateMismatches(const std::vector<Bus>& buses, const s
 
         double totalLoadP = 0.0;
         double totalLoadQ = 0.0;
-        for (const auto& load : buses[i].getLoads()) {
-            totalLoadP += load.activePowerDemand;
-            totalLoadQ += load.reactivePowerDemand;
+
+        for (const auto& motor : buses[i].getMotorLoads()) {
+            // Assuming the motor load is represented in per unit
+            double activePower = motor.ratedPower * motor.powerFactor * motor.utilizationFactor;
+            double reactivePower = std::sqrt(1.0 - motor.powerFactor * motor.powerFactor) * activePower;
+            totalLoadP += activePower;
+            totalLoadQ += reactivePower;
+        }
+
+        for (const auto& staticLoad : buses[i].getStaticLoads()) {
+            // Assuming the static load is represented in per unit
+            totalLoadP += staticLoad.constantPower;
+            totalLoadQ += staticLoad.constantImpedance;
+        }
+
+        for (const auto& transformer : buses[i].getTransformerLoads()) {
+            // Assuming the transformer load is represented in per unit
+            totalLoadP += transformer.ratedPower;
+            totalLoadQ += transformer.impedanceVoltage;
         }
 
         mismatches[i].P += (totalGenP - totalLoadP);
@@ -61,7 +77,10 @@ std::vector<Mismatch> calculateMismatches(const std::vector<Bus>& buses, const s
 }
 
 // Function to solve power flow using Newton-Raphson method
-void solvePowerFlow(std::vector<Bus>& buses, const std::vector<Line>& lines) {
+void solvePowerFlow(SLD& sld) {
+    std::vector<Bus>& buses = sld.getBuses();
+    std::vector<Line>& lines = sld.getLines();
+
     const double tolerance = 1e-6;
     const int maxIterations = 50;
     int iteration = 0;
@@ -74,8 +93,8 @@ void solvePowerFlow(std::vector<Bus>& buses, const std::vector<Line>& lines) {
         // Calculate Jacobian matrix
         Jacobian J = calculateJacobian(buses, lines);
 
-        // Solve the linear system J * delta = -mismatches
-        // Placeholder: Implement a linear solver (e.g., Gaussian elimination) to solve for delta
+        // Placeholder: Solve the linear system J * delta = -mismatches
+        // Implement a linear solver (e.g., Gaussian elimination) to solve for delta
 
         // Update bus voltages using Newton-Raphson iteration formula
         for (size_t i = 0; i < buses.size(); ++i) {
