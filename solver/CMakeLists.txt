@@ -1,12 +1,15 @@
-cmake_minimum_required(VERSION 3.0)
+cmake_minimum_required(VERSION 3.10)
 project(PowerFlowSolver)
 
-# Set C++ standard to C++11
-set(CMAKE_CXX_STANDARD 11)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_STANDARD 14)
 
-# Add executable target
-add_executable(powerflow_solver main.cpp powerflow.cpp)
+include_directories(include)
 
-# Include header files directory
-target_include_directories(powerflow_solver PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+add_executable(PowerFlowSolver
+    src/bus.cpp
+    src/line.cpp
+    src/powerflow.cpp
+    src/jacobian.cpp
+    src/main.cpp
+)
+
