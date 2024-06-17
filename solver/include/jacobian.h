@@ -6,12 +6,13 @@
 #include "line.h"
 
 struct Jacobian {
-    std::vector<std::vector<double>> J11;
-    std::vector<std::vector<double>> J12;
-    std::vector<std::vector<double>> J21;
-    std::vector<std::vector<double>> J22;
+    std::vector<std::vector<double>> H; // dP/dTheta
+    std::vector<std::vector<double>> N; // dP/dV
+    std::vector<std::vector<double>> J; // dQ/dTheta
+    std::vector<std::vector<double>> L; // dQ/dV
 };
 
+// Function to calculate the Jacobian matrix
 Jacobian calculateJacobian(const std::vector<Bus>& buses, const std::vector<Line>& lines);
 
 #endif // JACOBIAN_H
