@@ -1,0 +1,17 @@
+- ProjectRoot/
+  - CMakeLists.txt
+  - src/
+    - main.cpp            // Your main program entry
+    - generator.h/cpp     // Header and source files for Generator class
+    - bus.h/cpp           // Header and source files for Bus class
+    - transmission_line.h/cpp // Header and source files for Transmission Line class
+    - power_system.h/cpp  // Header and source files for Power System class
+    - algorithms.h/cpp    // Header and source files for Algorithms
+    - input_parser.h/cpp  // Header and source files for Input Parsing utilities
+    - output_generator.h/cpp // Header and source files for Output Generation utilities
+    - user_interface.h/cpp   // Optional: Header and source files for User Interface
+  - data/
+    - network_config.txt  // Example input file
+  - tests/
+    - unit_tests.cpp      // Unit tests for individual components
+    - integration_tests.cpp // Integration tests for system behavior
