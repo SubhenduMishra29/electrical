@@ -1,15 +1,23 @@
 cmake_minimum_required(VERSION 3.10)
-project(PowerFlowSolver)
+project(PowerSystemSimulation)
 
-set(CMAKE_CXX_STANDARD 14)
+# Set C++ standard
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-include_directories(include)
+# Source files
+file(GLOB SOURCES "src/*.cpp")
+file(GLOB HEADERS "src/*.h")
 
-add_executable(PowerFlowSolver
-    src/bus.cpp
-    src/line.cpp
-    src/powerflow.cpp
-    src/jacobian.cpp
-    src/main.cpp
-)
+# Executable
+add_executable(${PROJECT_NAME} ${SOURCES})
 
+# Optional: Add libraries (if you create your own library)
+# add_subdirectory(path_to_your_library)
+
+# Optional: Link your library to the executable
+# target_link_libraries(${PROJECT_NAME} YourLibraryName)
+
+# Optional: Add testing
+enable_testing()
+add_subdirectory(tests)
