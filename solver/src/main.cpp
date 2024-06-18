@@ -1,23 +1,66 @@
-// main.cpp
-#include <iostream>
-#include <vector>
-#include "bus.h"
-#include "line.h"
-#include "powerflow.h"
+#include "PowerSystem.h"
 
 int main() {
-    std::vector<Bus> buses = {
-        {0, "Bus 1", 1.0, 0.0, true, {1, 2}, {{1.0, 1.0, 0.5, 0.2}, {0.8, 0.8, 0.3, 0.1}}}, // Slack bus with generators
-        {1, "Bus 2", 1.0, 0.0, false, {0}, {{0.6, 0.6, 0.3, 0.1}}},                         // Bus 2 with generator
-        {2, "Bus 3", 1.0, 0.0, false, {0}, {{0.8, 0.8, 0.4, 0.2}}}                          // Bus 3 with generator
-    };
+    PowerSystem ps;
+    ps.loadSLD("sld_file.txt");
 
-    std::vector<Line> lines = {
-        {0, 0, 1, 0.1}, // Line from bus 1 to bus 2 with some impedance
-        {1, 0, 2, 0.1}  // Line from bus 1 to bus 3 with some impedance
-    };
+    // List all buses
+    std::vector<Bus*> buses = ps.getBuses();
+    for (const auto& bus : buses) {
+        // Print or process each bus information
+    }
 
-    solvePowerFlow(buses, lines);
+    // List all transformers
+    std::vector<Transformer*> transformers = ps.getTransformers();
+    for (const auto& transformer : transformers) {
+        // Print or process each transformer information
+    }
+
+    // List all generators
+    std::vector<Generator*> generators = ps.getGenerators();
+    for (const auto& generator : generators) {
+        // Print or process each generator information
+    }
+
+    // List all loads
+    std::vector<Load*> loads = ps.getLoads();
+    for (const auto& load : loads) {
+        // Print or process each load information
+    }
+
+    // List all transmission lines
+    std::vector<TransmissionLine*> transmissionLines = ps.getTransmissionLines();
+    for (const auto& transmissionLine : transmissionLines) {
+        // Print or process each transmission line information
+    }
+
+    // List all circuit breakers
+    std::vector<CircuitBreaker*> circuitBreakers = ps.getCircuitBreakers();
+    for (const auto& circuitBreaker : circuitBreakers) {
+        // Print or process each circuit breaker information
+    }
+
+    // List all relays
+    std::vector<Relay*> relays = ps.getRelays();
+    for (const auto& relay : relays) {
+        // Print or process each relay information
+    }
+
+    // List all capacitors
+    std::vector<Capacitor*> capacitors = ps.getCapacitors();
+    for (const auto& capacitor : capacitors) {
+        // Print or process each capacitor information
+    }
+
+    // List all reactors
+    std::vector<Reactor*> reactors = ps.getReactors();
+    for (const auto& reactor : reactors) {
+        // Print or process each reactor information
+    }
+
+    // Get grid information
+    Grid* grid = ps.getGrid();
+    // Print or process grid information
 
     return 0;
 }
