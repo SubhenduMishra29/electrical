@@ -1,6 +1,6 @@
 ## Project Overview
 
-You’re building a power flow analysis system, which involves several components:
+We’re building a power flow analysis system, which involves several components:
 1. **Bus Class**: Represents the buses in the power system with properties and methods for voltage, power injections, connected buses, generators, and loads.
 2. **Line Structure**: Represents transmission lines connecting the buses.
 3. **Jacobian Structure**: Represents the Jacobian matrix used in the Newton-Raphson method for solving power flow.
