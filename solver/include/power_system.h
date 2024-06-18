@@ -5,11 +5,13 @@
 #include <string>
 #include "bus.h"
 #include "transformer.h"
+#include "grid.h" // Include Grid class header
 
 class PowerSystem {
 private:
     std::vector<Bus*> buses;
     std::vector<Transformer*> transformers;
+    Grid* grid; // Pointer to Grid instance
 
 public:
     PowerSystem();
