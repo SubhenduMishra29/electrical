@@ -1,51 +1,66 @@
 #include "PowerSystem.h"
 
-// Constructor
-PowerSystem::PowerSystem() : grid(nullptr) {}
+int main() {
+    PowerSystem ps;
+    ps.loadSLD("sld_file.txt");
 
-// Destructor
-PowerSystem::~PowerSystem() {
-    // Clean up dynamically allocated memory
-    for (auto bus : buses) {
-        delete bus;
+    // List all buses
+    std::vector<Bus*> buses = ps.getBuses();
+    for (const auto& bus : buses) {
+        // Print or process each bus information
     }
-    for (auto transformer : transformers) {
-        delete transformer;
+
+    // List all transformers
+    std::vector<Transformer*> transformers = ps.getTransformers();
+    for (const auto& transformer : transformers) {
+        // Print or process each transformer information
     }
-    delete grid;
-}
 
-// Load SLD from file
-void PowerSystem::loadSLD(const std::string& filename) {
-    // Logic to read SLD from file and populate buses, transformers, and grid
-}
+    // List all generators
+    std::vector<Generator*> generators = ps.getGenerators();
+    for (const auto& generator : generators) {
+        // Print or process each generator information
+    }
 
-// Run simulation
-void PowerSystem::runSimulation() {
-    // Logic to run a general simulation
-}
+    // List all loads
+    std::vector<Load*> loads = ps.getLoads();
+    for (const auto& load : loads) {
+        // Print or process each load information
+    }
 
-// Perform Load Flow analysis
-void PowerSystem::performLoadFlow() {
-    // Logic to perform load flow analysis
-}
+    // List all transmission lines
+    std::vector<TransmissionLine*> transmissionLines = ps.getTransmissionLines();
+    for (const auto& transmissionLine : transmissionLines) {
+        // Print or process each transmission line information
+    }
 
-// Calculate Voltage Drop
-void PowerSystem::calculateVoltageDrop() {
-    // Logic to calculate voltage drop
-}
+    // List all circuit breakers
+    std::vector<CircuitBreaker*> circuitBreakers = ps.getCircuitBreakers();
+    for (const auto& circuitBreaker : circuitBreakers) {
+        // Print or process each circuit breaker information
+    }
 
-// Perform Short Circuit analysis
-void PowerSystem::performShortCircuitAnalysis() {
-    // Logic to perform short circuit analysis
-}
+    // List all relays
+    std::vector<Relay*> relays = ps.getRelays();
+    for (const auto& relay : relays) {
+        // Print or process each relay information
+    }
 
-// Perform DC Short Circuit analysis
-void PowerSystem::performDCShortCircuitAnalysis() {
-    // Logic to perform DC short circuit analysis
-}
+    // List all capacitors
+    std::vector<Capacitor*> capacitors = ps.getCapacitors();
+    for (const auto& capacitor : capacitors) {
+        // Print or process each capacitor information
+    }
 
-// Perform DC Load Flow analysis
-void PowerSystem::performDCLoadFlow() {
-    // Logic to perform DC load flow analysis
+    // List all reactors
+    std::vector<Reactor*> reactors = ps.getReactors();
+    for (const auto& reactor : reactors) {
+        // Print or process each reactor information
+    }
+
+    // Get grid information
+    Grid* grid = ps.getGrid();
+    // Print or process grid information
+
+    return 0;
 }
