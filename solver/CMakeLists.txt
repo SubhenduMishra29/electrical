@@ -7,7 +7,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Source files
 file(GLOB SOURCES "src/*.cpp")
-file(GLOB HEADERS "src/*.h")
+file(GLOB HEADERS "include/*.h")
 
 # Executable
 add_executable(${PROJECT_NAME} ${SOURCES})
