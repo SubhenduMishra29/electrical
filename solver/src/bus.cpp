@@ -29,6 +29,36 @@ void Bus::setVoltage(double voltage) {
 }
 
 void Bus::calculatePowerFlow() {
-    // Implement power flow calculations based on connected generators, loads, and transformers
-    // Consider transformer effects on voltage and power flow
+    double totalGeneration = 0.0;
+    double totalConsumption = 0.0;
+
+    // Calculate total power generation from connected generators
+    for (auto generator : generators) {
+        totalGeneration += generator->getCurrentOutput();
+    }
+
+    // Calculate total power consumption from connected loads
+    for (auto load : loads) {
+        totalConsumption += load->getPowerConsumption();
+    }
+
+    // Adjust voltage for each transformer connected to this bus
+    for (auto transformer : transformers) {
+        transformer->applyTurnsRatio();
+    }
+
+    // Implement power flow equations (simplified for illustration)
+    // For steady-state analysis, totalGeneration should equal totalConsumption
+    // Adjust voltage and power flow based on system specifics
+
+    // Update bus voltage (simplified example)
+    // Example: average voltage of all connected transformers
+    double totalVoltage = 0.0;
+    for (auto transformer : transformers) {
+        totalVoltage += transformer->getSecondaryBus()->getVoltage(); // Assuming getSecondaryBus() method exists in Transformer class
+    }
+    if (!transformers.empty()) {
+        voltage = totalVoltage / transformers.size();
+    }
 }
+
