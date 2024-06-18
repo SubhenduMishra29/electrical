@@ -1,0 +1,4 @@
+BUS, Bus1, 132
+GENERATOR, Gen1, Bus1, 100, Thermal
+LOAD, Load1, Bus1, 50, Residential
+TRANSFORMER, Transformer1, Bus1, Bus2, 2.0
