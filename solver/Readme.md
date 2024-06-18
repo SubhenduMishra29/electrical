@@ -19,6 +19,6 @@ We’re building a power flow analysis system, which involves several components
 
 ## Points to Clarify
 
-1. **Existing Code**: What parts of the code have you already implemented beyond what's shown above?
-2. **Specific Questions or Issues**: Are there specific areas where you need help or clarification?
+1. **Existing Code**: What parts of the code have we already implemented beyond what's shown above?
+2. **Specific Questions or Issues**: Are there specific areas where we need help or clarification?
 3. **Desired Functionality**: Any additional functionality or specific requirements for the power flow analysis?
