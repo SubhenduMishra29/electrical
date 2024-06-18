@@ -13,6 +13,12 @@ void PowerSystem::addTransformer(Transformer* transformer) {
 }
 
 void PowerSystem::runSimulation() {
-    // Implement simulation logic for the entire power system
-    // Include transformer effects in the power flow analysis
+    // Iterate through each bus in the power system
+    for (auto bus : buses) {
+        // Calculate power flow for the current bus
+        bus->calculatePowerFlow();
+    }
+
+    // Additional logic for updating system state, outputting results, etc.
+    // This could include updating GUI, logging data, generating reports, etc.
 }
