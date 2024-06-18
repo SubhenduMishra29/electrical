@@ -1,66 +1,142 @@
 #include "PowerSystem.h"
+#include <iostream>
+#include <fstream>
 
-int main() {
-    PowerSystem ps;
-    ps.loadSLD("sld_file.txt");
+PowerSystem::PowerSystem() {
+    // Constructor
+    grid = new Grid(); // Assuming Grid is a class that needs initialization
+}
 
-    // List all buses
-    std::vector<Bus*> buses = ps.getBuses();
-    for (const auto& bus : buses) {
-        // Print or process each bus information
+PowerSystem::~PowerSystem() {
+    // Destructor for cleanup
+    for (auto bus : buses) {
+        delete bus;
+    }
+    for (auto transformer : transformers) {
+        delete transformer;
+    }
+    for (auto generator : generators) {
+        delete generator;
+    }
+    for (auto load : loads) {
+        delete load;
+    }
+    for (auto line : transmissionLines) {
+        delete line;
+    }
+    for (auto breaker : circuitBreakers) {
+        delete breaker;
+    }
+    for (auto relay : relays) {
+        delete relay;
+    }
+    for (auto capacitor : capacitors) {
+        delete capacitor;
+    }
+    for (auto reactor : reactors) {
+        delete reactor;
+    }
+    delete grid;
+}
+
+void PowerSystem::loadSLD(const std::string& filename) {
+    // Method to load SLD from file
+    std::ifstream file(filename);
+    if (!file) {
+        std::cerr << "Error: Unable to open file " << filename << std::endl;
+        return;
     }
 
-    // List all transformers
-    std::vector<Transformer*> transformers = ps.getTransformers();
-    for (const auto& transformer : transformers) {
-        // Print or process each transformer information
-    }
+    // Implement loading logic here based on your file format
+    // Example pseudocode:
+    // Read buses, transformers, generators, loads, transmission lines, etc.
+    // Initialize corresponding objects and populate vectors
 
-    // List all generators
-    std::vector<Generator*> generators = ps.getGenerators();
-    for (const auto& generator : generators) {
-        // Print or process each generator information
-    }
+    file.close();
+}
 
-    // List all loads
-    std::vector<Load*> loads = ps.getLoads();
-    for (const auto& load : loads) {
-        // Print or process each load information
-    }
+void PowerSystem::runSimulation() {
+    // Placeholder for simulation logic
+    std::cout << "Running power system simulation..." << std::endl;
+    // Implement simulation logic here
+}
 
-    // List all transmission lines
-    std::vector<TransmissionLine*> transmissionLines = ps.getTransmissionLines();
-    for (const auto& transmissionLine : transmissionLines) {
-        // Print or process each transmission line information
-    }
+void PowerSystem::performLoadFlow() {
+    // Method to perform Load Flow analysis
+    std::cout << "Performing Load Flow analysis..." << std::endl;
+    // Implement Load Flow analysis logic here
+}
 
-    // List all circuit breakers
-    std::vector<CircuitBreaker*> circuitBreakers = ps.getCircuitBreakers();
-    for (const auto& circuitBreaker : circuitBreakers) {
-        // Print or process each circuit breaker information
-    }
+void PowerSystem::calculateVoltageDrop() {
+    // Method to calculate Voltage Drop
+    std::cout << "Calculating Voltage Drop..." << std::endl;
+    // Implement Voltage Drop calculation logic here
+}
 
-    // List all relays
-    std::vector<Relay*> relays = ps.getRelays();
-    for (const auto& relay : relays) {
-        // Print or process each relay information
-    }
+void PowerSystem::performShortCircuitAnalysis() {
+    // Method to perform Short Circuit analysis
+    std::cout << "Performing Short Circuit analysis..." << std::endl;
+    // Implement Short Circuit analysis logic here
+}
 
-    // List all capacitors
-    std::vector<Capacitor*> capacitors = ps.getCapacitors();
-    for (const auto& capacitor : capacitors) {
-        // Print or process each capacitor information
-    }
+void PowerSystem::performDCShortCircuitAnalysis() {
+    // Method to perform DC Short Circuit analysis
+    std::cout << "Performing DC Short Circuit analysis..." << std::endl;
+    // Implement DC Short Circuit analysis logic here
+}
 
-    // List all reactors
-    std::vector<Reactor*> reactors = ps.getReactors();
-    for (const auto& reactor : reactors) {
-        // Print or process each reactor information
-    }
+void PowerSystem::performDCLoadFlow() {
+    // Method to perform DC Load Flow analysis
+    std::cout << "Performing DC Load Flow analysis..." << std::endl;
+    // Implement DC Load Flow analysis logic here
+}
 
-    // Get grid information
-    Grid* grid = ps.getGrid();
-    // Print or process grid information
+std::vector<Bus*> PowerSystem::getBuses() const {
+    // Method to get the list of buses
+    return buses;
+}
 
-    return 0;
+std::vector<Transformer*> PowerSystem::getTransformers() const {
+    // Method to get the list of transformers
+    return transformers;
+}
+
+std::vector<Generator*> PowerSystem::getGenerators() const {
+    // Method to get the list of generators
+    return generators;
+}
+
+std::vector<Load*> PowerSystem::getLoads() const {
+    // Method to get the list of loads
+    return loads;
+}
+
+std::vector<TransmissionLine*> PowerSystem::getTransmissionLines() const {
+    // Method to get the list of transmission lines
+    return transmissionLines;
+}
+
+std::vector<CircuitBreaker*> PowerSystem::getCircuitBreakers() const {
+    // Method to get the list of circuit breakers
+    return circuitBreakers;
+}
+
+std::vector<Relay*> PowerSystem::getRelays() const {
+    // Method to get the list of relays
+    return relays;
+}
+
+std::vector<Capacitor*> PowerSystem::getCapacitors() const {
+    // Method to get the list of capacitors
+    return capacitors;
+}
+
+std::vector<Reactor*> PowerSystem::getReactors() const {
+    // Method to get the list of reactors
+    return reactors;
+}
+
+Grid* PowerSystem::getGrid() const {
+    // Method to get the grid information
+    return grid;
 }
