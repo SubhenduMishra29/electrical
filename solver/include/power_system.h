@@ -5,19 +5,19 @@
 #include <string>
 #include "bus.h"
 #include "transformer.h"
-#include "grid.h" // Include Grid class header
+#include "grid.h"
 
 class PowerSystem {
 private:
     std::vector<Bus*> buses;
     std::vector<Transformer*> transformers;
-    Grid* grid; // Pointer to Grid instance
+    Grid* grid;
 
 public:
     PowerSystem();
+    ~PowerSystem(); // Destructor for cleanup
     void loadSLD(const std::string& filename); // Method to load SLD from file
     void runSimulation();
-    // Add methods as needed for system management
 };
 
 #endif // POWER_SYSTEM_H
