@@ -1,5 +1,3 @@
-// power_system.cpp
-
 #include "power_system.h"
 
 PowerSystem::PowerSystem() {
@@ -10,7 +8,11 @@ void PowerSystem::addBus(Bus* bus) {
     buses.push_back(bus);
 }
 
+void PowerSystem::addTransformer(Transformer* transformer) {
+    transformers.push_back(transformer);
+}
+
 void PowerSystem::runSimulation() {
     // Implement simulation logic for the entire power system
-    // Example: Run power flow analysis, handle faults, etc.
+    // Include transformer effects in the power flow analysis
 }
