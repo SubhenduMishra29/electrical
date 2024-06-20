@@ -1,5 +1,6 @@
 #include "PowerSystem.h"
 #include "PowerSystemError.h"
+#include "SLD.h" // Include the header file that defines SLD
 
 PowerSystem::PowerSystem() {
     // Constructor implementation
@@ -26,14 +27,16 @@ void PowerSystem::loadSLD(const std::string& filename) {
 
 void PowerSystem::performLoadFlow() {
     try {
-        // Perform Load Flow analysis
-        if (/* some error condition */) {
-            throw LoadFlowError("Specific error details");
-        }
+        // Assuming SLD is a member of PowerSystem or passed as an argument
+        solvePowerFlow(sld); // Pass SLD object to solvePowerFlow
 
-    } catch (const PowerSystemError& e) {
-        std::cerr << "Error in Load Flow analysis: " << e.what() << std::endl;
-        throw;
+        // Additional actions after successful load flow calculation, if needed
+    } catch (const LoadFlowError& e) {
+        // Handle specific load flow errors
+        std::cerr << "Load Flow Error: " << e.what() << std::endl;
+    } catch (const std::exception& e) {
+        // Handle other unexpected errors
+        std::cerr << "Unexpected error during load flow analysis: " << e.what() << std::endl;
     }
 }
 
