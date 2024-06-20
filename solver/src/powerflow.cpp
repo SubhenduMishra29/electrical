@@ -1,8 +1,10 @@
 #include "powerflow.h"
 #include "jacobian.h"
 #include "sld.h"
+#include "PowerSystemError.h"
 #include <iostream>
 #include <cmath>
+#include <vector>
 
 struct Mismatch {
     double P;
@@ -86,51 +88,61 @@ void solvePowerFlow(SLD& sld) {
     int iteration = 0;
     bool converged = false;
 
-    while (!converged && iteration < maxIterations) {
-        // Calculate power mismatches
-        std::vector<Mismatch> mismatches = calculateMismatches(buses, lines);
+    try {
+        while (!converged && iteration < maxIterations) {
+            // Calculate power mismatches
+            std::vector<Mismatch> mismatches = calculateMismatches(buses, lines);
 
-        // Calculate Jacobian matrix
-        Jacobian J = calculateJacobian(buses, lines);
+            // Calculate Jacobian matrix
+            Jacobian J = calculateJacobian(buses, lines);
 
-        // Placeholder: Solve the linear system J * delta = -mismatches
-        // Implement a linear solver (e.g., Gaussian elimination) to solve for delta
+            // Placeholder: Solve the linear system J * delta = -mismatches
+            // Implement a linear solver (e.g., Gaussian elimination) to solve for delta
 
-        // Update bus voltages using Newton-Raphson iteration formula
-        for (size_t i = 0; i < buses.size(); ++i) {
-            if (!buses[i].isSlack) {
-                // Update voltage magnitude and angle based on calculated delta
-                double deltaVMagnitude = 0.0; // Placeholder for deltaV calculation
-                double deltaVAngle = 0.0;    // Placeholder for deltaTheta calculation
+            // Update bus voltages using Newton-Raphson iteration formula
+            for (size_t i = 0; i < buses.size(); ++i) {
+                if (!buses[i].isSlack) {
+                    // Update voltage magnitude and angle based on calculated delta
+                    double deltaVMagnitude = 0.0; // Placeholder for deltaV calculation
+                    double deltaVAngle = 0.0;    // Placeholder for deltaTheta calculation
 
-                buses[i].setVoltageMagnitude(buses[i].getVoltageMagnitude() + deltaVMagnitude);
-                buses[i].setVoltageAngle(buses[i].getVoltageAngle() + deltaVAngle);
+                    buses[i].setVoltageMagnitude(buses[i].getVoltageMagnitude() + deltaVMagnitude);
+                    buses[i].setVoltageAngle(buses[i].getVoltageAngle() + deltaVAngle);
+                }
             }
-        }
 
-        // Check for convergence
-        double maxMismatch = 0.0;
-        for (const auto& mismatch : mismatches) {
-            double mismatchMagnitude = std::sqrt(mismatch.P * mismatch.P + mismatch.Q * mismatch.Q);
-            if (mismatchMagnitude > maxMismatch) {
-                maxMismatch = mismatchMagnitude;
+            // Check for convergence
+            double maxMismatch = 0.0;
+            for (const auto& mismatch : mismatches) {
+                double mismatchMagnitude = std::sqrt(mismatch.P * mismatch.P + mismatch.Q * mismatch.Q);
+                if (mismatchMagnitude > maxMismatch) {
+                    maxMismatch = mismatchMagnitude;
+                }
             }
+
+            if (maxMismatch < tolerance) {
+                converged = true;
+            }
+
+            iteration++;
         }
 
-        if (maxMismatch < tolerance) {
-            converged = true;
+        // Output results
+        if (converged) {
+            std::cout << "Power flow converged after " << iteration << " iterations.\n";
+            for (const auto& bus : buses) {
+                std::cout << "Bus " << bus.getId() << ": V = " << bus.getVoltageMagnitude() << ", Theta = " << bus.getVoltageAngle() << "\n";
+            }
+        } else {
+            throw LoadFlowError("Power flow did not converge within " + std::to_string(maxIterations) + " iterations.");
         }
-
-        iteration++;
-    }
-
-    // Output results
-    if (converged) {
-        std::cout << "Power flow converged after " << iteration << " iterations.\n";
-        for (const auto& bus : buses) {
-            std::cout << "Bus " << bus.getId() << ": V = " << bus.getVoltageMagnitude() << ", Theta = " << bus.getVoltageAngle() << "\n";
-        }
-    } else {
-        std::cout << "Power flow did not converge within " << maxIterations << " iterations.\n";
+    } catch (const LoadFlowError& e) {
+        std::cerr << "Load Flow Error: " << e.what() << std::endl;
+        // Handle or rethrow as needed
+        throw;
+    } catch (const std::exception& e) {
+        std::cerr << "Unexpected error during load flow analysis: " << e.what() << std::endl;
+        // Handle or rethrow as needed
+        throw;
     }
 }
