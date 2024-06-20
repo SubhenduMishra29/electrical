@@ -2,7 +2,15 @@
 #define SLD_H
 
 #include "bus.h"
-#include "line.h"
+#include "transformer.h"
+#include "generator.h"
+#include "load.h"
+#include "transmission_line.h"
+#include "circuit_breaker.h"
+#include "relay.h"
+#include "capacitor.h"
+#include "reactor.h"
+#include "grid.h"
 #include <vector>
 #include "PowerSystemError.h"
 
