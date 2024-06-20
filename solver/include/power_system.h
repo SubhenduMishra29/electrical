@@ -1,32 +1,9 @@
 #ifndef POWER_SYSTEM_H
 #define POWER_SYSTEM_H
 
-/**
- * @file PowerSystem.h
- * @brief Definition of the PowerSystem class for power system analysis.
- * 
- * This file defines the PowerSystem class which includes methods for
- * Load Flow & Voltage Drop, Short Circuit, DC Short Circuit, and DC Load Flow analysis.
- * 
- * Author: Subhendu Mishra
- * License: GPL
- * 
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <http://www.gnu.org/licenses/>.
- */
-
 #include <vector>
 #include <string>
+#include <iostream>
 #include "bus.h"
 #include "transformer.h"
 #include "generator.h"
@@ -37,6 +14,7 @@
 #include "capacitor.h"
 #include "reactor.h"
 #include "grid.h"
+#include "PowerSystemError.h"
 
 class PowerSystem {
 private:
@@ -76,5 +54,57 @@ public:
     std::vector<Reactor*> getReactors() const; // Method to get the list of reactors
     Grid* getGrid() const; // Method to get the grid information
 };
+
+// Implementation of methods with error handling
+
+PowerSystem::PowerSystem() {
+    // Constructor implementation
+}
+
+PowerSystem::~PowerSystem() {
+    // Destructor implementation
+}
+
+void PowerSystem::loadSLD(const std::string& filename) {
+    try {
+        // Code to load SLD from file
+        if (/* file not found */) {
+            throw FileNotFoundError(filename);
+        }
+
+        // Rest of the code
+    } catch (const std::exception& e) {
+        throw;
+    }
+}
+
+void PowerSystem::runSimulation() {
+    try {
+        performLoadFlow();
+        calculateVoltageDrop();
+        performShortCircuitAnalysis();
+        // ...
+
+    } catch (const PowerSystemError& e) {
+        std::cerr << "Power System Error: " << e.what() << std::endl;
+    } catch (const std::exception& e) {
+        std::cerr << "An unexpected error occurred: " << e.what() << std::endl;
+    }
+}
+
+void PowerSystem::performLoadFlow() {
+    try {
+        // Perform Load Flow analysis
+        if (/* some error condition */) {
+            throw LoadFlowError("Specific error details");
+        }
+
+    } catch (const std::exception& e) {
+        throw;
+    }
+}
+
+// Implement other methods similarly with error handling
+// ...
 
 #endif // POWER_SYSTEM_H
