@@ -1,6 +1,6 @@
 #ifndef GRID_H
 #define GRID_H
-
+#include "PowerSystemError.h"
 class Grid {
 private:
     double voltage;  // Voltage of the external grid source
