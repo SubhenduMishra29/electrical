@@ -5,6 +5,7 @@
 #include <iostream>
 #include <cmath>
 #include <vector>
+#include "SLD.h" // Include the header file that defines SLD
 
 struct Mismatch {
     double P;
@@ -79,6 +80,7 @@ std::vector<Mismatch> calculateMismatches(const std::vector<Bus>& buses, const s
 }
 
 // Function to solve power flow using Newton-Raphson method
+
 void solvePowerFlow(SLD& sld) {
     std::vector<Bus>& buses = sld.getBuses();
     std::vector<Line>& lines = sld.getLines();
