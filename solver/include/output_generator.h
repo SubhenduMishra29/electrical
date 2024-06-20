@@ -3,6 +3,7 @@
 #define OUTPUT_GENERATOR_H
 
 #include "power_system.h"
+#include "PowerSystemError.h"
 
 class OutputGenerator {
 public:
