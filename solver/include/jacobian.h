@@ -4,6 +4,7 @@
 #include <vector>
 #include "bus.h"
 #include "line.h"
+#include "PowerSystemError.h"
 
 struct Jacobian {
     std::vector<std::vector<double>> H; // dP/dTheta
