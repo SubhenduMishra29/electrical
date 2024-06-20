@@ -3,6 +3,7 @@
 #define INPUT_PARSER_H
 
 #include "power_system.h"
+#include "PowerSystemError.h"
 
 class InputParser {
 public:
