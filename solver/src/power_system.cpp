@@ -1,142 +1,147 @@
 #include "PowerSystem.h"
-#include <iostream>
-#include <fstream>
+#include "PowerSystemError.h"
 
 PowerSystem::PowerSystem() {
-    // Constructor
-    grid = new Grid(); // Assuming Grid is a class that needs initialization
+    // Constructor implementation
 }
 
 PowerSystem::~PowerSystem() {
-    // Destructor for cleanup
-    for (auto bus : buses) {
-        delete bus;
-    }
-    for (auto transformer : transformers) {
-        delete transformer;
-    }
-    for (auto generator : generators) {
-        delete generator;
-    }
-    for (auto load : loads) {
-        delete load;
-    }
-    for (auto line : transmissionLines) {
-        delete line;
-    }
-    for (auto breaker : circuitBreakers) {
-        delete breaker;
-    }
-    for (auto relay : relays) {
-        delete relay;
-    }
-    for (auto capacitor : capacitors) {
-        delete capacitor;
-    }
-    for (auto reactor : reactors) {
-        delete reactor;
-    }
-    delete grid;
+    // Destructor implementation
 }
 
 void PowerSystem::loadSLD(const std::string& filename) {
-    // Method to load SLD from file
-    std::ifstream file(filename);
-    if (!file) {
-        std::cerr << "Error: Unable to open file " << filename << std::endl;
-        return;
+    try {
+        // Code to load SLD from file
+        if (/* file not found */) {
+            throw FileNotFoundError(filename);
+        }
+
+        // Rest of the code
+    } catch (const PowerSystemError& e) {
+        std::cerr << "Error loading SLD: " << e.what() << std::endl;
+        // Handle or rethrow as needed
+        throw;
     }
-
-    // Implement loading logic here based on your file format
-    // Example pseudocode:
-    // Read buses, transformers, generators, loads, transmission lines, etc.
-    // Initialize corresponding objects and populate vectors
-
-    file.close();
-}
-
-void PowerSystem::runSimulation() {
-    // Placeholder for simulation logic
-    std::cout << "Running power system simulation..." << std::endl;
-    // Implement simulation logic here
 }
 
 void PowerSystem::performLoadFlow() {
-    // Method to perform Load Flow analysis
-    std::cout << "Performing Load Flow analysis..." << std::endl;
-    // Implement Load Flow analysis logic here
+    try {
+        // Perform Load Flow analysis
+        if (/* some error condition */) {
+            throw LoadFlowError("Specific error details");
+        }
+
+    } catch (const PowerSystemError& e) {
+        std::cerr << "Error in Load Flow analysis: " << e.what() << std::endl;
+        throw;
+    }
 }
 
 void PowerSystem::calculateVoltageDrop() {
-    // Method to calculate Voltage Drop
-    std::cout << "Calculating Voltage Drop..." << std::endl;
-    // Implement Voltage Drop calculation logic here
+    try {
+        // Code to calculate Voltage Drop
+        if (/* some error condition */) {
+            throw PowerSystemError("Voltage Drop Calculation Error");
+        }
+
+    } catch (const PowerSystemError& e) {
+        std::cerr << "Error calculating voltage drop: " << e.what() << std::endl;
+        throw;
+    }
 }
 
 void PowerSystem::performShortCircuitAnalysis() {
-    // Method to perform Short Circuit analysis
-    std::cout << "Performing Short Circuit analysis..." << std::endl;
-    // Implement Short Circuit analysis logic here
+    try {
+        // Code to perform Short Circuit analysis
+        if (/* some error condition */) {
+            throw PowerSystemError("Short Circuit Analysis Error");
+        }
+
+    } catch (const PowerSystemError& e) {
+        std::cerr << "Error in Short Circuit analysis: " << e.what() << std::endl;
+        throw;
+    }
 }
 
 void PowerSystem::performDCShortCircuitAnalysis() {
-    // Method to perform DC Short Circuit analysis
-    std::cout << "Performing DC Short Circuit analysis..." << std::endl;
-    // Implement DC Short Circuit analysis logic here
+    try {
+        // Code to perform DC Short Circuit analysis
+        if (/* some error condition */) {
+            throw PowerSystemError("DC Short Circuit Analysis Error");
+        }
+
+    } catch (const PowerSystemError& e) {
+        std::cerr << "Error in DC Short Circuit analysis: " << e.what() << std::endl;
+        throw;
+    }
 }
 
 void PowerSystem::performDCLoadFlow() {
-    // Method to perform DC Load Flow analysis
-    std::cout << "Performing DC Load Flow analysis..." << std::endl;
-    // Implement DC Load Flow analysis logic here
+    try {
+        // Code to perform DC Load Flow analysis
+        if (/* some error condition */) {
+            throw PowerSystemError("DC Load Flow Analysis Error");
+        }
+
+    } catch (const PowerSystemError& e) {
+        std::cerr << "Error in DC Load Flow analysis: " << e.what() << std::endl;
+        throw;
+    }
 }
 
+void PowerSystem::runSimulation() {
+    try {
+        performLoadFlow();
+        calculateVoltageDrop();
+        performShortCircuitAnalysis();
+        performDCShortCircuitAnalysis();
+        performDCLoadFlow();
+        // Other simulation steps...
+
+    } catch (const PowerSystemError& e) {
+        std::cerr << "Power System Error: " << e.what() << std::endl;
+    } catch (const std::exception& e) {
+        std::cerr << "An unexpected error occurred: " << e.what() << std::endl;
+    }
+}
+
+// Implement getters similarly
 std::vector<Bus*> PowerSystem::getBuses() const {
-    // Method to get the list of buses
     return buses;
 }
 
 std::vector<Transformer*> PowerSystem::getTransformers() const {
-    // Method to get the list of transformers
     return transformers;
 }
 
 std::vector<Generator*> PowerSystem::getGenerators() const {
-    // Method to get the list of generators
     return generators;
 }
 
 std::vector<Load*> PowerSystem::getLoads() const {
-    // Method to get the list of loads
     return loads;
 }
 
 std::vector<TransmissionLine*> PowerSystem::getTransmissionLines() const {
-    // Method to get the list of transmission lines
     return transmissionLines;
 }
 
 std::vector<CircuitBreaker*> PowerSystem::getCircuitBreakers() const {
-    // Method to get the list of circuit breakers
     return circuitBreakers;
 }
 
 std::vector<Relay*> PowerSystem::getRelays() const {
-    // Method to get the list of relays
     return relays;
 }
 
 std::vector<Capacitor*> PowerSystem::getCapacitors() const {
-    // Method to get the list of capacitors
     return capacitors;
 }
 
 std::vector<Reactor*> PowerSystem::getReactors() const {
-    // Method to get the list of reactors
     return reactors;
 }
 
 Grid* PowerSystem::getGrid() const {
-    // Method to get the grid information
     return grid;
 }
