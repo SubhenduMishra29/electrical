@@ -6,7 +6,7 @@
 #include "load.h"
 #include "transmission_line.h"
 #include "transformer.h" // Include transformer header
-
+#include "PowerSystemError.h"
 class Bus {
 private:
     std::vector<Generator*> generators;
