@@ -4,6 +4,7 @@
 #include "bus.h"
 #include "line.h"
 #include <vector>
+#include "PowerSystemError.h"
 
 // Class to represent the Single Line Diagram (SLD)
 class SLD {
