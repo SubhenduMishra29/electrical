@@ -16,6 +16,7 @@ public:
     }
 };
 
+// Specific error types
 class FileNotFoundError : public PowerSystemError {
 public:
     explicit FileNotFoundError(const std::string& msg) : PowerSystemError("File Not Found Error: " + msg) {}
@@ -26,7 +27,7 @@ public:
     explicit LoadFlowError(const std::string& msg) : PowerSystemError("Load Flow Error: " + msg) {}
 };
 
-// Define other specific errors as needed
+// Other specific error classes can be added similarly
 // ...
 
 #endif // POWER_SYSTEM_ERROR_H
