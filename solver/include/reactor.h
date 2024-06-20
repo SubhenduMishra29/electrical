@@ -2,6 +2,7 @@
 #define REACTOR_H
 
 #include <string>
+#include "PowerSystemError.h"
 
 class Reactor {
 private:
