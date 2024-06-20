@@ -2,6 +2,7 @@
 #define TRANSMISSION_LINE_H
 
 #include <string>
+#include "PowerSystemError.h"
 
 class TransmissionLine {
 private:
