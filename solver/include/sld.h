@@ -11,6 +11,7 @@
 #include "capacitor.h"
 #include "reactor.h"
 #include "grid.h"
+#include "line.h"
 #include <vector>
 #include "PowerSystemError.h"
 
