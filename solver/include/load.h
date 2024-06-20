@@ -2,6 +2,7 @@
 #define LOAD_H
 
 #include <string>
+#include "PowerSystemError.h"
 
 class Load {
 private:
