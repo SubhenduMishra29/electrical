@@ -2,6 +2,7 @@
 #define RELAY_H
 
 #include <string>
+#include "PowerSystemError.h"
 
 class Relay {
 private:
