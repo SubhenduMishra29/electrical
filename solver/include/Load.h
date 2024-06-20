@@ -1,7 +1,7 @@
 // Load.h
 #ifndef LOAD_H
 #define LOAD_H
-
+#include "PowerSystemError.h"
 class Load {
 public:
     double activePowerDemand;
