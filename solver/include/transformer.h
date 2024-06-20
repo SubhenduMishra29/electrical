@@ -2,6 +2,7 @@
 #define TRANSFORMER_H
 
 #include "bus.h"
+#include "PowerSystemError.h"
 
 class Transformer {
 private:
