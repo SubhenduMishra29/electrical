@@ -2,6 +2,7 @@
 #define GENERATOR_H
 
 #include <string>
+#include "PowerSystemError.h"
 
 class Generator {
 private:
