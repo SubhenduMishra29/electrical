@@ -2,6 +2,7 @@
 #define CIRCUIT_BREAKER_H
 
 #include <string>
+#include "PowerSystemError.h"
 
 class CircuitBreaker {
 private:
