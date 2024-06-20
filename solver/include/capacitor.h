@@ -2,6 +2,7 @@
 #define CAPACITOR_H
 
 #include <string>
+#include "PowerSystemError.h"
 
 class Capacitor {
 private:
