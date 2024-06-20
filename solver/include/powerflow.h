@@ -5,7 +5,7 @@
 #include "bus.h"
 #include "line.h"
 #include "jacobian.h"
-
+#include "PowerSystemError.h"
 // Function to calculate power mismatches
 std::vector<Mismatch> calculateMismatches(const std::vector<Bus>& buses, const std::vector<Line>& lines);
 
