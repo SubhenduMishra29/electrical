@@ -8,20 +8,29 @@ int main(int argc, char *argv[]) {
     // Create and show the splash screen
     SplashScreen splashScreen;
 
-    // Run the application main loop after a short delay to display splash screen
+    // Timeout to close splash screen after 8 seconds
     Glib::signal_timeout().connect([&]() {
-        // Create main application window
-        Gtk::Window window;
-        window.set_title("Main Application");
+        splashScreen.close();
+        return false; // Return false to stop the timeout after the first invocation
+    }, 8000); // 8000 milliseconds = 8 seconds
 
-        // Create an instance of GuiComponent
-        GuiComponent guiComponent;
-        window.add(guiComponent);
+    // Run the application main loop
+    int status = app->run(splashScreen);
 
-        // Show window and run application
-        window.show_all();
-        return app->run(window);
-    }, 1000); // Delay before showing main window (adjust as needed)
+    if (status != 0) {
+        // Handle initialization failure if needed
+        return status;
+    }
 
-    return app->run();
+    // Create main application window
+    Gtk::Window mainWindow;
+    mainWindow.set_title("Main Application");
+
+    // Create an instance of GuiComponent
+    GuiComponent guiComponent;
+    mainWindow.add(guiComponent);
+
+    // Show window and run application
+    mainWindow.show_all();
+    return app->run(mainWindow);
 }
