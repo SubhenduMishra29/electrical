@@ -1,67 +1,49 @@
-#include "CapacitorBank.h"
+#include "Capacitor.h"
 
 // Constructor
-CapacitorBank::CapacitorBank(const std::string& id, double capacitance, double voltageRating, double frequency,
-                             double temperatureRating, double powerRating, int numUnits, const std::string& configuration,
-                             const std::string& placement, bool hasProtection)
-    : id(id), capacitance(capacitance), voltageRating(voltageRating), frequency(frequency),
-      temperatureRating(temperatureRating), powerRating(powerRating), numUnits(numUnits), configuration(configuration),
-      placement(placement), hasProtection(hasProtection) {
+Capacitor::Capacitor(const std::string& id, double capacitance, double voltageRating, double lossFactor,
+                     bool hasSurgeProtection, const std::string& insulationLevel, const std::string& location,
+                     const std::string& protectionDevices)
+    : id(id), capacitance(capacitance), voltageRating(voltageRating), lossFactor(lossFactor),
+      hasSurgeProtection(hasSurgeProtection), insulationLevel(insulationLevel), location(location),
+      protectionDevices(protectionDevices) {
     // Initialize any additional attributes or setup
 }
 
 // Destructor
-CapacitorBank::~CapacitorBank() {
+Capacitor::~Capacitor() {
     // Perform cleanup if necessary
 }
 
-// Method to add a capacitor to the bank
-void CapacitorBank::addCapacitor(const Capacitor& capacitor) {
-    capacitors.push_back(capacitor);
-}
-
-// Getter for the vector of capacitors
-std::vector<Capacitor> CapacitorBank::getCapacitors() const {
-    return capacitors;
-}
-
-// Getters for CapacitorBank attributes
-std::string CapacitorBank::getId() const {
+// Getters for Capacitor attributes
+std::string Capacitor::getId() const {
     return id;
 }
 
-double CapacitorBank::getCapacitance() const {
+double Capacitor::getCapacitance() const {
     return capacitance;
 }
 
-double CapacitorBank::getVoltageRating() const {
+double Capacitor::getVoltageRating() const {
     return voltageRating;
 }
 
-double CapacitorBank::getFrequency() const {
-    return frequency;
+double Capacitor::getLossFactor() const {
+    return lossFactor;
 }
 
-double CapacitorBank::getTemperatureRating() const {
-    return temperatureRating;
+bool Capacitor::hasSurgeProtectionDevice() const {
+    return hasSurgeProtection;
 }
 
-double CapacitorBank::getPowerRating() const {
-    return powerRating;
+std::string Capacitor::getInsulationLevel() const {
+    return insulationLevel;
 }
 
-int CapacitorBank::getNumUnits() const {
-    return numUnits;
+std::string Capacitor::getLocation() const {
+    return location;
 }
 
-std::string CapacitorBank::getConfiguration() const {
-    return configuration;
-}
-
-std::string CapacitorBank::getPlacement() const {
-    return placement;
-}
-
-bool CapacitorBank::hasProtectionDevices() const {
-    return hasProtection;
+std::string Capacitor::getProtectionDevices() const {
+    return protectionDevices;
 }
