@@ -1,51 +1,67 @@
-#ifndef CAPACITOR_BANK_H
-#define CAPACITOR_BANK_H
+#include "CapacitorBank.h"
 
-#include "Capacitor.h"
-#include <string>
-#include <vector>
+// Constructor
+CapacitorBank::CapacitorBank(const std::string& id, double capacitance, double voltageRating, double frequency,
+                             double temperatureRating, double powerRating, int numUnits, const std::string& configuration,
+                             const std::string& placement, bool hasProtection)
+    : id(id), capacitance(capacitance), voltageRating(voltageRating), frequency(frequency),
+      temperatureRating(temperatureRating), powerRating(powerRating), numUnits(numUnits), configuration(configuration),
+      placement(placement), hasProtection(hasProtection) {
+    // Initialize any additional attributes or setup
+}
 
-class CapacitorBank {
-private:
-    std::string id;                     // ID of the capacitor bank
-    double capacitance;                 // Total capacitance of the bank (in Farads or microfarads)
-    double voltageRating;               // Maximum voltage rating of the capacitor bank
-    double frequency;                   // Operating frequency (in Hz)
-    double temperatureRating;           // Maximum operating temperature (in °C)
-    double powerRating;                 // Maximum reactive power rating (in kVAR)
-    int numUnits;                       // Number of capacitor units in the bank
-    std::string configuration;          // Configuration of the bank (e.g., single-phase, three-phase)
-    std::string placement;              // Optimal placement consideration
-    bool hasProtection;                 // Indicates if protection (e.g., series reactors, relays) is implemented
+// Destructor
+CapacitorBank::~CapacitorBank() {
+    // Perform cleanup if necessary
+}
 
-    std::vector<Capacitor> capacitors;  // Vector to hold individual capacitors in the bank
+// Method to add a capacitor to the bank
+void CapacitorBank::addCapacitor(const Capacitor& capacitor) {
+    capacitors.push_back(capacitor);
+}
 
-public:
-    // Constructor
-    CapacitorBank(const std::string& id, double capacitance, double voltageRating, double frequency,
-                  double temperatureRating, double powerRating, int numUnits, const std::string& configuration,
-                  const std::string& placement, bool hasProtection);
+// Getter for the vector of capacitors
+std::vector<Capacitor> CapacitorBank::getCapacitors() const {
+    return capacitors;
+}
 
-    // Destructor
-    ~CapacitorBank();
+// Getters for CapacitorBank attributes
+std::string CapacitorBank::getId() const {
+    return id;
+}
 
-    // Methods to manage capacitors
-    void addCapacitor(const Capacitor& capacitor);
-    std::vector<Capacitor> getCapacitors() const;
+double CapacitorBank::getCapacitance() const {
+    return capacitance;
+}
 
-    // Getters for CapacitorBank attributes
-    std::string getId() const;
-    double getCapacitance() const;
-    double getVoltageRating() const;
-    double getFrequency() const;
-    double getTemperatureRating() const;
-    double getPowerRating() const;
-    int getNumUnits() const;
-    std::string getConfiguration() const;
-    std::string getPlacement() const;
-    bool hasProtectionDevices() const;
+double CapacitorBank::getVoltageRating() const {
+    return voltageRating;
+}
 
-    // Additional methods specific to CapacitorBank if needed
-};
+double CapacitorBank::getFrequency() const {
+    return frequency;
+}
 
-#endif // CAPACITOR_BANK_H
+double CapacitorBank::getTemperatureRating() const {
+    return temperatureRating;
+}
+
+double CapacitorBank::getPowerRating() const {
+    return powerRating;
+}
+
+int CapacitorBank::getNumUnits() const {
+    return numUnits;
+}
+
+std::string CapacitorBank::getConfiguration() const {
+    return configuration;
+}
+
+std::string CapacitorBank::getPlacement() const {
+    return placement;
+}
+
+bool CapacitorBank::hasProtectionDevices() const {
+    return hasProtection;
+}
