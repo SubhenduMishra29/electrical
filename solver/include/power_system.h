@@ -4,16 +4,7 @@
 #include <vector>
 #include <string>
 #include <iostream>
-#include "bus.h"
-#include "transformer.h"
-#include "generator.h"
-#include "load.h"
-#include "transmission_line.h"
-#include "circuit_breaker.h"
-#include "relay.h"
-#include "capacitor.h"
-#include "reactor.h"
-#include "grid.h"
+#include "sld.h"
 #include "PowerSystemError.h"
 
 class PowerSystem {
@@ -27,12 +18,16 @@ private:
     std::vector<Relay*> relays;
     std::vector<Capacitor*> capacitors;
     std::vector<Reactor*> reactors;
+    std::vector<CT*> cts; // Added for Current Transformers
+    std::vector<PT*> pts; // Added for Potential Transformers
+    std::vector<Line*> lines; // Added for Lines
     Grid* grid;
 
 public:
     PowerSystem();
     ~PowerSystem(); // Destructor for cleanup
-    void loadSLD(const std::string& filename); // Method to load SLD from file
+
+    void loadSLD(const SLD& sld); // Method to load SLD object
     void runSimulation();
 
     // New methods for power system analysis
@@ -52,59 +47,10 @@ public:
     std::vector<Relay*> getRelays() const; // Method to get the list of relays
     std::vector<Capacitor*> getCapacitors() const; // Method to get the list of capacitors
     std::vector<Reactor*> getReactors() const; // Method to get the list of reactors
+    std::vector<CT*> getCTs() const; // Method to get the list of current transformers
+    std::vector<PT*> getPTs() const; // Method to get the list of potential transformers
+    std::vector<Line*> getLines() const; // Method to get the list of lines
     Grid* getGrid() const; // Method to get the grid information
 };
-
-// Implementation of methods with error handling
-
-PowerSystem::PowerSystem() {
-    // Constructor implementation
-}
-
-PowerSystem::~PowerSystem() {
-    // Destructor implementation
-}
-
-void PowerSystem::loadSLD(const std::string& filename) {
-    try {
-        // Code to load SLD from file
-        if (/* file not found */) {
-            throw FileNotFoundError(filename);
-        }
-
-        // Rest of the code
-    } catch (const std::exception& e) {
-        throw;
-    }
-}
-
-void PowerSystem::runSimulation() {
-    try {
-        performLoadFlow();
-        calculateVoltageDrop();
-        performShortCircuitAnalysis();
-        // ...
-
-    } catch (const PowerSystemError& e) {
-        std::cerr << "Power System Error: " << e.what() << std::endl;
-    } catch (const std::exception& e) {
-        std::cerr << "An unexpected error occurred: " << e.what() << std::endl;
-    }
-}
-
-void PowerSystem::performLoadFlow() {
-    try {
-        // Perform Load Flow analysis
-        if (/* some error condition */) {
-            throw LoadFlowError("Specific error details");
-        }
-
-    } catch (const std::exception& e) {
-        throw;
-    }
-}
-
-// Implement other methods similarly with error handling
-// ...
 
 #endif // POWER_SYSTEM_H
