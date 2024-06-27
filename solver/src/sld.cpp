@@ -1,59 +1,162 @@
-#include "sld.h"
+#include "SLD.h"
 
 // Constructor
 SLD::SLD() {
-    // Initialize or assemble the SLD in the constructor
-    assemble();
+    // Constructor implementation, if needed
 }
 
 // Function to assemble the SLD
 void SLD::assemble() {
-    // Clear existing data (if any)
-    buses.clear();
-    lines.clear();
+    // Example: Assemble the SLD with dummy data for demonstration
+    // Initialize buses
+    buses.push_back(Bus("Bus1"));
+    buses.push_back(Bus("Bus2"));
 
-    // Define buses
-    Bus bus1(1, "Bus 1", BusType::SLACK);
-    Bus bus2(2, "Bus 2", BusType::PQ);
-    Bus bus3(3, "Bus 3", BusType::PQ);
-    Bus bus4(4, "Bus 4", BusType::PV);
+    // Initialize transformers
+    transformers.push_back(Transformer("Transformer1"));
+    transformers.push_back(Transformer("Transformer2"));
 
-    // Add generators to buses
-    Generator gen1{1.0, 0.0, 2.0, -2.0}; // active power, reactive power, max reactive power, min reactive power
-    bus4.addGenerator(gen1);
+    // Initialize generators
+    generators.push_back(Generator("Generator1"));
+    generators.push_back(Generator("Generator2"));
 
-    // Add loads to buses
-    MotorLoad motor1{1.0, 0.85, 0.8}; // rated power, power factor, utilization factor
-    StaticLoad static1{0.5, 0.2, 0.1}; // constant power, constant impedance, constant current
-    bus2.addMotorLoad(motor1);
-    bus2.addStaticLoad(static1);
+    // Initialize loads
+    loads.push_back(Load("Load1"));
+    loads.push_back(Load("Load2"));
 
-    // Add buses to the vector
-    buses.push_back(bus1);
-    buses.push_back(bus2);
-    buses.push_back(bus3);
-    buses.push_back(bus4);
+    // Initialize transmission lines
+    transmissionLines.push_back(TransmissionLine("Line1", "Bus1", "Bus2"));
+    transmissionLines.push_back(TransmissionLine("Line2", "Bus2", "Bus1"));
 
-    // Define lines (connections between buses)
-    Line line1{1, 2, 0.1}; // from bus, to bus, impedance
-    Line line2{1, 3, 0.05}; // from bus, to bus, impedance
-    Line line3{2, 4, 0.15}; // from bus, to bus, impedance
-    Line line4{3, 4, 0.08}; // from bus, to bus, impedance
+    // Initialize circuit breakers
+    circuitBreakers.push_back(CircuitBreaker("CB1"));
+    circuitBreakers.push_back(CircuitBreaker("CB2"));
 
-    // Add lines to the vector
-    lines.push_back(line1);
-    lines.push_back(line2);
-    lines.push_back(line3);
-    lines.push_back(line4);
+    // Initialize relays
+    relays.push_back(Relay("Relay1"));
+    relays.push_back(Relay("Relay2"));
+
+    // Initialize capacitors
+    capacitors.push_back(Capacitor("Capacitor1"));
+    capacitors.push_back(Capacitor("Capacitor2"));
+
+    // Initialize reactors
+    reactors.push_back(Reactor("Reactor1"));
+    reactors.push_back(Reactor("Reactor2"));
+
+    // Initialize grids
+    grids.push_back(Grid("Grid1"));
+    grids.push_back(Grid("Grid2"));
+
+    // Initialize current transformers
+    cts.push_back(CT("CT1"));
+    cts.push_back(CT("CT2"));
+
+    // Initialize potential transformers
+    pts.push_back(PT("PT1"));
+    pts.push_back(PT("PT2"));
+
+    // Initialize lines
+    lines.push_back(Line("Line1"));
+    lines.push_back(Line("Line2"));
 }
 
-// Getters
+// Getters for all components
+
 std::vector<Bus>& SLD::getBuses() {
     return buses;
 }
 
 const std::vector<Bus>& SLD::getBuses() const {
     return buses;
+}
+
+std::vector<Transformer>& SLD::getTransformers() {
+    return transformers;
+}
+
+const std::vector<Transformer>& SLD::getTransformers() const {
+    return transformers;
+}
+
+std::vector<Generator>& SLD::getGenerators() {
+    return generators;
+}
+
+const std::vector<Generator>& SLD::getGenerators() const {
+    return generators;
+}
+
+std::vector<Load>& SLD::getLoads() {
+    return loads;
+}
+
+const std::vector<Load>& SLD::getLoads() const {
+    return loads;
+}
+
+std::vector<TransmissionLine>& SLD::getTransmissionLines() {
+    return transmissionLines;
+}
+
+const std::vector<TransmissionLine>& SLD::getTransmissionLines() const {
+    return transmissionLines;
+}
+
+std::vector<CircuitBreaker>& SLD::getCircuitBreakers() {
+    return circuitBreakers;
+}
+
+const std::vector<CircuitBreaker>& SLD::getCircuitBreakers() const {
+    return circuitBreakers;
+}
+
+std::vector<Relay>& SLD::getRelays() {
+    return relays;
+}
+
+const std::vector<Relay>& SLD::getRelays() const {
+    return relays;
+}
+
+std::vector<Capacitor>& SLD::getCapacitors() {
+    return capacitors;
+}
+
+const std::vector<Capacitor>& SLD::getCapacitors() const {
+    return capacitors;
+}
+
+std::vector<Reactor>& SLD::getReactors() {
+    return reactors;
+}
+
+const std::vector<Reactor>& SLD::getReactors() const {
+    return reactors;
+}
+
+std::vector<Grid>& SLD::getGrids() {
+    return grids;
+}
+
+const std::vector<Grid>& SLD::getGrids() const {
+    return grids;
+}
+
+std::vector<CT>& SLD::getCTs() {
+    return cts;
+}
+
+const std::vector<CT>& SLD::getCTs() const {
+    return cts;
+}
+
+std::vector<PT>& SLD::getPTs() {
+    return pts;
+}
+
+const std::vector<PT>& SLD::getPTs() const {
+    return pts;
 }
 
 std::vector<Line>& SLD::getLines() {
