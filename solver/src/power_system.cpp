@@ -46,8 +46,26 @@ void PowerSystem::loadSLD(const SLD& sld) {
 
 void PowerSystem::performLoadFlow() {
     try {
-        // Assuming performLoadFlow implementation
-        // Example: solvePowerFlow(buses, transmissionLines);
+        // Prepare data for power flow analysis
+        std::vector<Bus> busObjects;
+        std::vector<Line> lineObjects;
+
+        // Convert pointers to objects for power flow analysis
+        for (auto busPtr : buses) busObjects.push_back(*busPtr);
+        for (auto linePtr : transmissionLines) lineObjects.push_back(*linePtr);
+
+        // Calculate power mismatches
+        std::vector<Mismatch> mismatches = calculateMismatches(busObjects, lineObjects);
+
+        // Check mismatches and perform actions if needed
+
+        // Solve power flow
+        solvePowerFlow(busObjects, lineObjects);
+
+        // Update the original pointers with results
+        for (size_t i = 0; i < buses.size(); ++i) *buses[i] = busObjects[i];
+        for (size_t i = 0; i < transmissionLines.size(); ++i) *transmissionLines[i] = lineObjects[i];
+
     } catch (const LoadFlowError& e) {
         std::cerr << "Load Flow Error: " << e.what() << std::endl;
     } catch (const std::exception& e) {
