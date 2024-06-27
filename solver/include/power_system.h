@@ -5,6 +5,7 @@
 #include <string>
 #include <iostream>
 #include "sld.h"
+#include "powerflow.h" // Include power flow analysis functions
 #include "PowerSystemError.h"
 
 class PowerSystem {
@@ -18,16 +19,13 @@ private:
     std::vector<Relay*> relays;
     std::vector<Capacitor*> capacitors;
     std::vector<Reactor*> reactors;
-    std::vector<CT*> cts; // Added for Current Transformers
-    std::vector<PT*> pts; // Added for Potential Transformers
-    std::vector<Line*> lines; // Added for Lines
     Grid* grid;
 
 public:
     PowerSystem();
     ~PowerSystem(); // Destructor for cleanup
 
-    void loadSLD(const SLD& sld); // Method to load SLD object
+    void loadSLD(const SLD& sld); // Method to load from SLD object
     void runSimulation();
 
     // New methods for power system analysis
@@ -47,9 +45,6 @@ public:
     std::vector<Relay*> getRelays() const; // Method to get the list of relays
     std::vector<Capacitor*> getCapacitors() const; // Method to get the list of capacitors
     std::vector<Reactor*> getReactors() const; // Method to get the list of reactors
-    std::vector<CT*> getCTs() const; // Method to get the list of current transformers
-    std::vector<PT*> getPTs() const; // Method to get the list of potential transformers
-    std::vector<Line*> getLines() const; // Method to get the list of lines
     Grid* getGrid() const; // Method to get the grid information
 };
 
