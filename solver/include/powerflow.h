@@ -1,3 +1,13 @@
+/**
+ * @file powerflow.h
+ * @brief Declarations for power flow analysis functions.
+ * 
+ * This file declares functions related to power flow analysis in an electrical power system.
+ * 
+ * Author: Subhendu Mishra
+ * License: GPL
+ */
+
 #ifndef POWERFLOW_H
 #define POWERFLOW_H
 
@@ -6,13 +16,6 @@
 #include "line.h"
 #include "jacobian.h"
 #include "PowerSystemError.h"
-
-/**
- * @file powerflow.h
- * @brief Declarations for power flow analysis functions.
- * 
- * This file declares functions related to power flow analysis in an electrical power system.
- */
 
 /**
  * @struct Mismatch
@@ -50,4 +53,3 @@ std::vector<Mismatch> calculateMismatches(const std::vector<Bus>& buses, const s
 void solvePowerFlow(std::vector<Bus>& buses, const std::vector<Line>& lines);
 
 #endif // POWERFLOW_H
-
