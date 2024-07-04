@@ -1,5 +1,6 @@
 #ifndef SLD_H
 #define SLD_H
+
 /*
  * File: SLD.h
  * Author: Subhendu Mishra
@@ -9,7 +10,9 @@
  *              and lines. Provides methods to assemble the SLD and access components.
  * License: GPL
  */
+
 #include <vector>
+#include <string>
 
 // Forward declarations to reduce unnecessary header inclusions
 class Bus;
@@ -25,6 +28,7 @@ class Grid;
 class CT;
 class PT;
 class Line;
+class InputParser;
 
 // Class to represent the Single Line Diagram (SLD)
 class SLD {
@@ -33,8 +37,8 @@ public:
     SLD(); // Constructor to initialize an SLD object
     ~SLD(); // Destructor to clean up resources
 
-    // Function to assemble the SLD
-    void assemble(); // Assembles the components of the SLD
+    // Function to assemble the SLD from a file
+    void assemble(const std::string& filename); // Assembles the components of the SLD from a given file
 
     // Getters for all components
     std::vector<Bus>& getBuses(); // Returns a reference to the list of buses
@@ -81,5 +85,3 @@ private:
 };
 
 #endif // SLD_H
-
-
