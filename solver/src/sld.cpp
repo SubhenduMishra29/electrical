@@ -1,68 +1,36 @@
 #include "SLD.h"
+#include "InputParser.h"
+#include "Bus.h"
+#include "Transformer.h"
+#include "Generator.h"
+#include "Load.h"
+#include "TransmissionLine.h"
+#include "CircuitBreaker.h"
+#include "Relay.h"
+#include "Capacitor.h"
+#include "Reactor.h"
+#include "Grid.h"
+#include "CT.h"
+#include "PT.h"
+#include "Line.h"
 
 // Constructor
 SLD::SLD() {
     // Constructor implementation, if needed
 }
 
-// Function to assemble the SLD
-void SLD::assemble() {
-    // Example: Assemble the SLD with dummy data for demonstration
-    // Initialize buses
-    buses.push_back(Bus("Bus1"));
-    buses.push_back(Bus("Bus2"));
+// Destructor
+SLD::~SLD() {
+    // Destructor implementation, if needed
+}
 
-    // Initialize transformers
-    transformers.push_back(Transformer("Transformer1"));
-    transformers.push_back(Transformer("Transformer2"));
-
-    // Initialize generators
-    generators.push_back(Generator("Generator1"));
-    generators.push_back(Generator("Generator2"));
-
-    // Initialize loads
-    loads.push_back(Load("Load1"));
-    loads.push_back(Load("Load2"));
-
-    // Initialize transmission lines
-    transmissionLines.push_back(TransmissionLine("Line1", "Bus1", "Bus2"));
-    transmissionLines.push_back(TransmissionLine("Line2", "Bus2", "Bus1"));
-
-    // Initialize circuit breakers
-    circuitBreakers.push_back(CircuitBreaker("CB1"));
-    circuitBreakers.push_back(CircuitBreaker("CB2"));
-
-    // Initialize relays
-    relays.push_back(Relay("Relay1"));
-    relays.push_back(Relay("Relay2"));
-
-    // Initialize capacitors
-    capacitors.push_back(Capacitor("Capacitor1"));
-    capacitors.push_back(Capacitor("Capacitor2"));
-
-    // Initialize reactors
-    reactors.push_back(Reactor("Reactor1"));
-    reactors.push_back(Reactor("Reactor2"));
-
-    // Initialize grids
-    grids.push_back(Grid("Grid1"));
-    grids.push_back(Grid("Grid2"));
-
-    // Initialize current transformers
-    cts.push_back(CT("CT1"));
-    cts.push_back(CT("CT2"));
-
-    // Initialize potential transformers
-    pts.push_back(PT("PT1"));
-    pts.push_back(PT("PT2"));
-
-    // Initialize lines
-    lines.push_back(Line("Line1"));
-    lines.push_back(Line("Line2"));
+// Function to assemble the SLD from a file
+void SLD::assemble(const std::string& filename) {
+    InputParser parser;
+    parser.parseInputFile(filename, *this);
 }
 
 // Getters for all components
-
 std::vector<Bus>& SLD::getBuses() {
     return buses;
 }
