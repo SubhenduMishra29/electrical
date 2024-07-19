@@ -36,6 +36,10 @@ public:
     // Constructor and Destructor
     SLD(); // Constructor to initialize an SLD object
     ~SLD(); // Destructor to clean up resources
+    
+    static SLD* loadFromFile(const std::string& filename);
+
+
 
     // Function to assemble the SLD from a file
     void assemble(const std::string& filename); // Assembles the components of the SLD from a given file

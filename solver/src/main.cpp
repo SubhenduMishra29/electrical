@@ -3,7 +3,7 @@
 
 int main(int argc, char* argv[]) {
     PowerSystem ps;
-
+std::cout << "Power Sytem Simulation Started" << std::endl;
     if (argc > 1) {
         // Load from file
         ps.loadSLDFromFile(argv[1]);

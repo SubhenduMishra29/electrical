@@ -2,7 +2,9 @@
 #include "lib/input_parser.h"
 #include <sstream>
 #include <iostream>
+#include <fstream>
 
+/// @brief 
 SLD::SLD() {
     // Constructor implementation
 }
@@ -10,23 +12,34 @@ SLD::SLD() {
 SLD::~SLD() {
     // Destructor implementation
 }
-
+SLD* SLD::loadFromFile(const std::string& filename) {
+    SLD* sld;
+    sld->assemble(filename); // Initialize SLD from the file
+    return sld;
+}
 void SLD::assemble(const std::string& filename) {
+    std::ifstream file(filename);
+     SLD sld;
     InputParser parser(filename);
     parser.parseFile();
-
-    buses = parser.getBuses();
-    transformers = parser.getTransformers();
-    generators = parser.getGenerators();
-    loads = parser.getLoads();
-    transmissionLines = parser.getTransmissionLines();
-    circuitBreakers = parser.getCircuitBreakers();
-    relays = parser.getRelays();
-    capacitors = parser.getCapacitors();
-    reactors = parser.getReactors();
-    grids = parser.getGrids();
-    lines = parser.getLines();
+    if (!file.is_open()) {
+        std::cerr << "Failed to open file: " << filename << std::endl;
+        //return;
+    }
+    sld.buses = parser.getBuses();
+    sld.transformers = parser.getTransformers();
+    sld.generators = parser.getGenerators();
+    sld.loads = parser.getLoads();
+    sld.transmissionLines = parser.getTransmissionLines();
+    sld.circuitBreakers = parser.getCircuitBreakers();
+    sld.relays = parser.getRelays();
+    sld.capacitors = parser.getCapacitors();
+    sld.reactors = parser.getReactors();
+    sld.grids = parser.getGrids();
+    sld.lines = parser.getLines();
+   
 }
+
 
 void SLD::assembleFromCLI(const std::string& cliInput) {
     std::istringstream input(cliInput);

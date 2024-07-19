@@ -9,16 +9,19 @@
 #include "power_system.h"
 #include "lib/powerflow.h"
 #include "lib/sld.h"
+#include <fstream>
+#include <iostream>
 
 PowerSystem::PowerSystem() : sld(nullptr), converged(false) {
     // Constructor implementation
 }
-
+/// @brief 
+/// @param filename
 void PowerSystem::loadSLDFromFile(const std::string& filename) {
-    // Example: Load SLD from file and initialize `sld`
-    //sld = SLD::loadFromFile(filename);
+    sld = SLD::loadFromFile(filename); // Correctly use static method to assign SLD object
 }
-
+/// @brief 
+/// @param cliInput 
 void PowerSystem::loadSLDFromCLI(const std::string& cliInput) {
     // Example: Load SLD from CLI input and initialize `sld`
   //  sld = SLD::createFromCLI(cliInput);
