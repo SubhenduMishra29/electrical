@@ -1,0 +1,66 @@
+#include "lib/input_parser.h"
+#include <fstream>
+#include <iostream>
+
+InputParser::InputParser(const std::string& filename) : filename(filename) {}
+
+void InputParser::parseFile() {
+    std::ifstream file(filename);
+    if (!file.is_open()) {
+        std::cerr << "Failed to open file: " << filename << std::endl;
+        return;
+    }
+    parse(file);
+}
+
+void InputParser::parseCLI(std::istringstream& input) {
+    parse(input);
+}
+
+void InputParser::parse(std::istream& input) {
+    // Common parsing logic for both file and CLI input
+}
+
+std::vector<Bus> InputParser::getBuses() const {
+    return buses;
+}
+
+std::vector<Transformer> InputParser::getTransformers() const {
+    return transformers;
+}
+
+std::vector<Generator> InputParser::getGenerators() const {
+    return generators;
+}
+
+std::vector<Load> InputParser::getLoads() const {
+    return loads;
+}
+
+std::vector<TransmissionLine> InputParser::getTransmissionLines() const {
+    return transmissionLines;
+}
+
+std::vector<CircuitBreaker> InputParser::getCircuitBreakers() const {
+    return circuitBreakers;
+}
+
+std::vector<Relay> InputParser::getRelays() const {
+    return relays;
+}
+
+std::vector<Capacitor> InputParser::getCapacitors() const {
+    return capacitors;
+}
+
+std::vector<Reactor> InputParser::getReactors() const {
+    return reactors;
+}
+
+std::vector<Grid> InputParser::getGrids() const {
+    return grids;
+}
+
+std::vector<Line> InputParser::getLines() const {
+    return lines;
+}
