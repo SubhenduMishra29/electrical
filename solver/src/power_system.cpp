@@ -24,7 +24,7 @@ void PowerSystem::loadSLDFromFile(const std::string& filename) {
 /// @param cliInput 
 void PowerSystem::loadSLDFromCLI(const std::string& cliInput) {
     // Example: Load SLD from CLI input and initialize `sld`
-  //  sld = SLD::createFromCLI(cliInput);
+    // sld = SLD::createFromCLI(cliInput);
 }
 
 void PowerSystem::runSimulation() {

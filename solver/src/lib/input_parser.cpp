@@ -1,6 +1,9 @@
 #include "lib/input_parser.h"
 #include <fstream>
 #include <iostream>
+#include <cstdio>
+#include "parser.tab.hpp" // Include the Bison-generated header
+extern FILE* yyin;
 
 InputParser::InputParser(const std::string& filename) : filename(filename) {}
 
@@ -18,7 +21,35 @@ void InputParser::parseCLI(std::istringstream& input) {
 }
 
 void InputParser::parse(std::istream& input) {
-    // Common parsing logic for both file and CLI input
+    // Create a temporary file
+    std::ofstream tempFile("temp_input.txt");
+    if (!tempFile.is_open()) {
+        std::cerr << "Failed to create temporary file for parsing." << std::endl;
+        return;
+    }
+
+    // Write the input stream to the temporary file
+    tempFile << input.rdbuf();
+    tempFile.close();
+
+    // Open the temporary file for reading
+    FILE* tempInput = fopen("temp_input.txt", "r");
+    if (!tempInput) {
+        std::cerr << "Failed to open temporary file for parsing." << std::endl;
+        return;
+    }
+
+    // Set the input for the lexer
+    yyin = tempInput;
+
+    // Call the parser
+    if (yyparse() != 0) {
+        std::cerr << "Parsing failed!" << std::endl;
+    }
+
+    // Clean up
+    fclose(tempInput);
+    remove("temp_input.txt");
 }
 
 std::vector<Bus> InputParser::getBuses() const {

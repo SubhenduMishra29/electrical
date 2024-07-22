@@ -40,7 +40,7 @@ public:
     static SLD* loadFromFile(const std::string& filename);
 
 
-
+    
     // Function to assemble the SLD from a file
     void assemble(const std::string& filename); // Assembles the components of the SLD from a given file
 
