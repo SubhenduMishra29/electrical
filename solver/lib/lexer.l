@@ -4,7 +4,8 @@
 #include "parser.tab.hpp"
 #include <string>
 
-extern YYSTYPE yylval; // Assuming yylval is defined in the Bison parser as YYSTYPE.
+// Declare yylval to be used for passing values from the lexer to the parser
+extern YYSTYPE yylval;
 %}
 
 IDENTIFIER [a-zA-Z_][a-zA-Z0-9_]*
