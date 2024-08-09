@@ -1,13 +1,14 @@
 #include "lib/bus.h"
 
-Bus::Bus(const std::string& name, double voltage) : voltage(voltage) {
+Bus::Bus(const std::string& name, double voltage, BusType type) {
     // Initialize other members if necessary
 }
 
 void Bus::addGenerator(Generator* generator) {
     generators.push_back(generator);
 }
-
+/// @brief 
+/// @param load 
 void Bus::addLoad(Load* load) {
     loads.push_back(load);
 }

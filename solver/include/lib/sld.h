@@ -11,9 +11,13 @@
  * License: GPL
  */
 
-#include <vector>
 #include <string>
-
+#include <memory>
+#include <vector>
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include "lib/input_parser.h"
 // Forward declarations to reduce unnecessary header inclusions
 class Bus;
 class Transformer;
@@ -38,7 +42,7 @@ public:
     ~SLD(); // Destructor to clean up resources
     
     static SLD* loadFromFile(const std::string& filename);
-
+    static std::unique_ptr<SLD> createFromCLI(const std::string& cliInput);
 
     
     // Function to assemble the SLD from a file

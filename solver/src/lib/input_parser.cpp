@@ -2,8 +2,15 @@
 #include <fstream>
 #include <iostream>
 #include <cstdio>
-#include "parser.tab.hpp" // Include the Bison-generated header
+#include <sstream>
+
+// Include the Bison-generated header
+#include "parser.tab.hpp"
+
+// Declare external variables and functions
 extern FILE* yyin;
+extern int yyparse();
+extern void yyerror(const char *s);
 
 InputParser::InputParser(const std::string& filename) : filename(filename) {}
 
@@ -41,11 +48,13 @@ void InputParser::parse(std::istream& input) {
 
     // Set the input for the lexer
     yyin = tempInput;
+    std::cout << "Parsing Started" << std::endl;
 
     // Call the parser
     if (yyparse() != 0) {
         std::cerr << "Parsing failed!" << std::endl;
     }
+    std::cout << "Parsing ends" << std::endl;
 
     // Clean up
     fclose(tempInput);
@@ -94,4 +103,9 @@ std::vector<Grid> InputParser::getGrids() const {
 
 std::vector<Line> InputParser::getLines() const {
     return lines;
+}
+
+// Destructor to avoid memory leaks
+InputParser::~InputParser() {
+    // Clean up resources if needed
 }

@@ -1,6 +1,9 @@
 #ifndef GRID_H
 #define GRID_H
-
+/**
+ * Author: Subhendu Mishra
+ * License: GPL
+ */
 #include "PowerSystemError.h"
 
 class Grid {

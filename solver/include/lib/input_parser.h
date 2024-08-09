@@ -4,11 +4,10 @@
 /*
  * File: InputParser.h
  * Author: Subhendu Mishra
- * Description: Header file for the InputParser class, which is responsible for parsing input files
+ * Description: Header file for the InputParser class, responsible for parsing input files
  *              and initializing the SLD (Single Line Diagram) with the components defined in the file.
  * License: GPL
  */
-
 
 #include <vector>
 #include <string>
@@ -27,11 +26,18 @@
 
 class InputParser {
 public:
-    InputParser(const std::string& filename); // Constructor for file input
+    // Constructors
+    InputParser();
+    explicit InputParser(const std::string& filename);
+
+    // Destructor
+    ~InputParser();
+
+    // File and CLI Parsing
     void parseFile();
+    void parseCLI(std::istringstream& input);
 
-    void parseCLI(std::istringstream& input); // Parse CLI input
-
+    // Getter methods for the parsed components
     std::vector<Bus> getBuses() const;
     std::vector<Transformer> getTransformers() const;
     std::vector<Generator> getGenerators() const;
@@ -44,7 +50,17 @@ public:
     std::vector<Grid> getGrids() const;
     std::vector<Line> getLines() const;
 
+    // Methods to add component definitions
+    void addBusDefinition(int busNumber, double voltage, double angle, double loadMW, double loadMVAR);
+    void addTransformerDefinition(int transformerID, int primaryBus, int secondaryBus, double impedance, double rating);
+    void addGridDefinition(double voltage, const std::string& type);
+    // Additional methods for other components like generators, lines, etc., can be added here.
+
 private:
+    // Private methods
+    void parse(std::istream& input); // Common parsing logic
+
+    // Member variables
     std::string filename;
     std::vector<Bus> buses;
     std::vector<Transformer> transformers;
@@ -57,8 +73,6 @@ private:
     std::vector<Reactor> reactors;
     std::vector<Grid> grids;
     std::vector<Line> lines;
-
-    void parse(std::istream& input); // Common parsing logic
 };
 
 #endif // INPUT_PARSER_H

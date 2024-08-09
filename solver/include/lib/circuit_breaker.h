@@ -1,6 +1,9 @@
 #ifndef CIRCUIT_BREAKER_H
 #define CIRCUIT_BREAKER_H
-
+/**
+ * Author: Subhendu Mishra
+ * License: GPL
+ */
 #include <string>
 #include "PowerSystemError.h"
 

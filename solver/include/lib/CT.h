@@ -1,6 +1,9 @@
 #ifndef CT_H
 #define CT_H
-
+/**
+ * Author: Subhendu Mishra
+ * License: GPL
+ */
 #include "lib/transformer.h"
 #include "lib/bus.h"
 #include <string>

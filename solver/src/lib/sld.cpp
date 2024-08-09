@@ -39,7 +39,14 @@ void SLD::assemble(const std::string& filename) {
     sld.lines = parser.getLines();
    
 }
-
+/// @brief 
+/// @param cliInput 
+/// @return 
+std::unique_ptr<SLD> createFromCLI(const std::string& cliInput) {
+        auto instance = std::make_unique<SLD>();  // Create a unique pointer to a new SLD instance
+        instance->assembleFromCLI(cliInput);
+        return instance;
+    }
 
 void SLD::assembleFromCLI(const std::string& cliInput) {
     std::istringstream input(cliInput);

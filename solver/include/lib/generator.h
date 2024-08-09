@@ -1,6 +1,9 @@
 #ifndef GENERATOR_H
 #define GENERATOR_H
-
+/**
+ * Author: Subhendu Mishra
+ * License: GPL
+ */
 #include <string>
 #include "PowerSystemError.h"
 

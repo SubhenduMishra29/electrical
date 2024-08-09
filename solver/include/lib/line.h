@@ -1,5 +1,9 @@
 #ifndef LINE_H
 #define LINE_H
+/**
+ * Author: Subhendu Mishra
+ * License: GPL
+ */
 #include "PowerSystemError.h"
 struct Line {
     int id;          // Line ID

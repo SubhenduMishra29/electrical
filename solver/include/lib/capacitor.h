@@ -1,6 +1,9 @@
 #ifndef CAPACITOR_H
 #define CAPACITOR_H
-
+/**
+ * Author: Subhendu Mishra
+ * License: GPL
+ */
 #include <string>
 
 class Capacitor {
