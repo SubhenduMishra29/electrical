@@ -4,64 +4,76 @@
 #include <iostream>
 #include <fstream>
 
-/// @brief 
+// Constructor
 SLD::SLD() {
     // Constructor implementation
 }
 
+// Destructor
 SLD::~SLD() {
     // Destructor implementation
 }
+
+// Static method to load SLD from a file
 SLD* SLD::loadFromFile(const std::string& filename) {
-    SLD* sld;
+    SLD* sld = new SLD(); // Create a new SLD object
     sld->assemble(filename); // Initialize SLD from the file
     return sld;
 }
+
+// Method to assemble the SLD from a file
 void SLD::assemble(const std::string& filename) {
     std::ifstream file(filename);
-     SLD sld;
-    InputParser parser(filename);
-    parser.parseFile();
+
     if (!file.is_open()) {
         std::cerr << "Failed to open file: " << filename << std::endl;
-        //return;
+        return; // Return early if file cannot be opened
     }
-    sld.buses = parser.getBuses();
-    sld.transformers = parser.getTransformers();
-    sld.generators = parser.getGenerators();
-    sld.loads = parser.getLoads();
-    sld.transmissionLines = parser.getTransmissionLines();
-    sld.circuitBreakers = parser.getCircuitBreakers();
-    sld.relays = parser.getRelays();
-    sld.capacitors = parser.getCapacitors();
-    sld.reactors = parser.getReactors();
-    sld.grids = parser.getGrids();
-    sld.lines = parser.getLines();
-   
+
+    InputParser parser(filename);
+    parser.parseFile();
+
+    buses = parser.getBuses();
+    transformers = parser.getTransformers();
+    generators = parser.getGenerators();
+    loads = parser.getLoads();
+    transmissionLines = parser.getTransmissionLines();
+    circuitBreakers = parser.getCircuitBreakers();
+    relays = parser.getRelays();
+    capacitors = parser.getCapacitors();
+    reactors = parser.getReactors();
+    grids = parser.getGrids();
+    lines = parser.getLines();
 }
-/// @brief 
-/// @param cliInput 
-/// @return 
-std::unique_ptr<SLD> createFromCLI(const std::string& cliInput) {
-        auto instance = std::make_unique<SLD>();  // Create a unique pointer to a new SLD instance
-        instance->assembleFromCLI(cliInput);
-        return instance;
-    }
 
+// Static method to create SLD from CLI input
+std::unique_ptr<SLD> SLD::createFromCLI(const std::string& cliInput) {
+    auto instance = std::make_unique<SLD>();  // Create a unique pointer to a new SLD instance
+    instance->assembleFromCLI(cliInput); // Assemble the SLD from CLI input
+    return instance;
+}
+
+// Method to assemble the SLD from CLI input
 void SLD::assembleFromCLI(const std::string& inputString) {
-    // Create an istringstream from the input string
     std::istringstream input(inputString);
-
-    // Create an InputParser instance with the istringstream pointer
     InputParser parser(&input);
-
-    // Call the parseCLI method
     parser.parseCLI();
 
-    // Now you can retrieve parsed data from the parser if needed
-    // e.g., auto buses = parser.getBuses();
+    // Populate components from parser data
+    buses = parser.getBuses();
+    transformers = parser.getTransformers();
+    generators = parser.getGenerators();
+    loads = parser.getLoads();
+    transmissionLines = parser.getTransmissionLines();
+    circuitBreakers = parser.getCircuitBreakers();
+    relays = parser.getRelays();
+    capacitors = parser.getCapacitors();
+    reactors = parser.getReactors();
+    grids = parser.getGrids();
+    lines = parser.getLines();
 }
 
+// Getters for all components
 std::vector<Bus>& SLD::getBuses() {
     return buses;
 }
