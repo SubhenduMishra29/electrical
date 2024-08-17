@@ -48,22 +48,18 @@ std::unique_ptr<SLD> createFromCLI(const std::string& cliInput) {
         return instance;
     }
 
-void SLD::assembleFromCLI(const std::string& cliInput) {
-    std::istringstream input(cliInput);
-    InputParser parser("");
-    parser.parseCLI(input);
+void SLD::assembleFromCLI(const std::string& inputString) {
+    // Create an istringstream from the input string
+    std::istringstream input(inputString);
 
-    buses = parser.getBuses();
-    transformers = parser.getTransformers();
-    generators = parser.getGenerators();
-    loads = parser.getLoads();
-    transmissionLines = parser.getTransmissionLines();
-    circuitBreakers = parser.getCircuitBreakers();
-    relays = parser.getRelays();
-    capacitors = parser.getCapacitors();
-    reactors = parser.getReactors();
-    grids = parser.getGrids();
-    lines = parser.getLines();
+    // Create an InputParser instance with the istringstream pointer
+    InputParser parser(&input);
+
+    // Call the parseCLI method
+    parser.parseCLI();
+
+    // Now you can retrieve parsed data from the parser if needed
+    // e.g., auto buses = parser.getBuses();
 }
 
 std::vector<Bus>& SLD::getBuses() {

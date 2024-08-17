@@ -1,29 +1,24 @@
 %{
-/*
- * File: lexer.l
- * Author: Subhendu Mishra
- * Description: Lexer for tokenizing input for the SLD parser.
- * License: GPL
- */
-
-#include "parser.tab.hpp"
+#include "lib/input_parser.h"
+#include "parser.tab.hpp" // Ensure this matches your Bison header file
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
 #include <sstream>
 
 // Declare yylex and yyerror functions
-#define YY_DECL int yylex()
-
 extern int yylex();
 extern void yyerror(const char *s);
 
-/* Input stream for the lexer */
-extern std::stringstream* yyin_stream;
+// External variables for input stream handling
+extern FILE* yyin;                      // For FILE* input
+extern std::stringstream* yyin_stream;  // For std::stringstream input
 
+// Function prototypes for input handling
+void set_input_file(FILE* file);         // For FILE* input
+void set_input_stream(std::stringstream* stream); // For std::stringstream input
 %}
 
-/* Disable yywrap function */
 %option noyywrap
 
 %%
@@ -31,6 +26,9 @@ extern std::stringstream* yyin_stream;
 GRID                    { return GRID; }
 TRANSFORMER             { return TRANSFORMER; }
 BUS                     { return BUS; }
+CT                      { return CT; }
+PT                      { return PT; }
+CB                      { return CB; }
 CONNECTED               { return CONNECTED; }
 TO                      { return TO; }
 VOLTAGE                 { return VOLTAGE; }
@@ -44,15 +42,36 @@ CONTROL                 { return CONTROL; }
 NONE                    { return NONE; }
 PQ                      { return PQ; }
 SLACK                   { return SLACK; }
+EXIT                    { return EXIT; }
 
 [0-9]+\.[0-9]+          { yylval.number = atof(yytext); return NUMBER; }
 [0-9]+                  { yylval.number = atoi(yytext); return NUMBER; }
 \"[^\"]+\"              { yylval.string = strdup(yytext); return STRING; }
 [ \t\n]+                { /* Ignore whitespace */ }
-.                       { return yytext[0]; }
+.                       { fprintf(stderr, "Unexpected character: %s\n", yytext); }
 
 %%
 
-void yyerror(const char *s) {
-    // Error handling can be enhanced if needed
+// Function implementations
+
+// For std::stringstream:
+void set_input_stream(std::stringstream* stream) {
+    if (stream) {
+        std::string str = stream->str();
+        // Create a temporary file for Flex
+        FILE* temp_file = tmpfile();
+        if (temp_file) {
+            fwrite(str.c_str(), 1, str.size(), temp_file);
+            rewind(temp_file);
+            yyin = temp_file;
+        }
+    }
+}
+
+// For FILE*:
+void set_input_file(FILE* file) {
+    yyin = file;
+    if (file) {
+        fseek(file, 0, SEEK_SET);  // Rewind file
+    }
 }

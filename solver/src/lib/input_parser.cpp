@@ -1,111 +1,142 @@
 #include "lib/input_parser.h"
-#include <fstream>
-#include <iostream>
-#include <cstdio>
-#include <sstream>
+#include <iostream>   // For std::cerr and std::endl
+#include <fstream>    // For std::ifstream
+#include <cstdio>     // For FILE* and fopen
 
-// Include the Bison-generated header
-#include "parser.tab.hpp"
+#include "parser.tab.hpp"  // Include your generated parser header
 
-// Declare external variables and functions
-extern FILE* yyin;
-extern int yyparse();
-extern void yyerror(const char *s);
+#include "lib/bus.h"           // Include full definition of Bus
+#include "lib/transformer.h"   // Include full definition of Transformer
+#include "lib/generator.h"     // Include full definition of Generator
+#include "lib/load.h"          // Include full definition of Load
+#include "lib/transmission_line.h" // Include full definition of TransmissionLine
+#include "lib/circuit_breaker.h"   // Include full definition of CircuitBreaker
+#include "lib/relay.h"        // Include full definition of Relay
+#include "lib/capacitor.h"    // Include full definition of Capacitor
+#include "lib/reactor.h"      // Include full definition of Reactor
+#include "lib/grid.h"         // Include full definition of Grid
+#include "lib/line.h"         // Include full definition of Line
 
-InputParser::InputParser(const std::string& filename) : filename(filename) {}
+// Forward declarations of parser and lexer functions
+extern "C" {
+    void yyerror(const char*);
+    extern FILE* yyin;  // Use the FILE* global variable for Flex
+}
 
-void InputParser::parseFile() {
-    std::ifstream file(filename);
-    if (!file.is_open()) {
+// Constructor for file input
+InputParser::InputParser(const std::string& filename)
+    : filename(filename), cliStream(nullptr), fileStream(nullptr) {
+    // Open file using C FILE* for Flex
+    FILE* file = fopen(filename.c_str(), "r");
+    if (!file) {
         std::cerr << "Failed to open file: " << filename << std::endl;
-        return;
+    } else {
+        yyin = file;  // Set yyin to the opened file
     }
-    parse(file);
 }
 
-void InputParser::parseCLI(std::istringstream& input) {
-    parse(input);
+// Constructor for CLI input
+InputParser::InputParser(std::istream* cliStream) 
+    : filename(""), cliStream(cliStream), fileStream(nullptr) {
+    if (!cliStream) {
+        std::cerr << "CLI stream is not set." << std::endl;
+    } else {
+        yyin = stdin;  // Use stdin for CLI input
+    }
 }
 
-void InputParser::parse(std::istream& input) {
-    // Create a temporary file
-    std::ofstream tempFile("temp_input.txt");
-    if (!tempFile.is_open()) {
-        std::cerr << "Failed to create temporary file for parsing." << std::endl;
+// Destructor to clean up resources
+InputParser::~InputParser() {
+    // Clean up the file stream if it was allocated
+    if (yyin && yyin != stdin) {
+        fclose(yyin);  // Close the file if it was opened
+    }
+}
+
+// Method to parse file input
+void InputParser::parseFile() {
+    if (!yyin) {
+        std::cerr << "Failed to open or read file: " << filename << std::endl;
         return;
     }
-
-    // Write the input stream to the temporary file
-    tempFile << input.rdbuf();
-    tempFile.close();
-
-    // Open the temporary file for reading
-    FILE* tempInput = fopen("temp_input.txt", "r");
-    if (!tempInput) {
-        std::cerr << "Failed to open temporary file for parsing." << std::endl;
-        return;
-    }
-
-    // Set the input for the lexer
-    yyin = tempInput;
-    std::cout << "Parsing Started" << std::endl;
 
     // Call the parser
     if (yyparse() != 0) {
-        std::cerr << "Parsing failed!" << std::endl;
+        std::cerr << "Parsing failed." << std::endl;
     }
-    std::cout << "Parsing ends" << std::endl;
-
-    // Clean up
-    fclose(tempInput);
-    remove("temp_input.txt");
 }
 
-std::vector<Bus> InputParser::getBuses() const {
+// Method to parse CLI input
+void InputParser::parseCLI() {
+    if (!cliStream) {
+        std::cerr << "CLI stream is not set." << std::endl;
+        return;
+    }
+
+    yyin = stdin;  // Use stdin for CLI input
+
+    // Call the parser
+    if (yyparse() != 0) {
+        std::cerr << "Parsing failed." << std::endl;
+    }
+}
+
+// Reset parser state
+void InputParser::resetParserState() {
+    buses.clear();
+    transformers.clear();
+    generators.clear();
+    loads.clear();
+    transmissionLines.clear();
+    circuitBreakers.clear();
+    relays.clear();
+    capacitors.clear();
+    reactors.clear();
+    grids.clear();
+    lines.clear();
+}
+
+// Getter methods for parsed data
+std::vector<Bus>& InputParser::getBuses() {
     return buses;
 }
 
-std::vector<Transformer> InputParser::getTransformers() const {
+std::vector<Transformer>& InputParser::getTransformers() {
     return transformers;
 }
 
-std::vector<Generator> InputParser::getGenerators() const {
+std::vector<Generator>& InputParser::getGenerators() {
     return generators;
 }
 
-std::vector<Load> InputParser::getLoads() const {
+std::vector<Load>& InputParser::getLoads() {
     return loads;
 }
 
-std::vector<TransmissionLine> InputParser::getTransmissionLines() const {
+std::vector<TransmissionLine>& InputParser::getTransmissionLines() {
     return transmissionLines;
 }
 
-std::vector<CircuitBreaker> InputParser::getCircuitBreakers() const {
+std::vector<CircuitBreaker>& InputParser::getCircuitBreakers() {
     return circuitBreakers;
 }
 
-std::vector<Relay> InputParser::getRelays() const {
+std::vector<Relay>& InputParser::getRelays() {
     return relays;
 }
 
-std::vector<Capacitor> InputParser::getCapacitors() const {
+std::vector<Capacitor>& InputParser::getCapacitors() {
     return capacitors;
 }
 
-std::vector<Reactor> InputParser::getReactors() const {
+std::vector<Reactor>& InputParser::getReactors() {
     return reactors;
 }
 
-std::vector<Grid> InputParser::getGrids() const {
+std::vector<Grid>& InputParser::getGrids() {
     return grids;
 }
 
-std::vector<Line> InputParser::getLines() const {
+std::vector<Line>& InputParser::getLines() {
     return lines;
-}
-
-// Destructor to avoid memory leaks
-InputParser::~InputParser() {
-    // Clean up resources if needed
 }

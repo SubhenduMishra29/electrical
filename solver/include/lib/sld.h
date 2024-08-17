@@ -18,6 +18,19 @@
 #include <fstream>
 #include <sstream>
 #include "lib/input_parser.h"
+#include "lib/sld.h"
+#include "lib/input_parser.h"
+#include "lib/bus.h"
+#include "lib/transformer.h"
+#include "lib/generator.h"
+#include "lib/load.h"
+#include "lib/transmission_line.h"
+#include "lib/circuit_breaker.h"
+#include "lib/relay.h"
+#include "lib/capacitor.h"
+#include "lib/reactor.h"
+#include "lib/grid.h"
+#include "lib/line.h"
 // Forward declarations to reduce unnecessary header inclusions
 class Bus;
 class Transformer;

@@ -9,59 +9,64 @@
  * License: GPL
  */
 
-#include <vector>
+
+
 #include <string>
-#include <sstream>
-#include "bus.h"
-#include "transformer.h"
-#include "generator.h"
-#include "load.h"
-#include "transmission_line.h"
-#include "circuit_breaker.h"
-#include "relay.h"
-#include "capacitor.h"
-#include "reactor.h"
-#include "grid.h"
-#include "line.h"
+#include <vector>
+#include <istream>
+#include <iostream>   // For std::cerr and std::endl
+#include <fstream> // Include for std::ifstream
+
+// Forward declarations
+class Bus;
+class Transformer;
+class Generator;
+class Load;
+class TransmissionLine;
+class CircuitBreaker;
+class Relay;
+class Capacitor;
+class Reactor;
+class Grid;
+class Line;
+extern std::stringstream* yyin_stream; // Declaration
+
+void set_input_stream(std::stringstream* stream);
 
 class InputParser {
 public:
-    // Constructors
-    InputParser();
-    explicit InputParser(const std::string& filename);
+    // Constructor for file input
+    InputParser(const std::string& filename);
+    
+    // Constructor for CLI input
+    InputParser(std::istream* cliStream);
 
-    // Destructor
-    ~InputParser();
+    ~InputParser(); // Destructor to clean up resources
 
-    // File and CLI Parsing
     void parseFile();
-    void parseCLI(std::istringstream& input);
+    void parseCLI();
 
-    // Getter methods for the parsed components
-    std::vector<Bus> getBuses() const;
-    std::vector<Transformer> getTransformers() const;
-    std::vector<Generator> getGenerators() const;
-    std::vector<Load> getLoads() const;
-    std::vector<TransmissionLine> getTransmissionLines() const;
-    std::vector<CircuitBreaker> getCircuitBreakers() const;
-    std::vector<Relay> getRelays() const;
-    std::vector<Capacitor> getCapacitors() const;
-    std::vector<Reactor> getReactors() const;
-    std::vector<Grid> getGrids() const;
-    std::vector<Line> getLines() const;
-
-    // Methods to add component definitions
-    void addBusDefinition(int busNumber, double voltage, double angle, double loadMW, double loadMVAR);
-    void addTransformerDefinition(int transformerID, int primaryBus, int secondaryBus, double impedance, double rating);
-    void addGridDefinition(double voltage, const std::string& type);
-    // Additional methods for other components like generators, lines, etc., can be added here.
+    std::vector<Bus>& getBuses();
+    std::vector<Transformer>& getTransformers();
+    std::vector<Generator>& getGenerators();
+    std::vector<Load>& getLoads();
+    std::vector<TransmissionLine>& getTransmissionLines();
+    std::vector<CircuitBreaker>& getCircuitBreakers();
+    std::vector<Relay>& getRelays();
+    std::vector<Capacitor>& getCapacitors();
+    std::vector<Reactor>& getReactors();
+    std::vector<Grid>& getGrids();
+    std::vector<Line>& getLines();
 
 private:
-    // Private methods
-    void parse(std::istream& input); // Common parsing logic
+    std::string filename;   // Filename for file input
+    std::istream* cliStream; // Pointer to stream for CLI input
+    std::ifstream* fileStream; // Pointer to file stream for file input
 
-    // Member variables
-    std::string filename;
+    // Parser and lexer methods
+    void resetParserState();
+
+    // Vector containers for parsed data
     std::vector<Bus> buses;
     std::vector<Transformer> transformers;
     std::vector<Generator> generators;
