@@ -1,4 +1,0 @@
-Parsed BUS definition with attributes: "MainBus", Voltage: 220, Generation: 100, Type: "TypeA", Control: "Control1"
-Parsed TRANSFORMER definition with attributes: "T1", From: "Bus1", To: "Bus2", Rating: 150, Impedance: 0.02
-Parsed GRID definition with attributes: Voltage: 110, Type: "TypeB"
-Parsed CT definition with attributes: "CT1", Type: "TypeX"

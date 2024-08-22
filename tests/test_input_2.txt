@@ -1,5 +1,0 @@
-CB "CircuitBreaker1" TYPE "TypeY"
-PT "PT1" TYPE "TypeZ"
-EXIT
-LOAD "load_file.txt"
-SAVE "save_file.txt"
