@@ -11,49 +11,49 @@
  * Author: Subhendu Mishra
  * License: GPL
  */
-
 #include <vector>
 #include <string>
-#include "lib/generator.h"
+#include <complex>
+#include <algorithm> // Include this at the top of your file
 #include "lib/load.h"
-#include "lib/transformer.h"
 #include "lib/powersystemerror.h"
 #include "lib/transmission_line.h"
-#include "lib/circuit_breaker.h"
-#include "lib/relay.h"
-#include "lib/capacitor.h"
-#include "lib/reactor.h"
-#include "lib/grid.h"
 #include "lib/line.h"
 #include "voltage.h"
-#include "BusType.h" // Include BusType enum
+#include "BusType.h"
 
-class Transformer;
-
+class TransmissionLine; // Forward declaration
 /**
  * @class Bus
- * @brief Represents a bus in the power system, containing generators, loads, and transmission lines.
- * 
- * The Bus class manages a list of components connected to the bus, including generators, loads,
- * transmission lines, and transformers. It also maintains the voltage level of the bus.
+ * @brief Represents a bus in the power system, containing voltage, current, and methods to calculate power flow.
  */
 class Bus {
 private:
-    std::vector<Generator*> generators; ///< List of generators connected to the bus
-    std::vector<Load*> loads; ///< List of loads connected to the bus
     std::vector<TransmissionLine*> transmissionLines; ///< List of transmission lines connected to the bus
-    std::vector<Transformer*> transformers; ///< List of transformers connected to the bus
-    double voltage; ///< Voltage level of the bus in kV
+    Voltage busVoltage; ///< Voltage at the bus (complex value with magnitude and angle)
+    double current; ///< Current at the bus in amperes
+    double inflowPower; ///< Total inflow power in MW
+    double outflowPower; ///< Total outflow power in MW
     BusType type; ///< Type of the bus (SLACK, PV, PQ)
+
+    /**
+     * @brief Recalculates the bus voltage and current based on connected transmission lines.
+     */
+    void recalculateBusState();
+
+    /**
+     * @brief Calculates the inflow and outflow power based on connected transmission lines.
+     */
+    void calculatePowerFlow();
 
 public:
     /**
      * @brief Constructor for the Bus class.
      * @param name The name of the bus.
-     * @param voltage The voltage level of the bus in kV.
+     * @param busVoltage The initial voltage at the bus.
      * @param type The type of the bus (SLACK, PV, PQ).
      */
-    Bus(const std::string& name, double voltage, BusType type);
+    Bus(const std::string& name, const Voltage& busVoltage, BusType type);
 
     /**
      * @brief Destructor for the Bus class.
@@ -61,40 +61,52 @@ public:
     ~Bus() = default;
 
     /**
-     * @brief Adds a generator to the bus.
-     * @param generator Pointer to the generator to be added.
-     */
-    void addGenerator(Generator* generator);
-
-    /**
-     * @brief Adds a load to the bus.
-     * @param load Pointer to the load to be added.
-     */
-    void addLoad(Load* load);
-
-    /**
-     * @brief Adds a transmission line to the bus.
+     * @brief Adds a transmission line to the bus and recalculates the bus state.
      * @param line Pointer to the transmission line to be added.
      */
     void addTransmissionLine(TransmissionLine* line);
 
     /**
-     * @brief Adds a transformer to the bus.
-     * @param transformer Pointer to the transformer to be added.
+     * @brief Removes a transmission line from the bus and recalculates the bus state.
+     * @param line Pointer to the transmission line to be removed.
      */
-    void addTransformer(Transformer* transformer);
+    void removeTransmissionLine(TransmissionLine* line);
 
     /**
-     * @brief Gets the voltage of the bus.
-     * @return The voltage of the bus in kV.
+     * @brief Gets the voltage at the bus.
+     * @return The voltage at the bus as a complex number.
      */
-    double getVoltage() const;
+    Voltage getVoltage() const;
 
     /**
-     * @brief Sets the voltage of the bus.
-     * @param voltage The voltage level to set in kV.
+     * @brief Sets the voltage at the bus and recalculates the bus state.
+     * @param voltage The voltage to set as a complex number.
      */
-    void setVoltage(double voltage);
+    void setVoltage(const Voltage& voltage);
+
+    /**
+     * @brief Gets the current at the bus.
+     * @return The current at the bus in amperes.
+     */
+    double getCurrent() const;
+
+    /**
+     * @brief Sets the current at the bus and recalculates the bus state.
+     * @param current The current to set in amperes.
+     */
+    void setCurrent(double current);
+
+    /**
+     * @brief Gets the inflow power at the bus.
+     * @return The inflow power in MW.
+     */
+    double getInflowPower() const;
+
+    /**
+     * @brief Gets the outflow power at the bus.
+     * @return The outflow power in MW.
+     */
+    double getOutflowPower() const;
 
     /**
      * @brief Gets the type of the bus.
@@ -107,11 +119,7 @@ public:
      * @param type The type of the bus (SLACK, PV, PQ).
      */
     void setType(BusType type);
-
-    /**
-     * @brief Calculates the power flow for the bus.
-     */
-    void calculatePowerFlow();
 };
 
 #endif // BUS_H
+

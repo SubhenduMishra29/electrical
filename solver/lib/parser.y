@@ -4,9 +4,8 @@
 #include <string>
 #include <vector>
 #include <sstream>
-
 #include "lib/input_parser.h"
-
+#include "lexer.yy.h"  // Include the generated lexer header
 extern int yylex();
 extern void yyerror(const char *s);
 
@@ -23,10 +22,10 @@ InputParser* parser = nullptr;
 /* Define tokens and their types */
 %token <string> STRING
 %token <number> NUMBER
-%token GRID TRANSFORMER BUS CT PT CB VOLTAGE TYPE RATING IMPEDANCE FROM TO CONNECTED GENERATION LOAD CONTROL NONE PQ SLACK EXIT
+%token GRID TRANSFORMER BUS CT PT CB VOLTAGE TYPE RATING IMPEDANCE FROM TO CONNECTED GENERATION LOAD CONTROL NONE PQ SLACK LINE
 
 /* Define additional tokens if needed */
-%token ST
+%token VERSION HELP ST Load_file SAVE EXIT
 
 %%
 
@@ -50,10 +49,24 @@ cli_command:
         // Handle the exit command here
         exit(0);
     }
+    | LOAD STRING {
+        // Handle load command here
+        printf("Loading from file: %s\n", $2);
+        free($2);  // Free allocated string memory
+    }
+    | SAVE STRING {
+        // Handle save command here
+        printf("Saving to file: %s\n", $2);
+        free($2);  // Free allocated string memory
+    }
+    | HELP {
+        printf("help initiated");
+    }
     ;
 
 bus_definition:
     BUS STRING VOLTAGE NUMBER GENERATION NUMBER TYPE STRING CONTROL STRING {
+        std::cout << "Parsing BUS with values: ";
         if ($4 <= 0 || $6 < 0) {
             yyerror("Invalid bus attributes");
         }
@@ -65,9 +78,7 @@ bus_definition:
 
 transformer_definition:
     TRANSFORMER STRING FROM STRING TO STRING RATING NUMBER IMPEDANCE NUMBER {
-       // if ($6 == nullptr || $8 == nullptr) {
-       //     yyerror("Invalid transformer connections");
-       // }
+        std::cout << "Parsing BUS with values: ";
         free($2);  // Free allocated string memory
         free($4);  // Free allocated string memory
         free($6);  // Free allocated string memory
@@ -76,6 +87,7 @@ transformer_definition:
 
 grid_definition:
     GRID VOLTAGE NUMBER TYPE STRING {
+        std::cout << "Parsing BUS with values: ";
         if ($3 <= 0) {
             yyerror("Invalid grid voltage");
         }
@@ -85,6 +97,7 @@ grid_definition:
 
 ct_definition:
     CT STRING TYPE STRING {
+        std::cout << "Parsing BUS with values: ";
         if ($2 == nullptr || $4 == nullptr) {
             yyerror("Invalid CT definition");
         }
@@ -95,6 +108,7 @@ ct_definition:
 
 pt_definition:
     PT STRING TYPE STRING {
+        std::cout << "Parsing BUS with values: ";
         if ($2 == nullptr || $4 == nullptr) {
             yyerror("Invalid PT definition");
         }
@@ -105,6 +119,7 @@ pt_definition:
 
 cb_definition:
     CB STRING TYPE STRING {
+        std::cout << "Parsing BUS with values: ";
         if ($2 == nullptr || $4 == nullptr) {
             yyerror("Invalid CB definition");
         }

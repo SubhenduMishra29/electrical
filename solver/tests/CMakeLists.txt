@@ -1,16 +1,12 @@
-# tests/CMakeLists.txt
+# Add the test executable
+add_executable(BFT
+    run_tests.cpp
+    ${BISON_OUTPUT_DIR}/parser.tab.cpp
+    ${FLEX_OUTPUT_DIR}/lex.yy.cpp
+)
 
-# Include directories
-include_directories(${CMAKE_SOURCE_DIR}/include)
+# Link the test executable with the library
+target_link_libraries(BFT PowerSystemLib ${FL_LIBRARY})
 
-# Test source files
-file(GLOB TEST_SOURCES "*.cpp")
-
-# Create executable for tests
-add_executable(integration_tests ${TEST_SOURCES})
-
-# Link the main project library if needed
-target_link_libraries(integration_tests Power_Lib)
-
-# Add tests
-add_test(NAME integration_tests COMMAND integration_tests)
+# Define the test case
+add_test(NAME BFT COMMAND BFT)
