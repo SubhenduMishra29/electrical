@@ -1,0 +1,59 @@
+# SLD Definition for Detailed P/Q Studies
+
+# 1. Buses
+Bus1 id="Bus1" type="Slack" voltage="11kV" angle="0" base_kV="11" load_p="0" load_q="0" generator_p="0" generator_q="0" shunt_conductor="None" voltage_regulator="On" regulator_setpoint="11kV" voltage_band="±2%" emergency_backup="No" harmonic_distortion="0.5%" busbar_protection="Yes"
+Bus2 id="Bus2" type="Load" voltage="11kV" angle="0" base_kV="11" load_p="20MW" load_q="10MVAR" generator_p="0" generator_q="0" shunt_conductor="5MVAR" voltage_regulator="Off" regulator_setpoint="None" voltage_band="±5%" emergency_backup="Yes" harmonic_distortion="1%" busbar_protection="No"
+Bus3 id="Bus3" type="Generation" voltage="11kV" angle="0" base_kV="11" load_p="0" load_q="0" generator_p="30MW" generator_q="10MVAR" shunt_conductor="None" voltage_regulator="On" regulator_setpoint="11kV" voltage_band="±2%" emergency_backup="No" harmonic_distortion="0.3%" busbar_protection="Yes"
+
+# 2. Transformers
+Transformer1 id="Transformer1" from="Bus1" to="Bus2" rating="100MVA" impedance="0.05+j0.1" tap_changer="Yes" tap_range="±10%" tap_step="0.5%" tap_position="0" cooling="ONAN" temperature_rise="45°C" vector_group="Dyn11" load_tap_changer="Yes" no_load_tap_changer="No" winding_material="Copper" insulation_material="Oil" health_monitoring="Yes" insulation_resistance="500MΩ"
+Transformer2 id="Transformer2" from="Bus2" to="Bus3" rating="50MVA" impedance="0.08+j0.12" tap_changer="No" cooling="ONAF" temperature_rise="55°C" vector_group="Yd11" load_tap_changer="No" no_load_tap_changer="Yes" winding_material="Aluminum" insulation_material="Paper" health_monitoring="No" insulation_resistance="200MΩ"
+
+# 3. Lines
+Line1 id="Line1" from="Bus1" to="Bus2" impedance="0.02+j0.04" length="20km" temperature="25°C" conductor="Aluminum" line_type="Overhead" sag="1.5m" clearances="4m" thermal_rating="100MVA" ground_wire="Yes" corrosion_protection="Yes" thermal_limits="50°C - 80°C" sag_adjustments="Yes"
+Line2 id="Line2" from="Bus2" to="Bus3" impedance="0.03+j0.06" length="15km" temperature="25°C" conductor="Copper" line_type="Underground" installation_depth="0.6m" thermal_rating="50MVA" ground_wire="No" corrosion_protection="No" thermal_limits="40°C - 70°C" sag_adjustments="No"
+
+# 4. Generators
+Generator1 id="Generator1" at="Bus3" rating="30MW" voltage="11kV" power_factor="0.9" angle="0" governor_type="Hydraulic" excitation_system="AVR" droop="4%" response_time="2s" start_type="Direct" synchronization_method="Automatic" protection_system="Differential" startup_sequence="Sequential" synchronization_procedures="Automatic" governor_settings="P-Load Control"
+
+# 5. Loads
+Load1 id="Load1" at="Bus2" type="ThreePhase" power="20MW+j10MVAR" voltage="11kV" power_factor="0.8" load_curve="Constant" time_profile="24h" load_profile="Residential" demand_response="Yes" peak_load="25MW" off_peak_load="15MW" forecasting="3 months" load_shedding="Automatic" peak_demand_response="Yes"
+
+# 6. Circuit Breakers
+Breaker1 id="Breaker1" at="Bus1" type="CBTypeA" rated_current="200A" interrupting_capacity="20kA" operating_mechanism="Spring" maintenance_status="Active" trip_curve="Inverse Time" settings="0.5-1.5x rated current" fault_detection="Yes" control_on="Yes" coordination_with_relay="Relay1" maintenance_history="Last inspection 2023-07-15" testing_results="Pass"
+Breaker2 id="Breaker2" at="Bus2" type="CBTypeB" rated_current="200A" interrupting_capacity="25kA" operating_mechanism="Hydraulic" maintenance_status="Pending" trip_curve="Definite Time" settings="1-2x rated current" fault_detection="No" control_on="No" coordination_with_relay="None" maintenance_history="Last inspection 2022-11-30" testing_results="Pending"
+
+# 7. Current Transformers
+CT1 id="CT1" at="Bus1" ratio="200/5" accuracy_class="0.5" burden="15VA" insulation_level="0.72kV" core_type="Toroidal" temperature_rating="40°C" insulation_material="Polymer" response_time="1s" current_rating="200A" primary_current="200A" secondary_current="5A" frequency="50Hz" saturation_current="10x rated" test_condition="Routine" protection_class="Class 1" saturation_curve="Available" burden_measurement="Routine"
+CT2 id="CT2" at="Bus2" ratio="100/5" accuracy_class="0.2" burden="10VA" insulation_level="0.72kV" core_type="E-I" temperature_rating="55°C" insulation_material="Paper" response_time="0.5s" current_rating="100A" primary_current="100A" secondary_current="5A" frequency="50Hz" saturation_current="8x rated" test_condition="Type Test" protection_class="Class 0.5" saturation_curve="Available" burden_measurement="Routine"
+CT3 id="CT3" at="Bus3" ratio="400/5" accuracy_class="0.2" burden="20VA" insulation_level="1.2kV" core_type="Toroidal" temperature_rating="60°C" insulation_material="Polymer" response_time="0.7s" current_rating="400A" primary_current="400A" secondary_current="5A" frequency="60Hz" saturation_current="12x rated" test_condition="Routine" protection_class="Class 0.5" saturation_curve="Available" burden_measurement="Routine"
+
+# 8. Potential Transformers
+PT1 id="PT1" at="Bus1" ratio="110/1" accuracy_class="0.2" burden="10VA" insulation_level="0.72kV" core_type="Shielded" temperature_rating="40°C" insulation_material="Polymer" response_time="1s" primary_voltage="110kV" secondary_voltage="1kV" frequency="50Hz" voltage_accuracy="±0.5%" test_condition="Routine" protection_class="Class 0.2" calibration_records="Available"
+PT2 id="PT2" at="Bus2" ratio="33/1" accuracy_class="0.5" burden="5VA" insulation_level="0.72kV" core_type="Open Core" temperature_rating="55°C" insulation_material="Paper" response_time="0.8s" primary_voltage="33kV" secondary_voltage="1kV" frequency="50Hz" voltage_accuracy="±1%" test_condition="Type Test" protection_class="Class 0.5" calibration_records="Available"
+PT3 id="PT3" at="Bus3" ratio="220/1" accuracy_class="0.2" burden="15VA" insulation_level="1.2kV" core_type="Shielded" temperature_rating="60°C" insulation_material="Polymer" response_time="1s" primary_voltage="220kV" secondary_voltage="1kV" frequency="60Hz" voltage_accuracy="±0.5%" test_condition="Routine" protection_class="Class 0.2" calibration_records="Available"
+
+# 9. Capacitors
+Capacitor1 id="Capacitor1" at="Bus2" rating="5MVAR" voltage="11kV" connection="Shunt" switching="Automatic" control_type="Time-based" response_time="1s" voltage_ratings="±5%" reactive_power_adjustment="Variable" control_settings="Automatic" voltage_regulation="Yes"
+
+# 10. Reactors
+Reactor1 id="Reactor1" at="Bus2" rating="5MVAR" voltage="11kV" connection="Shunt" switching="Manual" response_time="5s" isolation="Oil-filled" temperature_rise="60°C" insulation_material="Paper" reactance_settings="Fixed" manual_switching_procedures="Yes" temperature_monitoring="Yes"
+
+# 11. Relays
+Relay1 id="Relay1" at="Bus2" type="Overcurrent" settings="50/75" time_delay="0.5s" coordination="Breaker1" response_time="0.1s" fault_detection="Yes" coordination_with_breaker="Breaker1" settings="50A" time_delay="0.5s"
+Relay2 id="Relay2" at="Bus3" type="Distance" settings="Zone1-80%" coordination="Breaker2" response_time="0.2s" fault_detection="Yes" coordination_with_breaker="Breaker2" settings="80% impedance" time_delay="0.2s"
+
+# 12. Control Settings
+ControlSettings id="Control1" control_type="Automatic" control_strategy="PID" response_time="1s" manual_override="Yes" control_on="Yes"
+ControlSettings id="Control2" control_type="Manual" control_strategy="Fixed" response_time="5s" manual_override="No" control_on="No"
+
+# 13. Power Flow Settings
+PowerFlowSettings id="PowerFlow1" algorithm="Newton-Raphson" tolerance="0.01%" max_iterations="50" convergence_criteria="0.001" load_flow_scenarios="Peak Load, Base Load" 
+
+# 14. Study Parameters
+StudyCase="Peak Load"
+LoadProfile="Residential"
+GenerationProfile="Base Load"
+FaultType="Three-Phase"
+FaultLocation="Bus2"
+SimulationDuration="1h"

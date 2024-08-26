@@ -1,0 +1,9 @@
+GRID 11kV Transformer
+BUS Bus1
+CT CT1 Type1
+PT PT1 Type2
+TRANSFORMER Transformer1 100MVA 5% 20:1
+LINE Grid1 Bus1
+LINE Bus1 Transformer1
+LINE Transformer1 Bus3
+CB CB2 Type3

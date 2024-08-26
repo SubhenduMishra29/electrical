@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include <cstring>
 #include <sstream>
+#include <cctype> // For tolower function
 
 // Declare yylex and yyerror functions
 extern int yylex();
@@ -17,42 +18,92 @@ extern std::stringstream* yyin_stream;  // For std::stringstream input
 // Function prototypes for input handling
 void set_input_file(FILE* file);         // For FILE* input
 void set_input_stream(std::stringstream* stream); // For std::stringstream input
-%}
 
+// Helper function to convert strings to lowercase
+std::string to_lower(const std::string& str) {
+    std::string lower_str = str;
+    for (char& c : lower_str) {
+        c = std::tolower(static_cast<unsigned char>(c));
+    }
+    return lower_str;
+}
+%}
+%option debug
 %option noyywrap
+%option case-insensitive
 %option prefix="yy"
 %option header-file="lexer.yy.h"
 
 %%
 
-"GRID"                  { std::cout << "Token: GRID" << std::endl; return GRID; }
-"TRANSFORMER"           { std::cout << "Token: TRANSFORMER" << std::endl; return TRANSFORMER; }
-"BUS"                   { std::cout << "Token: BUS" << std::endl; return BUS; }
-"CT"                    { std::cout << "Token: CT" << std::endl; return CT; }
-"PT"                    { std::cout << "Token: PT" << std::endl; return PT; }
-"CB"                    { std::cout << "Token: CB" << std::endl; return CB; }
-"CONNECTED"             { std::cout << "Token: CONNECTED" << std::endl; return CONNECTED; }
-"TO"                    { std::cout << "Token: TO" << std::endl; return TO; }
-"VOLTAGE"               { std::cout << "Token: VOLTAGE" << std::endl; return VOLTAGE; }
-"TYPE"                  { std::cout << "Token: TYPE" << std::endl; return TYPE; }
-"LINE"                  { std::cout << "Token: LINE" << std::endl; return TYPE; }
-"RATING"                { std::cout << "Token: RATING" << std::endl; return RATING; }
-"IMPEDANCE"             { std::cout << "Token: IMPEDANCE" << std::endl; return IMPEDANCE; }
-"FROM"                  { std::cout << "Token: FROM" << std::endl; return FROM; }
-"GENERATION"            { std::cout << "Token: GENERATION" << std::endl; return GENERATION; }
-"LOAD"                  { std::cout << "Token: LOAD" << std::endl; return LOAD; }
-"CONTROL"               { std::cout << "Token: CONTROL" << std::endl; return CONTROL; }
-"NONE"                  { std::cout << "Token: NONE" << std::endl; return NONE; }
-"PQ"                    { std::cout << "Token: PQ" << std::endl; return PQ; }
-"SLACK"                 { std::cout << "Token: SLACK" << std::endl; return SLACK; }
-"EXIT"                  { std::cout << "Token: EXIT" << std::endl; return EXIT; }
-"VERSION"               { std::cout << "Token: VERSION" << std::endl; return VERSION; }
-"HELP"                  { std::cout << "Token: HELP" << std::endl; return HELP; }
-
+"grid"                  { return GRID; }
+"transformer"           { return TRANSFORMER; }
+"bus"                   { return BUS; }
+"ct"                    { return CT; }
+"pt"                    { return PT; }
+"cb"                    { return CB; }
+"connected"             { return CONNECTED; }
+"to"                    { return TO; }
+"voltage"               { return VOLTAGE; }
+"type"                  { return TYPE; }
+"line"                  { return LINE; }
+"rating"                { return RATING; }
+"impedance"             { return IMPEDANCE; }
+"from"                  { return FROM; }
+"generation"            { return GENERATION; }
+"load"                  { return LOAD; }
+"control"               { return CONTROL; }
+"none"                  { return NONE; }
+"pq"                    { return PQ; }
+"slack"                 { return SLACK; }
+"exit"                  { return EXIT; }
+"version"               { return VERSION; }
+"cmd"                   { return CMD; }
+"help"                  { return HELP; }
+"voltage_regulator"     { return VOLTAGE_REGULATOR; }
+"regulator_setpoint"    { return REGULATOR_SETPOINT; }
+"voltage_band"          { return VOLTAGE_BAND; }
+"emergency_backup"      { return EMERGENCY_BACKUP; }
+"harmonic_distortion"   { return HARMONIC_DISTORTION; }
+"busbar_protection"     { return BUSBAR_PROTECTION; }
+"tap_changer"           { return TAP_CHANGER; }
+"tap_range"             { return TAP_RANGE; }
+"tap_step"              { return TAP_STEP; }
+"tap_position"          { return TAP_POSITION; }
+"cooling"               { return COOLING; }
+"temperature_rise"      { return TEMPERATURE_RISE; }
+"vector_group"          { return VECTOR_GROUP; }
+"load_tap_changer"      { return LOAD_TAP_CHANGER; }
+"no_load_tap_changer"   { return NO_LOAD_TAP_CHANGER; }
+"winding_material"      { return WINDING_MATERIAL; }
+"insulation_material"   { return INSULATION_MATERIAL; }
+"health_monitoring"     { return HEALTH_MONITORING; }
+"insulation_resistance" { return INSULATION_RESISTANCE; }
+"thermal_rating"        { return THERMAL_RATING; }
+"ground_wire"           { return GROUND_WIRE; }
+"corrosion_protection"  { return CORROSION_PROTECTION; }
+"thermal_limits"        { return THERMAL_LIMITS; }
+"sag_adjustments"       { return SAG_ADJUSTMENTS; }
+"temperature"           { return TEMPERATURE; }
+"installation_depth"    { return INSTALLATION_DEPTH; }
+"manual_switching"      { return MANUAL_SWITCHING; }
+"reactance_settings"    { return REACTANCE_SETTINGS; }
+"manual_override"       { return MANUAL_OVERRIDE; }
+"control_strategy"      { return CONTROL_STRATEGY; }
+"response_time"         { return RESPONSE_TIME; }
+"fault_detection"       { return FAULT_DETECTION; }
+"settings"              { return SETTINGS; }
+"calibration_records"   { return CALIBRATION_RECORDS; }
+"capacitor"             { return CAPACITOR; }
+"reactor"               { return REACTOR; }
 
 [0-9]+\.[0-9]+          { yylval.number = atof(yytext); return NUMBER; }
 [0-9]+                  { yylval.number = atoi(yytext); return NUMBER; }
-\"[^\"]+\"              { yylval.string = strdup(yytext); return STRING; }
+\"[^\"]+\"              { 
+    std::string str = yytext;
+    yylval.string = strdup(str.substr(1, str.length() - 2).c_str()); // Strip quotes
+    return STRING; 
+}
 [ \t\n]+                { /* Ignore whitespace */ }
 .                       { fprintf(stderr, "Unexpected character: %s\n", yytext); }
 

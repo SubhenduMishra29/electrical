@@ -1,0 +1,58 @@
+@echo off
+REM Set the base directory for the include/lib/study structure
+set BASE_DIR=include\lib\study
+
+REM Create the base directory if it doesn't exist
+if not exist "%BASE_DIR%" mkdir "%BASE_DIR%"
+
+REM Create the header files in the study directory
+echo // load_flow.h > "%BASE_DIR%\load_flow.h"
+echo // voltage_drop.h > "%BASE_DIR%\voltage_drop.h"
+echo // short_circuit.h > "%BASE_DIR%\short_circuit.h"
+echo // dc_short_circuit.h > "%BASE_DIR%\dc_short_circuit.h"
+echo // dc_load_flow.h > "%BASE_DIR%\dc_load_flow.h"
+echo // power_factor_correction.h > "%BASE_DIR%\power_factor_correction.h"
+echo // automatic_device_evaluation.h > "%BASE_DIR%\automatic_device_evaluation.h"
+echo // power_system_study.h > "%BASE_DIR%\power_system_study.h"
+echo // protection_coordination.h > "%BASE_DIR%\protection_coordination.h"
+echo // motor_starting.h > "%BASE_DIR%\motor_starting.h"
+echo // transient_stability.h > "%BASE_DIR%\transient_stability.h"
+echo // harmonic.h > "%BASE_DIR%\harmonic.h"
+echo // arc_flash.h > "%BASE_DIR%\arc_flash.h"
+echo // power_quality.h > "%BASE_DIR%\power_quality.h"
+echo // voltage_imbalance.h > "%BASE_DIR%\voltage_imbalance.h"
+set BASE_DIR=src\lib\study
+
+REM Create the header files in the study directory with placeholder content
+(
+echo // load_flow.h
+echo // voltage_drop.h
+echo // short_circuit.h
+echo // dc_short_circuit.h
+echo // dc_load_flow.h
+echo // power_factor_correction.h
+echo // automatic_device_evaluation.h
+echo // power_system_study.h
+echo // protection_coordination.h
+echo // motor_starting.h
+echo // transient_stability.h
+echo // harmonic.h
+echo // arc_flash.h
+echo // power_quality.h
+echo // voltage_imbalance.h
+) > "%BASE_DIR%\load_flow.h"
+copy nul "%BASE_DIR%\voltage_drop.h" > nul
+copy nul "%BASE_DIR%\short_circuit.h" > nul
+copy nul "%BASE_DIR%\dc_short_circuit.h" > nul
+copy nul "%BASE_DIR%\dc_load_flow.h" > nul
+copy nul "%BASE_DIR%\power_factor_correction.h" > nul
+copy nul "%BASE_DIR%\automatic_device_evaluation.h" > nul
+copy nul "%BASE_DIR%\power_system_study.h" > nul
+copy nul "%BASE_DIR%\protection_coordination.h" > nul
+copy nul "%BASE_DIR%\motor_starting.h" > nul
+copy nul "%BASE_DIR%\transient_stability.h" > nul
+copy nul "%BASE_DIR%\harmonic.h" > nul
+copy nul "%BASE_DIR%\arc_flash.h" > nul
+copy nul "%BASE_DIR%\power_quality.h" > nul
+copy nul "%BASE_DIR%\voltage_imbalance.h" > nul
+@echo on
