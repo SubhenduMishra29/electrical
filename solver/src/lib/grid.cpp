@@ -1,8 +1,18 @@
 #include "lib/grid.h"
 
-
 // Constructor
-Grid::Grid(double voltage, double availablePower, double frequency, int numberOfPhases,
+/**
+ * @brief Constructs a Grid object with specified attributes.
+ * @param voltage The voltage of the grid.
+ * @param availablePower The available power of the grid.
+ * @param frequency The frequency of the grid.
+ * @param numberOfPhases The number of phases in the grid.
+ * @param voltageRegulation The voltage regulation of the grid.
+ * @param powerFactor The power factor of the grid.
+ * @param harmonicDistortion The harmonic distortion of the grid.
+ * @param transientResponse The transient response of the grid.
+ */
+Grid::Grid(Voltage voltage, double availablePower, double frequency, int numberOfPhases,
            double voltageRegulation, double powerFactor,
            double harmonicDistortion, double transientResponse)
     : voltage(voltage), availablePower(availablePower), frequency(frequency),
@@ -15,106 +25,28 @@ Grid::Grid(double voltage, double availablePower, double frequency, int numberOf
     // Initialize all attributes
 }
 
-// Getter methods
-double Grid::getVoltage() const {
-    return voltage;
-}
+// Getter methods...
 
-double Grid::getAvailablePower() const {
-    return availablePower;
-}
+// Setters...
 
-double Grid::getFrequency() const {
-    return frequency;
-}
+// Methods for short circuit and X/R ratios...
 
-int Grid::getNumberOfPhases() const {
-    return numberOfPhases;
-}
+// Placeholder methods
 
-double Grid::getVoltageRegulation() const {
-    return voltageRegulation;
-}
-
-double Grid::getPowerFactor() const {
-    return powerFactor;
-}
-
-double Grid::getHarmonicDistortion() const {
-    return harmonicDistortion;
-}
-
-double Grid::getTransientResponse() const {
-    return transientResponse;
-}
-
-// Setters for voltage and available power (other attributes can have setters as needed)
-void Grid::setVoltage(double voltage) {
-    this->voltage = voltage;
-}
-
-void Grid::setAvailablePower(double availablePower) {
-    this->availablePower = availablePower;
-}
-
-// Methods for short circuit and X/R ratios
-void Grid::setThreePhaseMVAsc(double mvAsc) {
-    this->threePhaseMVAsc = mvAsc;
-}
-
-void Grid::setOnePhaseMVAsc(double mvAsc) {
-    this->onePhaseMVAsc = mvAsc;
-}
-
-void Grid::setXRRatioPositive(double xRRatio) {
-    this->xRRatioPositive = xRRatio;
-}
-
-void Grid::setXRRatioZero(double xRRatio) {
-    this->xRRatioZero = xRRatio;
-}
-
-void Grid::setThreePhaseSymmetricalKAsc(double kAsc) {
-    this->threePhaseSymmetricalKAsc = kAsc;
-}
-
-void Grid::setOnePhaseSymmetricalKAsc(double kAsc) {
-    this->onePhaseSymmetricalKAsc = kAsc;
-}
-
-double Grid::getThreePhaseMVAsc() const {
-    return threePhaseMVAsc;
-}
-
-double Grid::getOnePhaseMVAsc() const {
-    return onePhaseMVAsc;
-}
-
-double Grid::getXRRatioPositive() const {
-    return xRRatioPositive;
-}
-
-double Grid::getXRRatioZero() const {
-    return xRRatioZero;
-}
-
-double Grid::getThreePhaseSymmetricalKAsc() const {
-    return threePhaseSymmetricalKAsc;
-}
-
-double Grid::getOnePhaseSymmetricalKAsc() const {
-    return onePhaseSymmetricalKAsc;
-}
-
-// Placeholder methods for simulation
+/**
+ * @brief Simulates a fault in the grid.
+ * 
+ * This method simulates a fault by reducing the available power by 10%.
+ */
 void Grid::simulateFault() {
-    // Placeholder: Simulate a fault in the grid
-    // Example: reduce available power or induce voltage drop
-    availablePower *= 0.9;  // Simulate 10% reduction in available power
+    availablePower *= 0.9;  ///< Simulate 10% reduction in available power
 }
 
+/**
+ * @brief Handles protection mechanisms in response to a fault.
+ * 
+ * This method can be expanded based on specific protection logic.
+ */
 void Grid::handleProtection() {
-    // Placeholder: Handle protection mechanisms in response to a fault
-    // Example: trip circuit breakers, isolate faulty section
     // This method can be expanded based on specific protection logic
 }

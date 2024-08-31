@@ -18,15 +18,6 @@ extern std::stringstream* yyin_stream;  // For std::stringstream input
 // Function prototypes for input handling
 void set_input_file(FILE* file);         // For FILE* input
 void set_input_stream(std::stringstream* stream); // For std::stringstream input
-
-// Helper function to convert strings to lowercase
-std::string to_lower(const std::string& str) {
-    std::string lower_str = str;
-    for (char& c : lower_str) {
-        c = std::tolower(static_cast<unsigned char>(c));
-    }
-    return lower_str;
-}
 %}
 %option debug
 %option noyywrap
@@ -35,11 +26,12 @@ std::string to_lower(const std::string& str) {
 %option header-file="lexer.yy.h"
 
 %%
-
+"angle"                 {return ANGLE;}
+"id"                    { return ID; }
 "grid"                  { return GRID; }
 "transformer"           { return TRANSFORMER; }
 "bus"                   { return BUS; }
-"ct"                    { return CT; }
+"ct"                    { return TYPE; }
 "pt"                    { return PT; }
 "cb"                    { return CB; }
 "connected"             { return CONNECTED; }
@@ -70,7 +62,6 @@ std::string to_lower(const std::string& str) {
 "tap_range"             { return TAP_RANGE; }
 "tap_step"              { return TAP_STEP; }
 "tap_position"          { return TAP_POSITION; }
-"cooling"               { return COOLING; }
 "temperature_rise"      { return TEMPERATURE_RISE; }
 "vector_group"          { return VECTOR_GROUP; }
 "load_tap_changer"      { return LOAD_TAP_CHANGER; }
@@ -96,16 +87,25 @@ std::string to_lower(const std::string& str) {
 "calibration_records"   { return CALIBRATION_RECORDS; }
 "capacitor"             { return CAPACITOR; }
 "reactor"               { return REACTOR; }
+"base_kv"               {return BASE_kV;}
+"load_p"                {return LOAD_P;}
+"load_q"                {return LOAD_Q;}
+"generator_p"           {return GENERATOR_P;}
+"generator_Q"           {return GENERATOR_Q;}
+"shunt_conductor"       {return SHUNT_CONDUCTOR;}
+"cooling"               { return COOLING; }
+
 
 [0-9]+\.[0-9]+          { yylval.number = atof(yytext); return NUMBER; }
 [0-9]+                  { yylval.number = atoi(yytext); return NUMBER; }
 \"[^\"]+\"              { 
-    std::string str = yytext;
-    yylval.string = strdup(str.substr(1, str.length() - 2).c_str()); // Strip quotes
-    return STRING; 
-}
+                            yylval.string = strdup(yytext + 1); // Strip quotes
+                            yylval.string[strlen(yylval.string) - 1] = '\0'; // Remove closing quote
+                            return STRING; 
+                        }
 [ \t\n]+                { /* Ignore whitespace */ }
-.                       { fprintf(stderr, "Unexpected character: %s\n", yytext); }
+"#"[^\n]*               { /* Ignore comments */ }
+.                       { yyerror("Unexpected character"); }
 
 %%
 

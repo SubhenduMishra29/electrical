@@ -6,7 +6,7 @@
 #include <sstream>
 #include "lib/input_parser.h"
 #include "lexer.yy.h"
-#include "parser.tab.hpp"  // This is where the token definitions should be 
+#include "parser.tab.hpp"  // Token definitions should be here
 
 extern int yylex();
 extern void yyerror(const char *s);
@@ -16,24 +16,44 @@ InputParser* parser = nullptr;
 
 /* Define union for YYSTYPE */
 %union {
-    double number;
+    int number;
     char* string;
-}
+    int ival;
+    double dval;
+    char *sval;
+    struct Bus *busval;
+    struct Grid *gridval;
+} 
+
 
 /* Define tokens and their types */
-%token <string> STRING
-%token <number> NUMBER
-%token <number> VOLTAGE
-%token GRID TRANSFORMER BUS CT PT CB TYPE RATING IMPEDANCE FROM TO CONNECTED GENERATION LOAD CONTROL NONE PQ SLACK LINE
+%token <sval> STRING ID TYPE VOLTAGE_REGULATOR SHUNT_CONDUCTOR REGULATOR_SETPOINT VOLTAGE_BAND EMERGENCY_BACKUP HARMONIC_DISTORTION TAP_CHANGER COOLING TAP_STEP
+%token <sval> BUSBAR_PROTECTION FROM TO TAP_RANGE TAP_POSITION RATING IMPEDANCE TEMPERATURE_RISE VECTOR_GROUP
+%token <sval> LOAD_TAP_CHANGER NO_LOAD_TAP_CHANGER VOLTAGE BASE_kV 
+%token <dval> NUMBER LOAD_P LOAD_Q GENERATOR_P GENERATOR_Q ANGLE
+%token GRID TRANSFORMER BUS CT PT CB CONNECTED GENERATION LOAD CONTROL NONE PQ SLACK LINE
 %token VERSION HELP SAVE EXIT CMD
-%token CAPACITOR REACTOR RELAY TAP_STEP TAP_POSITION COOLING TEMPERATURE_RISE VECTOR_GROUP LOAD_TAP_CHANGER NO_LOAD_TAP_CHANGER
-%token VOLTAGE_REGULATOR REGULATOR_SETPOINT VOLTAGE_BAND EMERGENCY_BACKUP HARMONIC_DISTORTION BUSBAR_PROTECTION TAP_CHANGER TAP_RANGE
-%token WINDING_MATERIA INSULATION_MATERIAL HEALTH_MONITORING INSULATION_RESISTANCE THERMAL_RATING GROUND_WIRE CORROSION_PROTECTION
+%token CAPACITOR REACTOR RELAY 
+%token  <sval> WINDING_MATERIAL INSULATION_MATERIAL HEALTH_MONITORING INSULATION_RESISTANCE THERMAL_RATING GROUND_WIRE CORROSION_PROTECTION
 %token THERMAL_LIMITS SAG_ADJUSTMENTS TEMPERATURE INSTALLATION_DEPTH MANUAL_SWITCHING REACTANCE_SETTINGS MANUAL_OVERRIDE
-%token CONTROL_STRATEGY RESPONSE_TIME FAULT_DETECTION CALIBRATION_RECORDS WINDING_MATERIAL 
-%token SETTINGS
+%token CONTROL_STRATEGY RESPONSE_TIME FAULT_DETECTION CALIBRATION_RECORDS SETTINGS  
+%token <ival> INTEGER
+%token <dval> FLOAT
+
+
+%type <string> bus_definition
+%type <sval> transformer_definition
+%type <sval> grid_definition
+%type <sval> ct_definition
+%type <sval> pt_definition
+%type <sval> cb_definition
+%type <sval> capacitor_definition
+%type <sval> reactor_definition
+%type <sval> relay_definition
+
 
 %start input
+%define parse.error verbose  // Provides detailed error messages
 
 %% 
 
@@ -60,11 +80,13 @@ cli_command:
     }
     | LOAD STRING {
         printf("Loading from file: %s\n", $2);
-        free($2);
+       // parser->loadFromFile($2); // Assuming loadFromFile method in InputParser
+        free($2); // Free dynamically allocated memory
     }
     | SAVE STRING {
         printf("Saving to file: %s\n", $2);
-        free($2);
+       // parser->saveToFile($2); // Assuming saveToFile method in InputParser
+        free($2); // Free dynamically allocated memory
     }
     | HELP {
         printf("Help command received\n");
@@ -74,98 +96,213 @@ cli_command:
     }
     | CMD STRING {
         printf("Command received: %s\n", $2);
-        free($2);
+        free($2); // Free dynamically allocated memory
     }
     ;
 
 bus_definition:
-    BUS STRING VOLTAGE NUMBER GENERATION NUMBER TYPE STRING CONTROL STRING {
-        std::cout << "Parsing BUS with values: ";
-        if ($3 <= 0 || $6 < 0) {
-            yyerror("Invalid bus attributes");
-        }
-        free($2);  // Free allocated string memory
-        free($8);  // Free allocated string memory
-        free($10); // Free allocated string memory
+    BUS ID STRING TYPE STRING VOLTAGE STRING ANGLE STRING BASE_kV STRING LOAD_P STRING LOAD_Q STRING GENERATOR_P STRING GENERATOR_Q STRING SHUNT_CONDUCTOR STRING VOLTAGE_REGULATOR STRING REGULATOR_SETPOINT STRING VOLTAGE_BAND STRING EMERGENCY_BACKUP STRING HARMONIC_DISTORTION STRING BUSBAR_PROTECTION STRING
+    {
+        printf("Parsing BUS with values:\n");
+        printf("ID: %s\n", $4);
+        printf("Type: %s\n", $6);
+        printf("Voltage: %lf\n", $8);
+        printf("Angle: %s\n", $10);
+        printf("Base kV: %lf\n", $12);
+        printf("Load P: %lf\n", $14);
+        printf("Load Q: %lf\n", $16);
+        printf("Generator P: %lf\n", $18);
+        printf("Generator Q: %lf\n", $20);
+        printf("Shunt Conductor: %s\n", $22);
+        printf("Voltage Regulator: %s\n", $24);
+        printf("Regulator Setpoint: %s\n", $26);
+        printf("Voltage Band: %s\n", $28);
+        printf("Emergency Backup: %s\n", $30);
+        printf("Harmonic Distortion: %s\n", $32);
+       // printf("Busbar Protection: %s\n", $34);
+        printf("_______________________________\n");
+
+        // Assuming parser has addBus method that takes these parameters
+        //parser->addBus($2, $4, $6, $8, $10, $12, $14, $16, $18, $20, $22, $24, $26, $28, $30, $32);
+
+        // Free dynamically allocated memory
+        free($2);
+        free($4);
+        free($20);
+        free($22);
+        free($24);
+        free($26);
+        free($28);
+        free($30);
+        free($32);
+        free($32);
+       // free($34);
+    }
+    ;
+//Transformer id "Transformer1" from "Bus1" to "Bus2" rating "100MVA" impedance "0.05+j0.1" 
+//    tap_changer "Yes" tap_range "±10%" tap_step "0.5%" tap_position "0" cooling "ONAN" temperature_rise "45°C" 
+//    vector_group "Dyn11" load_tap_changer "Yes" no_load_tap_changer "No" winding_material "Copper" insulation_material "Oil"
+//    insulation_resistance "500MΩ"
+
+transformer_definition:
+    TRANSFORMER ID STRING FROM STRING TO STRING RATING STRING IMPEDANCE STRING TAP_CHANGER STRING TAP_RANGE STRING TAP_STEP STRING TAP_POSITION STRING COOLING STRING TEMPERATURE_RISE STRING VECTOR_GROUP STRING LOAD_TAP_CHANGER STRING NO_LOAD_TAP_CHANGER STRING WINDING_MATERIAL STRING INSULATION_MATERIAL STRING INSULATION_RESISTANCE STRING
+    {
+        printf("Parsing TRANSFORMER with values:\n");
+
+        // Correctly map the fields to the input values
+        printf("ID: %s\n", $4);
+        printf("From Bus: %s\n", $6);
+        printf("To Bus: %s\n", $8);
+        printf("Rating: %s\n", $10);
+        printf("Impedance: %s\n", $12);
+        printf("Tap Changer: %s\n", $14);
+        printf("Tap Range: %s\n", $16);
+        printf("Tap Step: %s\n", $18);
+        printf("Tap Position: %s\n", $20);
+        printf("Cooling: %s\n", $22);
+        printf("Temperature Rise: %s\n", $24);
+        printf("Vector Group: %s\n", $26);
+        printf("Load Tap Changer: %s\n", $28);
+        printf("No Load Tap Changer: %s\n", $30);
+        printf("Winding Material: %s\n", $32);
+        printf("Insulation Material: %s\n", $34);
+       // printf("Health Monitoring: %s\n", $36);
+        //printf("Insulation Resistance: %s\n", $38);
+
+        // Free the dynamically allocated memory
+        free($2);
+        free($4);
+        free($6);
+        free($8);
+        free($10);
+        free($12);
+        free($14);
+        free($16);
+        free($18);
+        free($20);
+        free($22);
+        free($24);
+        free($26);
+        free($28);
+        free($30);
+        free($32);
+        free($34);
+       // free($36);
     }
     ;
 
-transformer_definition:
-    TRANSFORMER STRING FROM STRING TO STRING RATING NUMBER IMPEDANCE NUMBER {
-        std::cout << "Parsing TRANSFORMER with values: ";
-        free($2);  // Free allocated string memory
-        free($4);  // Free allocated string memory
-        free($6);  // Free allocated string memory
-    }
-    ;
+
 
 grid_definition:
     GRID VOLTAGE NUMBER TYPE STRING {
-        std::cout << "Parsing GRID with values: ";
+        printf("Parsing GRID with values:\n");
+        printf("Voltage: %lf\n", $2);
+       // printf("Type: %s\n", $4);
+
         if ($2 <= 0) {
             yyerror("Invalid grid voltage");
+        } else {
+            // Assuming parser has addGrid method
+          //  parser->addGrid($2, $4);
         }
-       // free($4); // Free allocated string memory
+
+       // free($4); // Free Type
     }
     ;
 
 ct_definition:
     CT STRING TYPE STRING {
-        std::cout << "Parsing CT with values: ";
+        printf("Parsing CT with values:\n");
+        printf("Type: %s\n", $2);
+
         if ($2 == nullptr || $4 == nullptr) {
             yyerror("Invalid CT definition");
+        } else {
+            // Assuming parser has addCT method
+           // parser->addCT($2, $4);
         }
-        free($2);  // Free allocated string memory
-        free($4);  // Free allocated string memory
+
+        free($2);
+        free($4);
     }
     ;
 
 pt_definition:
     PT STRING TYPE STRING {
-        std::cout << "Parsing PT with values: ";
+        printf("Parsing PT with values:\n");
+        printf("Type: %s\n", $2);
+
         if ($2 == nullptr || $4 == nullptr) {
             yyerror("Invalid PT definition");
+        } else {
+            // Assuming parser has addPT method
+           // parser->addPT($2, $4);
         }
-        free($2);  // Free allocated string memory
-        free($4);  // Free allocated string memory
+
+        free($2);
+        free($4);
     }
     ;
 
 cb_definition:
     CB STRING TYPE STRING {
-        std::cout << "Parsing CB with values: ";
+        printf("Parsing CB with values:\n");
+        printf("Type: %s\n", $2);
+
         if ($2 == nullptr || $4 == nullptr) {
             yyerror("Invalid CB definition");
+        } else {
+            // Assuming parser has addCB method
+           // parser->addCB($2, $4);
         }
-        free($2);  // Free allocated string memory
-        free($4);  // Free allocated string memory
+
+        free($2);
+        free($4);
     }
     ;
 
 capacitor_definition:
     CAPACITOR STRING TYPE STRING NUMBER {
-        std::cout << "Parsing CAPACITOR with values: ";
-        free($2);  // Free allocated string memory
-        free($4);  // Free allocated string memory
+        printf("Parsing CAPACITOR with values:\n");
+        printf("Type: %s\n", $2);
+        printf("Rating: %lf\n", $4);
+
+        // Assuming parser has addCapacitor method
+       // parser->addCapacitor($2, $4);
+
+        free($2);
+        free($4);
     }
     ;
 
 reactor_definition:
     REACTOR STRING TYPE STRING NUMBER {
-        std::cout << "Parsing REACTOR with values: ";
-        free($2);  // Free allocated string memory
-        free($4);  // Free allocated string memory
+        printf("Parsing REACTOR with values:\n");
+        printf("Type: %s\n", $2);
+        printf("Rating: %lf\n", $4);
+
+        // Assuming parser has addReactor method
+        //parser->addReactor($2, $4);
+
+        free($2);
+        free($4);
     }
     ;
 
 relay_definition:
     RELAY STRING TYPE STRING {
-        std::cout << "Parsing RELAY with values: ";
+        printf("Parsing RELAY with values:\n");
+        printf("Type: %s\n", $2);
+
         if ($2 == nullptr || $4 == nullptr) {
             yyerror("Invalid RELAY definition");
+        } else {
+            // Assuming parser has addRelay method
+           // parser->addRelay($2, $4);
         }
-        free($2);  // Free allocated string memory
-        free($4);  // Free allocated string memory
+
+        free($2);
+        free($4);
     }
     ;
 

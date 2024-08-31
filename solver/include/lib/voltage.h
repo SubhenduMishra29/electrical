@@ -1,8 +1,8 @@
 #ifndef VOLTAGE_H
 #define VOLTAGE_H
 
-#include <iostream>  // For std::cout, std::endl
-#include <complex>   // For std::complex
+#include <iostream>
+#include <complex>
 
 /**
  * @file Voltage.h
@@ -14,6 +14,21 @@
  * 
  * @author Subhendu Mishra
  * @date [Date]
+ * 
+ * @license GPL-3.0
+ * 
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  */
 
 /**
@@ -26,7 +41,8 @@
  */
 class Voltage {
 private:
-    std::complex<double> voltage; ///< Voltage level as a complex number (magnitude and angle)
+    std::string id;
+    std::complex<double> voltage; ///< Voltage level as a complex number
     double activePower; ///< Active power in MW
     double reactivePower; ///< Reactive power in MVAR
     double powerAngle; ///< Power angle in degrees
@@ -40,6 +56,7 @@ public:
      * @param powerAngle The power angle in degrees.
      */
     Voltage(std::complex<double> voltage, double activePower, double reactivePower, double powerAngle);
+    
     Voltage();  // Default constructor
 
     /**
@@ -101,6 +118,12 @@ public:
      * @return The angle of the voltage in degrees.
      */
     double getVoltageAngle() const;
+
+    /**
+     * @brief Gets the magnitude of the voltage.
+     * @return The magnitude of the voltage.
+     */
+    double getMagnitude() const;
 };
 
 #endif // VOLTAGE_H

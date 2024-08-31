@@ -6,7 +6,7 @@
  */
 #include "PowerSystemError.h"
 struct Line {
-    int id;          // Line ID
+    std::string id;          // Line ID
     int fromBus;     // From bus ID
     int toBus;       // To bus ID
     double impedance; // Line impedance (assumed to be purely reactive for simplicity)

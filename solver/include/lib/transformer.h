@@ -7,6 +7,7 @@
 class Bus; // Forward declaration
 class Transformer {
 private:
+    std::string id;
     Bus* primaryBus;
     Bus* secondaryBus;
     double turnsRatio;

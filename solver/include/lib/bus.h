@@ -20,6 +20,7 @@
 #include "lib/transmission_line.h"
 #include "lib/line.h"
 #include "voltage.h"
+#include "current.h"
 #include "BusType.h"
 
 class TransmissionLine; // Forward declaration
@@ -35,7 +36,7 @@ private:
     double inflowPower; ///< Total inflow power in MW
     double outflowPower; ///< Total outflow power in MW
     BusType type; ///< Type of the bus (SLACK, PV, PQ)
-
+    std::string id;
     /**
      * @brief Recalculates the bus voltage and current based on connected transmission lines.
      */
