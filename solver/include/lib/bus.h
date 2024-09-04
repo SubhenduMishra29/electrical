@@ -11,10 +11,11 @@
  * Author: Subhendu Mishra
  * License: GPL
  */
+
 #include <vector>
 #include <string>
 #include <complex>
-#include <algorithm> // Include this at the top of your file
+#include <algorithm>
 #include "lib/load.h"
 #include "lib/powersystemerror.h"
 #include "lib/transmission_line.h"
@@ -24,6 +25,7 @@
 #include "BusType.h"
 
 class TransmissionLine; // Forward declaration
+
 /**
  * @class Bus
  * @brief Represents a bus in the power system, containing voltage, current, and methods to calculate power flow.
@@ -36,7 +38,17 @@ private:
     double inflowPower; ///< Total inflow power in MW
     double outflowPower; ///< Total outflow power in MW
     BusType type; ///< Type of the bus (SLACK, PV, PQ)
-    std::string id;
+    std::string id; ///< Identifier for the bus
+    
+    // New attributes
+    std::string shuntConductor; ///< Type of shunt conductor
+    std::string voltageRegulator; ///< Voltage regulator status
+    std::string regulatorSetpoint; ///< Voltage regulator setpoint
+    std::string voltageBand; ///< Voltage band
+    std::string emergencyBackup; ///< Emergency backup status
+    std::string harmonicDistortion; ///< Harmonic distortion percentage
+    std::string busbarProtection; ///< Busbar protection status
+
     /**
      * @brief Recalculates the bus voltage and current based on connected transmission lines.
      */
@@ -61,66 +73,42 @@ public:
      */
     ~Bus() = default;
 
-    /**
-     * @brief Adds a transmission line to the bus and recalculates the bus state.
-     * @param line Pointer to the transmission line to be added.
-     */
+    // Existing methods
     void addTransmissionLine(TransmissionLine* line);
-
-    /**
-     * @brief Removes a transmission line from the bus and recalculates the bus state.
-     * @param line Pointer to the transmission line to be removed.
-     */
     void removeTransmissionLine(TransmissionLine* line);
-
-    /**
-     * @brief Gets the voltage at the bus.
-     * @return The voltage at the bus as a complex number.
-     */
     Voltage getVoltage() const;
-
-    /**
-     * @brief Sets the voltage at the bus and recalculates the bus state.
-     * @param voltage The voltage to set as a complex number.
-     */
     void setVoltage(const Voltage& voltage);
-
-    /**
-     * @brief Gets the current at the bus.
-     * @return The current at the bus in amperes.
-     */
     double getCurrent() const;
-
-    /**
-     * @brief Sets the current at the bus and recalculates the bus state.
-     * @param current The current to set in amperes.
-     */
     void setCurrent(double current);
-
-    /**
-     * @brief Gets the inflow power at the bus.
-     * @return The inflow power in MW.
-     */
     double getInflowPower() const;
-
-    /**
-     * @brief Gets the outflow power at the bus.
-     * @return The outflow power in MW.
-     */
     double getOutflowPower() const;
-
-    /**
-     * @brief Gets the type of the bus.
-     * @return The type of the bus (SLACK, PV, PQ).
-     */
     BusType getType() const;
-
-    /**
-     * @brief Sets the type of the bus.
-     * @param type The type of the bus (SLACK, PV, PQ).
-     */
     void setType(BusType type);
+
+    // New methods
+    std::string getId() const;
+    void setId(const std::string& id);
+
+    std::string getShuntConductor() const;
+    void setShuntConductor(const std::string& shuntConductor);
+
+    std::string getVoltageRegulator() const;
+    void setVoltageRegulator(const std::string& voltageRegulator);
+
+    std::string getRegulatorSetpoint() const;
+    void setRegulatorSetpoint(const std::string& regulatorSetpoint);
+
+    std::string getVoltageBand() const;
+    void setVoltageBand(const std::string& voltageBand);
+
+    std::string getEmergencyBackup() const;
+    void setEmergencyBackup(const std::string& emergencyBackup);
+
+    std::string getHarmonicDistortion() const;
+    void setHarmonicDistortion(const std::string& harmonicDistortion);
+
+    std::string getBusbarProtection() const;
+    void setBusbarProtection(const std::string& busbarProtection);
 };
 
 #endif // BUS_H
-

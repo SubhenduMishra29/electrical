@@ -1,7 +1,9 @@
 #include "lib/bus.h"
 
 Bus::Bus(const std::string& name, const Voltage& busVoltage, BusType type)
-    : busVoltage(busVoltage), type(type), current(0.0), inflowPower(0.0), outflowPower(0.0) {}
+    : busVoltage(busVoltage), type(type), current(0.0), inflowPower(0.0), outflowPower(0.0),
+      id(name), shuntConductor("None"), voltageRegulator("On"), regulatorSetpoint("11kV"),
+      voltageBand("±2%"), emergencyBackup("No"), harmonicDistortion("0.5%"), busbarProtection("Yes") {}
 
 void Bus::addTransmissionLine(TransmissionLine* line) {
     transmissionLines.push_back(line);
@@ -16,8 +18,6 @@ void Bus::removeTransmissionLine(TransmissionLine* line) {
         recalculateBusState(); // Recalculate bus state after removal
     }
 }
-
-
 
 Voltage Bus::getVoltage() const {
     return busVoltage;
@@ -53,12 +53,75 @@ void Bus::setType(BusType type) {
     this->type = type;
 }
 
+std::string Bus::getId() const {
+    return id;
+}
+
+void Bus::setId(const std::string& id) {
+    this->id = id;
+}
+
+std::string Bus::getShuntConductor() const {
+    return shuntConductor;
+}
+
+void Bus::setShuntConductor(const std::string& shuntConductor) {
+    this->shuntConductor = shuntConductor;
+}
+
+std::string Bus::getVoltageRegulator() const {
+    return voltageRegulator;
+}
+
+void Bus::setVoltageRegulator(const std::string& voltageRegulator) {
+    this->voltageRegulator = voltageRegulator;
+}
+
+std::string Bus::getRegulatorSetpoint() const {
+    return regulatorSetpoint;
+}
+
+void Bus::setRegulatorSetpoint(const std::string& regulatorSetpoint) {
+    this->regulatorSetpoint = regulatorSetpoint;
+}
+
+std::string Bus::getVoltageBand() const {
+    return voltageBand;
+}
+
+void Bus::setVoltageBand(const std::string& voltageBand) {
+    this->voltageBand = voltageBand;
+}
+
+std::string Bus::getEmergencyBackup() const {
+    return emergencyBackup;
+}
+
+void Bus::setEmergencyBackup(const std::string& emergencyBackup) {
+    this->emergencyBackup = emergencyBackup;
+}
+
+std::string Bus::getHarmonicDistortion() const {
+    return harmonicDistortion;
+}
+
+void Bus::setHarmonicDistortion(const std::string& harmonicDistortion) {
+    this->harmonicDistortion = harmonicDistortion;
+}
+
+std::string Bus::getBusbarProtection() const {
+    return busbarProtection;
+}
+
+void Bus::setBusbarProtection(const std::string& busbarProtection) {
+    this->busbarProtection = busbarProtection;
+}
+
 void Bus::recalculateBusState() {
     // Placeholder method for recalculating voltage and current at the bus
     // This would involve solving power flow equations, which depend on the specifics
     // of the system model, including line impedances, connected loads, etc.
 
-    // For the sake of this example, let's assume the busVoltage is adjusted based on inflow and outflow.
     calculatePowerFlow();
 
     // Update the bus voltage and current based on inflow and outflow power

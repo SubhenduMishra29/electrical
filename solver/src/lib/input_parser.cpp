@@ -211,3 +211,45 @@ std::vector<Grid>& InputParser::getGrids() { return grids; }
  * @return A reference to a vector of Line objects.
  */
 std::vector<Line>& InputParser::getLines() { return lines; }
+// input_parser.cpp
+void InputParser::addBus(
+    const std::string& id,
+    const std::string& type,
+    double voltage,
+    const std::string& angle,
+    double baseKV,
+    double loadP,
+    double loadQ,
+    double generatorP,
+    const std::string& generatorQ,
+    const std::string& shuntConductor,
+    const std::string& voltageRegulator,
+    const std::string& regulatorSetpoint,
+    const std::string& voltageBand,
+    const std::string& emergencyBackup,
+    const std::string& harmonicDistortion
+   /* const std::string& busbarProtection*/
+) {
+    // Example implementation: Print the values to the console
+    std::cout << "Adding BUS with values:\n";
+    std::cout << "ID: " << id << "\n";
+    std::cout << "Type: " << type << "\n";
+    std::cout << "Voltage: " << voltage << "\n";
+    std::cout << "Angle: " << angle << "\n";
+    std::cout << "Base kV: " << baseKV << "\n";
+    std::cout << "Load P: " << loadP << "\n";
+    std::cout << "Load Q: " << loadQ << "\n";
+    std::cout << "Generator P: " << generatorP << "\n";
+    std::cout << "Generator Q: " << generatorQ << "\n";
+    std::cout << "Shunt Conductor: " << shuntConductor << "\n";
+    std::cout << "Voltage Regulator: " << voltageRegulator << "\n";
+    std::cout << "Regulator Setpoint: " << regulatorSetpoint << "\n";
+    std::cout << "Voltage Band: " << voltageBand << "\n";
+    std::cout << "Emergency Backup: " << emergencyBackup << "\n";
+    std::cout << "Harmonic Distortion: " << harmonicDistortion << "\n";
+    //std::cout << "Busbar Protection: " << busbarProtection << "\n";
+    std::cout << "_______________________________\n";
+
+    // Here, you can add code to store the bus data or further process it
+}
+    

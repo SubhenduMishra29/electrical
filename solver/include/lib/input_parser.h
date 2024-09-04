@@ -37,7 +37,7 @@
 #include <istream>
 #include <iostream>   // For std::cerr and std::endl
 #include <fstream>    // Include for std::ifstream
-
+#include "lib/bus.h"
 // Forward declarations
 class Bus;
 class Transformer;
@@ -160,6 +160,26 @@ public:
      * @return A reference to a vector of Line objects.
      */
     std::vector<Line>& getLines();
+    // In input_parser.h
+    void addBus(
+        const std::string& id,
+        const std::string& type,
+        double voltage,
+        const std::string& angle,
+        double baseKV,
+        double loadP,
+        double loadQ,
+        double generatorP,
+        const std::string& generatorQ,
+        const std::string& shuntConductor,
+        const std::string& voltageRegulator,
+        const std::string& regulatorSetpoint,
+        const std::string& voltageBand,
+        const std::string& emergencyBackup,
+        const std::string& harmonicDistortion
+        /*const std::string& busbarProtection*/
+    );
+
 
 private:
     std::string filename;   ///< Filename for file input

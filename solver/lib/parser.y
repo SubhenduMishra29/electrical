@@ -103,31 +103,39 @@ cli_command:
 bus_definition:
     BUS ID STRING TYPE STRING VOLTAGE STRING ANGLE STRING BASE_kV STRING LOAD_P STRING LOAD_Q STRING GENERATOR_P STRING GENERATOR_Q STRING SHUNT_CONDUCTOR STRING VOLTAGE_REGULATOR STRING REGULATOR_SETPOINT STRING VOLTAGE_BAND STRING EMERGENCY_BACKUP STRING HARMONIC_DISTORTION STRING BUSBAR_PROTECTION STRING
     {
+        // Assuming parser has addBus method that takes these parameters
         printf("Parsing BUS with values:\n");
         printf("ID: %s\n", $4);
         printf("Type: %s\n", $6);
-        printf("Voltage: %lf\n", $8);
+        printf("Voltage: %lf\n", $8);  // Convert STRING to double
         printf("Angle: %s\n", $10);
-        printf("Base kV: %lf\n", $12);
-        printf("Load P: %lf\n", $14);
-        printf("Load Q: %lf\n", $16);
-        printf("Generator P: %lf\n", $18);
-        printf("Generator Q: %lf\n", $20);
+        printf("Base kV: %lf\n", $12);  // Convert STRING to double
+        printf("Load P: %lf\n", $14);  // Convert STRING to double
+        printf("Load Q: %lf\n", $16);  // Convert STRING to double
+        printf("Generator P: %lf\n", $18);  // Convert STRING to double
+        printf("Generator Q: %lf\n", $20);  // Convert STRING to double
         printf("Shunt Conductor: %s\n", $22);
         printf("Voltage Regulator: %s\n", $24);
         printf("Regulator Setpoint: %s\n", $26);
         printf("Voltage Band: %s\n", $28);
         printf("Emergency Backup: %s\n", $30);
         printf("Harmonic Distortion: %s\n", $32);
-       // printf("Busbar Protection: %s\n", $34);
+//        printf("Busbar Protection: %s\n", $34);
         printf("_______________________________\n");
 
-        // Assuming parser has addBus method that takes these parameters
-        //parser->addBus($2, $4, $6, $8, $10, $12, $14, $16, $18, $20, $22, $24, $26, $28, $30, $32);
+        // Call addBus with appropriate types
+        parser->addBus($4, $6, $8, $10, $12, $14, $16, $18, $20, $22, $24, $26, $28, $30, $32 );
 
         // Free dynamically allocated memory
         free($2);
         free($4);
+        free($6);
+        //free($8);
+        free($10);
+       // free($12);
+       // free($14);
+       // free($16);
+       // free($18);
         free($20);
         free($22);
         free($24);
@@ -135,8 +143,7 @@ bus_definition:
         free($28);
         free($30);
         free($32);
-        free($32);
-       // free($34);
+        //free($34);
     }
     ;
 //Transformer id "Transformer1" from "Bus1" to "Bus2" rating "100MVA" impedance "0.05+j0.1" 
