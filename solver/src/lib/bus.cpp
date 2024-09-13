@@ -4,12 +4,12 @@
 #include <stdexcept> // For std::invalid_argument
 
 Bus::Bus()
-    : id(""), voltage(24.0), totalCurrent(0.0) { 
+    : id(""), voltage(), totalCurrent(0.0) { 
     // No additional initialization required
 }
 
 Bus::Bus(const std::string& id, const std::string& voltageStr)
-    : id(id), voltage(24.0), totalCurrent(0.0) {
+    : id(id), voltage(), totalCurrent(0.0) {
     try {
         // Split the voltage string into number and character parts
         SplitResult result = splitNumberAndChars(voltageStr);
@@ -18,8 +18,7 @@ Bus::Bus(const std::string& id, const std::string& voltageStr)
         // Convert the number part of the voltage to a double
         double voltageValue = std::stod(result.numberPart);  // Converts "11" to 11.0
         std::cout << "Voltage: " << voltageValue << std::endl;
-        this->voltage = voltageValue; // Set the voltage
-
+        this->voltage = Voltage(voltageValue, 0.0);
         // Initialize totalCurrent
         this->totalCurrent = 0.0;        
         std::cout << "Exited bus constructor" << std::endl;
@@ -58,8 +57,8 @@ void Bus::displayInfo() const {
     std::cout << "____________________Inside Bus Class_____________________" << std::endl
               << "Bus ID: " << id << std::endl;
 
-    std::cout << "Voltage: " << voltage << " V" << std::endl;
-
+   // std::cout << "Voltage: " << voltage << " V" << std::endl;
+    voltage.printDetails();
     // std::cout << "Total Current: " << totalCurrent << std::endl; // Uncomment if needed
     // std::cout << "Connected Lines: " << std::endl;
     // for (const auto& lineId : lineIds) {

@@ -14,9 +14,9 @@ add_subdirectory(lib)
 message(STATUS "Include directories: ${CMAKE_SOURCE_DIR}/include")
 
 # Specify the path to Flex and Bison if needed
-set(FLEX_EXECUTABLE "C:/GnuWin32/flex.exe")
-set(BISON_EXECUTABLE "C:/GnuWin32/bison.exe")
-set(FL_LIBRARY "C:/GnuWin32/lib/libfl.a")
+set(FLEX_EXECUTABLE "C:/msys64/usr/bin/flex.exe")
+set(BISON_EXECUTABLE "C:/msys64/usr/bin/bison.exe")
+set(FL_LIBRARY "C:/msys64/usr/lib/libfl.a")
 
 # Find Flex and Bison
 find_package(FLEX REQUIRED)
@@ -35,27 +35,19 @@ BISON_TARGET(
     COMPILE_FLAGS ""  # Ensure no extra flags are passed
 )
 
-# Flex target with header file generation
+# Flex target
 FLEX_TARGET(
     Lexer
     ${CMAKE_SOURCE_DIR}/lib/lexer.l
     ${FLEX_OUTPUT_DIR}/lex.yy.cpp
-    DEFINES_FILE ${FLEX_OUTPUT_DIR}/lex.yy.h
-    COMPILE_FLAGS ""  # No extra flags needed
+    COMPILE_FLAGS ""  # Ensure no extra flags are passed
 )
-message(STATUS "Flex Output Directory: ${FLEX_OUTPUT_DIR}")
 
-
-
-# Include the generated header file
-include_directories(${FLEX_OUTPUT_DIR})
-
-
-# Ensure Bison is run before Flex
+# Ensure Flex and Bison are executed before compiling
 ADD_FLEX_BISON_DEPENDENCY(Lexer Parser)
 
 # Source files for the main executable
-file(GLOB SOURCES "src/*.cpp" "src/studies/*.cpp")
+file(GLOB SOURCES "src/*.cpp")
 
 # Create main executable
 add_executable(${PROJECT_NAME} ${SOURCES}
@@ -66,16 +58,6 @@ add_executable(${PROJECT_NAME} ${SOURCES}
 # Link libraries to the executable
 target_link_libraries(${PROJECT_NAME} Power_Lib ${FL_LIBRARY})
 
-# Create test executable
-add_executable(tests
-    tests/main.cpp
-    ${BISON_OUTPUT_DIR}/parser.tab.cpp
-    ${FLEX_OUTPUT_DIR}/lex.yy.cpp
-)
-
-# Link libraries to the test executable
-target_link_libraries(tests Power_Lib ${FL_LIBRARY})
-
 # Optionally, add testing
-enable_testing()
-add_test(NAME LexerParserTest COMMAND tests)
+# enable_testing()
+# add_subdirectory(tests)

@@ -5,7 +5,7 @@
 /**
  * @brief Default constructor for the Voltage class.
  */
-Voltage::Voltage() : value(0.0, 0.0), frequency(50.0) {}
+Voltage::Voltage() : value(0.0, 0.0), frequency(50.0), powerAngle(0.0) {}
 
 /**
  * @brief Constructs a Voltage object with specified real and imaginary parts.
@@ -13,8 +13,10 @@ Voltage::Voltage() : value(0.0, 0.0), frequency(50.0) {}
  * @param imaginary The imaginary part of the voltage.
  */
 Voltage::Voltage(double real, double imaginary)
-    : value(real, imaginary), frequency(50.0) {
-    updateProperties();
+    : value(real, imaginary), frequency(50.0), powerAngle(0.0) {
+        setReal(real);
+        setImaginary(imaginary);
+        updateProperties();
 }
 
 /**
@@ -24,7 +26,7 @@ Voltage::Voltage(double real, double imaginary)
  * @throw std::invalid_argument if the provided value or frequency is invalid.
  */
 Voltage::Voltage(const std::complex<double>& value, double frequency)
-    : value(value), frequency(frequency) {
+    : value(value), frequency(frequency), powerAngle(0.0) {
     if (std::abs(value) < 0) {
         throw std::invalid_argument("Voltage value cannot be negative.");
     }
@@ -36,11 +38,11 @@ Voltage::Voltage(const std::complex<double>& value, double frequency)
 
 /**
  * @brief Updates internal properties based on the voltage value.
- * This method recalculates derived values such as magnitude and phase.
+ * This method recalculates derived values such as magnitude, phase, and power angle.
  */
 void Voltage::updateProperties() {
-    // No need to store magnitude and phase as member variables
-    // Magnitude and phase are calculated dynamically when needed
+    // Automatically calculate the power angle in degrees when voltage is updated
+    powerAngle = getPhase() * 180.0 / M_PI;  // Convert radians to degrees
 }
 
 /**
@@ -49,7 +51,6 @@ void Voltage::updateProperties() {
  */
 void Voltage::setReal(double num) {
     value = std::complex<double>(num, value.imag());
-    std::cout<< "Rael Value set:"<<num<< std::endl;
     updateProperties();
 }
 
@@ -59,7 +60,6 @@ void Voltage::setReal(double num) {
  */
 void Voltage::setImaginary(double num) {
     value = std::complex<double>(value.real(), num);
-    std::cout<< "Imaginary Value set:"<<num<< std::endl;
     updateProperties();
 }
 
@@ -121,29 +121,22 @@ double Voltage::getPhase() const {
 }
 
 /**
- * @brief Calculates the voltage difference between this voltage and another voltage.
- * @param other The other Voltage object to compare with.
- * @return The voltage difference as a complex number.
- */
-std::complex<double> Voltage::calculateDifference(const Voltage& other) const {
-    return value - other.value;
-}
-
-/**
  * @brief Gets the power angle.
  * @return The power angle in degrees.
  */
 double Voltage::getPowerAngle() const {
-    return getPhase() * 180.0 / M_PI; // Convert radians to degrees
+    return powerAngle;
 }
 
 /**
  * @brief Prints the voltage details to the console.
  */
 void Voltage::printDetails() const {
+    std::cout << "----------------Inside Voltage--------------------- " << value << std::endl;
     std::cout << "Voltage Value: " << value << std::endl;
     std::cout << "Magnitude: " << getMagnitude() << std::endl;
     std::cout << "Phase: " << getPhase() << " radians" << std::endl;
     std::cout << "Power Angle: " << getPowerAngle() << " degrees" << std::endl;
     std::cout << "Frequency: " << frequency << " Hz" << std::endl;
+    std::cout << "---------------------------------------------------- " << value << std::endl;
 }

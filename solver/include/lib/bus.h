@@ -5,6 +5,7 @@
 #include <string>
 #include <unordered_set>
 #include "Line.h"
+#include "lib/voltage.h"
 
 /**
  * @class Bus
@@ -15,7 +16,7 @@
 class Bus {
 private:
     std::string id; ///< Bus ID
-    double voltage; ///< Voltage at the bus
+    Voltage voltage; ///< Voltage at the bus
     double totalCurrent; ///< Total current flowing through the bus
     std::unordered_set<std::string> lineIds; ///< Set to track line IDs for uniqueness
 
@@ -58,7 +59,7 @@ public:
     void displayInfo() const;
 
     std::string getId() const { return id; }
-    double getVoltage() const { return voltage; }
+    Voltage getVoltage() const { return voltage; }
 };
 
 #endif // BUS_H

@@ -3,7 +3,6 @@
 
 #include <complex>
 #include <iostream>
-#include <stdexcept> // For std::invalid_argument
 
 /**
  * @class Voltage
@@ -16,10 +15,11 @@ class Voltage {
 private:
     std::complex<double> value; ///< Voltage value as a complex number
     double frequency; ///< Frequency of the voltage in Hz
+    double powerAngle; ///< Power angle in degrees, automatically updated
 
     /**
      * @brief Updates internal properties based on the voltage value.
-     * This method recalculates the magnitude and phase angle of the voltage.
+     * This method recalculates the magnitude, phase angle, and power angle of the voltage.
      */
     void updateProperties();
 
@@ -40,7 +40,6 @@ public:
      * @brief Constructs a Voltage object with a specified value and frequency.
      * @param value The voltage value as a complex number.
      * @param frequency The frequency of the voltage in Hz.
-     * @throw std::invalid_argument if the provided value or frequency is invalid.
      */
     Voltage(const std::complex<double>& value, double frequency);
 
@@ -65,7 +64,6 @@ public:
     /**
      * @brief Sets the voltage value and updates properties.
      * @param value The voltage value to set as a complex number.
-     * @throw std::invalid_argument if the provided value is invalid.
      */
     void setValue(const std::complex<double>& value);
 
@@ -92,13 +90,6 @@ public:
      * @return The phase angle of the voltage in radians.
      */
     double getPhase() const;
-
-    /**
-     * @brief Calculates the voltage difference between this voltage and another voltage.
-     * @param other The other Voltage object to compare with.
-     * @return The voltage difference as a complex number.
-     */
-    std::complex<double> calculateDifference(const Voltage& other) const;
 
     /**
      * @brief Gets the power angle.

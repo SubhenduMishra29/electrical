@@ -120,8 +120,10 @@ Current& Current::operator+=(const Current& other) {
  * @brief Prints the current details to the console.
  */
 void Current::printDetails() const {
+    std::cout << "----------------Inside Current--------------------- " << value << std::endl;
     std::cout << "Current Value: " << value << std::endl;
     std::cout << "Magnitude: " << getMagnitude() << std::endl;
     std::cout << "Phase Angle: " << getPhase() << " radians" << std::endl;
     std::cout << "Frequency: " << frequency << " Hz" << std::endl;
+    std::cout << "--------------------------------------------------- " << value << std::endl;
 }
