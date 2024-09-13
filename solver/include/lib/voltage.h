@@ -1,99 +1,104 @@
 #ifndef VOLTAGE_H
 #define VOLTAGE_H
 
-#include <iostream>
 #include <complex>
-
-/**
- * @file Voltage.h
- * @brief Defines the Voltage class representing voltage at a bus in the power system.
- * 
- * This file contains the declaration of the Voltage class, which encapsulates the voltage 
- * level (as a complex number), active power, reactive power, and power angle associated 
- * with a bus in the power system. The class provides methods to get and set these values.
- * 
- * @author Subhendu Mishra
- * @date [Date]
- * 
- * @license GPL-3.0
- * 
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program. If not, see <https://www.gnu.org/licenses/>.
- */
+#include <iostream>
+#include <stdexcept> // For std::invalid_argument
 
 /**
  * @class Voltage
- * @brief Represents the voltage at a bus in the power system, including magnitude, angle, and associated power.
+ * @brief Represents the voltage in a power system with automatic property updates.
  * 
- * The Voltage class stores the voltage as a complex number, along with active and reactive 
- * power values. It also includes the power angle in degrees. The class provides methods 
- * to access and modify these values.
+ * The Voltage class models electrical voltage as a complex number, including magnitude,
+ * phase, frequency, and provides methods for manipulating and analyzing the voltage value.
  */
 class Voltage {
 private:
-    std::string id;
-    std::complex<double> voltage; ///< Voltage level as a complex number
-    double activePower; ///< Active power in MW
-    double reactivePower; ///< Reactive power in MVAR
-    double powerAngle; ///< Power angle in degrees
+    std::complex<double> value; ///< Voltage value as a complex number
+    double frequency; ///< Frequency of the voltage in Hz
+
+    /**
+     * @brief Updates internal properties based on the voltage value.
+     * This method recalculates the magnitude and phase angle of the voltage.
+     */
+    void updateProperties();
 
 public:
     /**
-     * @brief Constructor for the Voltage class.
-     * @param voltage The voltage level as a complex number.
-     * @param activePower The active power in MW.
-     * @param reactivePower The reactive power in MVAR.
-     * @param powerAngle The power angle in degrees.
+     * @brief Default constructor for the Voltage class.
      */
-    Voltage(std::complex<double> voltage, double activePower, double reactivePower, double powerAngle);
-    
-    Voltage();  // Default constructor
+    Voltage();
 
     /**
-     * @brief Gets the voltage level.
-     * @return The voltage level as a complex number.
+     * @brief Constructs a Voltage object with specified real and imaginary parts.
+     * @param real The real part of the voltage.
+     * @param imaginary The imaginary part of the voltage.
      */
-    std::complex<double> getVoltage() const;
+    Voltage(double real, double imaginary);
 
     /**
-     * @brief Sets the voltage level.
-     * @param voltage The voltage level to set as a complex number.
+     * @brief Constructs a Voltage object with a specified value and frequency.
+     * @param value The voltage value as a complex number.
+     * @param frequency The frequency of the voltage in Hz.
+     * @throw std::invalid_argument if the provided value or frequency is invalid.
      */
-    void setVoltage(std::complex<double> voltage);
+    Voltage(const std::complex<double>& value, double frequency);
 
     /**
-     * @brief Gets the active power.
-     * @return The active power in MW.
+     * @brief Sets the real part of the voltage value and updates properties.
+     * @param num The real part to set.
      */
-    double getActivePower() const;
+    void setReal(double num);
 
     /**
-     * @brief Sets the active power.
-     * @param activePower The active power to set in MW.
+     * @brief Sets the imaginary part of the voltage value and updates properties.
+     * @param num The imaginary part to set.
      */
-    void setActivePower(double activePower);
+    void setImaginary(double num);
 
     /**
-     * @brief Gets the reactive power.
-     * @return The reactive power in MVAR.
+     * @brief Gets the voltage value.
+     * @return The voltage value as a complex number.
      */
-    double getReactivePower() const;
+    std::complex<double> getValue() const;
 
     /**
-     * @brief Sets the reactive power.
-     * @param reactivePower The reactive power to set in MVAR.
+     * @brief Sets the voltage value and updates properties.
+     * @param value The voltage value to set as a complex number.
+     * @throw std::invalid_argument if the provided value is invalid.
      */
-    void setReactivePower(double reactivePower);
+    void setValue(const std::complex<double>& value);
+
+    /**
+     * @brief Gets the frequency of the voltage.
+     * @return The frequency in Hz.
+     */
+    double getFrequency() const;
+
+    /**
+     * @brief Sets the frequency of the voltage.
+     * @param frequency The frequency to set in Hz.
+     */
+    void setFrequency(double frequency);
+
+    /**
+     * @brief Gets the magnitude of the voltage.
+     * @return The magnitude of the voltage.
+     */
+    double getMagnitude() const;
+
+    /**
+     * @brief Gets the phase angle of the voltage.
+     * @return The phase angle of the voltage in radians.
+     */
+    double getPhase() const;
+
+    /**
+     * @brief Calculates the voltage difference between this voltage and another voltage.
+     * @param other The other Voltage object to compare with.
+     * @return The voltage difference as a complex number.
+     */
+    std::complex<double> calculateDifference(const Voltage& other) const;
 
     /**
      * @brief Gets the power angle.
@@ -102,28 +107,9 @@ public:
     double getPowerAngle() const;
 
     /**
-     * @brief Sets the power angle.
-     * @param powerAngle The power angle to set in degrees.
+     * @brief Prints the voltage details to the console.
      */
-    void setPowerAngle(double powerAngle);
-
-    /**
-     * @brief Gets the magnitude of the voltage.
-     * @return The magnitude of the voltage.
-     */
-    double getVoltageMagnitude() const;
-
-    /**
-     * @brief Gets the angle of the voltage.
-     * @return The angle of the voltage in degrees.
-     */
-    double getVoltageAngle() const;
-
-    /**
-     * @brief Gets the magnitude of the voltage.
-     * @return The magnitude of the voltage.
-     */
-    double getMagnitude() const;
+    void printDetails() const;
 };
 
 #endif // VOLTAGE_H

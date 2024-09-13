@@ -1,62 +1,96 @@
-/**
- * @file current.h
- * @brief Header file for the Current class.
- * 
- * This file contains the definition of the Current class, which represents electrical current with various attributes and methods related to current characteristics and simulations.
- * 
- * @author [Your Name]
- * @date [Date]
- * @license [License Type] - [License URL]
- */
-
 #ifndef CURRENT_H
 #define CURRENT_H
 
-#include "voltage.h"  ///< Include the header for Voltage class
+#include <complex>
+#include <iostream>
+#include <stdexcept> // For std::invalid_argument
 
 /**
  * @class Current
- * @brief Represents electrical current with various attributes.
+ * @brief Represents the current in a power system with automatic property updates.
  * 
- * The Current class models electrical current, including its magnitude, phase angle, and other characteristics. It also provides methods for simulating current behavior and handling related calculations.
- * 
- * @author [Your Name]
- * @date [Date]
+ * The Current class models electrical current as a complex number, including magnitude,
+ * phase, and frequency. It provides methods for manipulating and analyzing the current value.
  */
 class Current {
+private:
+    std::complex<double> value; ///< Current value as a complex number
+    double frequency; ///< Frequency of the current in Hz
+
+    /**
+     * @brief Updates internal properties based on the current value.
+     */
+    void updateProperties();
+
 public:
     /**
-     * @brief Constructs a Current object with specified attributes.
-     * @param magnitude The magnitude of the current in amperes.
-     * @param phaseAngle The phase angle of the current in degrees.
-     * @param frequency The frequency of the current in Hertz.
-     * @param waveformType The type of waveform (e.g., sinusoidal, square).
+     * @brief Default constructor for the Current class.
      */
-    Current(double magnitude, double phaseAngle, double frequency, std::string waveformType);
-    
-    // Getter and setter methods...
+    Current();
 
     /**
-     * @brief Simulates the behavior of the current.
-     * 
-     * This method simulates the current's behavior under specific conditions, such as varying frequency or amplitude.
+     * @brief Constructs a Current object with a specified value and frequency.
+     * @param value The current value as a complex number.
+     * @param frequency The frequency of the current in Hz.
+     * @throw std::invalid_argument if the provided value is invalid.
      */
-    void simulateBehavior();
+    Current(const std::complex<double>& value, double frequency);
+    Current(double value);  // New constructor
+    /**
+     * @brief Gets the current value.
+     * @return The current value as a complex number.
+     */
+    std::complex<double> getValue() const;
 
     /**
-     * @brief Calculates the power associated with the current.
-     * @param voltage The voltage associated with the current.
-     * @return The calculated power in watts.
+     * @brief Sets the current value and updates properties.
+     * @param value The current value to set as a complex number.
+     * @throw std::invalid_argument if the provided value is invalid.
      */
-    double calculatePower(const Voltage& voltage) const;
+    void setValue(const std::complex<double>& value);
 
-private:
-    double magnitude;       ///< Magnitude of the current in amperes
-    double phaseAngle;      ///< Phase angle of the current in degrees
-    double frequency;       ///< Frequency of the current in Hertz
-    std::string waveformType; ///< Type of waveform (e.g., sinusoidal, square)
+    /**
+     * @brief Gets the frequency of the current.
+     * @return The frequency in Hz.
+     */
+    double getFrequency() const;
 
-    // Additional attributes for advanced calculations...
+    /**
+     * @brief Sets the frequency of the current.
+     * @param frequency The frequency to set in Hz.
+     */
+    void setFrequency(double frequency);
+
+    /**
+     * @brief Gets the magnitude of the current.
+     * @return The magnitude of the current.
+     */
+    double getMagnitude() const;
+
+    /**
+     * @brief Gets the phase angle of the current.
+     * @return The phase angle of the current in radians.
+     */
+    double getPhase() const;
+
+    /**
+     * @brief Adds another current to this current.
+     * @param other The Current object to add.
+     * @return The resulting Current object after addition.
+     */
+    Current operator+(const Current& other) const;
+
+    /**
+     * @brief Overloads the += operator to add another current to this current.
+     * @param other The Current object to add.
+     * @return Reference to this Current object.
+     */
+    Current& operator+=(const Current& other);
+
+    /**
+     * @brief Prints the current details to the console.
+     */
+    void printDetails() const;
 };
 
 #endif // CURRENT_H
