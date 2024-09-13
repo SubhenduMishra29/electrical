@@ -2,12 +2,16 @@
 #include <iostream>
 
 int main(int argc, char* argv[]) {
+    std::cout << "-- Power Sytem Simulation --" << std::endl;
     PowerSystem ps;
-std::cout << "Power Sytem Simulation Started" << std::endl;
+    std::cout << "Power Sytem Simulation Started" << std::endl;
     if (argc > 1) {
-        // Load from file
+        
+        // Print the file name/path for debugging
+        std::cout << "Loading SLD from file: " << argv[1] << std::endl;// Load from file
         ps.loadSLDFromFile(argv[1]);
     } else {
+        std::cout << "Entered CLI mode: " << std::endl;
         // Load from CLI input
         std::string cliInput = "CLI input string here"; // Replace with actual CLI input
         ps.loadSLDFromCLI(cliInput);

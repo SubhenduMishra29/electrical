@@ -1,135 +1,84 @@
-/**
- * @file InputParser.cpp
- * @author Subhendu Mishra
- * @date 2024-08-17
- * @brief Implementation file for the InputParser class, responsible for parsing input files
- *        and initializing the SLD (Single Line Diagram) with the components defined in the file.
- * 
- * This file contains the implementation of the InputParser class methods, which are used
- * to parse input data from files or command-line interfaces (CLI) and store the results as
- * components of a Single Line Diagram (SLD) for power system simulations.
- * 
- * @license GNU General Public License v3.0
- *          This program is free software: you can redistribute it and/or modify
- *          it under the terms of the GNU General Public License as published by
- *          the Free Software Foundation, either version 3 of the License, or
- *          (at your option) any later version.
- *          
- *          This program is distributed in the hope that it will be useful,
- *          but WITHOUT ANY WARRANTY; without even the implied warranty of
- *          MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- *          GNU General Public License for more details.
- *          
- *          You should have received a copy of the GNU General Public License
- *          along with this program. If not, see <https://www.gnu.org/licenses/>.
- */
-
 #include "lib/input_parser.h"
-#include <iostream>   // For std::cerr and std::endl
-#include <fstream>    // For std::ifstream
-#include <cstdio>     // For FILE* and fopen
+#include "parser.tab.hpp"
+#include <iostream>
+#include <fstream>
+#include <cerrno>
+#include <cstring> // For strerror
 
-#include "parser.tab.hpp"  // Include your generated parser header
-
-#include "lib/bus.h"           // Include full definition of Bus
-#include "lib/transformer.h"   // Include full definition of Transformer
-#include "lib/generator.h"     // Include full definition of Generator
-#include "lib/load.h"          // Include full definition of Load
-#include "lib/transmission_line.h" // Include full definition of TransmissionLine
-#include "lib/circuit_breaker.h"   // Include full definition of CircuitBreaker
-#include "lib/relay.h"        // Include full definition of Relay
-#include "lib/capacitor.h"    // Include full definition of Capacitor
-#include "lib/reactor.h"      // Include full definition of Reactor
-#include "lib/grid.h"         // Include full definition of Grid
-#include "lib/line.h"         // Include full definition of Line
-
-// Forward declarations of parser and lexer functions
 extern "C" {
-    void yyerror(const char*);
-    extern FILE* yyin;  // Use the FILE* global variable for Flex
+    void yyerror(const char* msg);
+    extern FILE* yyin;
 }
+InputParser::InputParser(){
 
-// Constructor for file input
-/**
- * @brief Constructs an InputParser object for file input.
- * @param filename The name of the file to be parsed.
- */
+}
 InputParser::InputParser(const std::string& filename)
     : filename(filename), cliStream(nullptr) {
-    FILE* file = fopen(filename.c_str(), "r");
-    if (!file) {
-        std::cerr << "Failed to open file: " << filename << std::endl;
-    } else {
-        yyin = file;  // Set yyin to the opened file
+        std::cout << "Loading from file in InputParser : " << filename << std::endl;// Load from file
+        fileStream.open(filename);
+        if (!fileStream.is_open()) {
+            std::cerr << "Failed to open file: " << filename << std::endl;
+        } else {
+        // Set yyin to the file pointer
+        yyin = fopen(filename.c_str(), "r");
+        if (!yyin) {
+            std::cerr << "Failed to open file stream: " << strerror(errno) << std::endl;
+        }
     }
 }
 
-// Constructor for CLI input
-/**
- * @brief Constructs an InputParser object for CLI input.
- * @param cliStream A pointer to an input stream for CLI input.
- */
-InputParser::InputParser(std::istream* cliStream) 
+InputParser::InputParser(std::istream* cliStream)
     : filename(""), cliStream(cliStream) {
-    if (!cliStream) {
-        std::cerr << "CLI stream is not set." << std::endl;
-    } else {
-        yyin = stdin;  // Use stdin for CLI input
-    }
+    // Set yyin to stdin for CLI input
+    yyin = stdin;
 }
 
-// Destructor to clean up resources
-/**
- * @brief Destructor to clean up resources.
- * Closes the file stream if it was allocated.
- */
 InputParser::~InputParser() {
+    if (fileStream.is_open()) {
+        fileStream.close();
+    }
     if (yyin && yyin != stdin) {
-        fclose(yyin);  // Close the file if it was opened
+        fclose(yyin);
     }
 }
 
-// Method to parse file input
-/**
- * @brief Parses the input file specified in the constructor.
- * Calls the parser and reports if parsing fails.
- */
 void InputParser::parseFile() {
-    if (!yyin) {
-        std::cerr << "Input stream is not set." << std::endl;
+    std::cout << "Entered parseFile in InputParser with file: " << filename << std::endl;
+    if (!fileStream.is_open()) {
+        std::cerr << "File stream is not open." << std::endl;
         return;
     }
-
-    // Call the parser
+    // Redirect yyin to the opened file
+    if (yyin) {
+        fclose(yyin);
+    }
+    yyin = fopen(filename.c_str(), "r");
+    if (!yyin) {
+        std::cerr << "Failed to open file stream: " << strerror(errno) << std::endl;
+        return;
+    }
+    std::cout << "yyin is set to fileStream" << std::endl;
     if (yyparse() != 0) {
         std::cerr << "Parsing failed." << std::endl;
     }
 }
 
-// Method to parse CLI input
-/**
- * @brief Parses the input from the CLI stream specified in the constructor.
- * Calls the parser and reports if parsing fails.
- */
 void InputParser::parseCLI() {
     if (!cliStream) {
         std::cerr << "CLI stream is not set." << std::endl;
         return;
     }
-
-    yyin = stdin;  // Use stdin for CLI input
-
-    // Call the parser
+    // Redirect yyin to stdin
+    if (yyin && yyin != stdin) {
+        fclose(yyin);
+    }
+    yyin = stdin;
+    std::cout << "yyin is set to stdin" << std::endl;
     if (yyparse() != 0) {
         std::cerr << "Parsing failed." << std::endl;
     }
 }
 
-// Reset parser state
-/**
- * @brief Resets the state of the parser.
- * Clears all vectors containing parsed data.
- */
 void InputParser::resetParserState() {
     buses.clear();
     transformers.clear();
@@ -144,112 +93,38 @@ void InputParser::resetParserState() {
     lines.clear();
 }
 
-// Getter methods for parsed data
-
-/**
- * @brief Gets the list of buses parsed from the input.
- * @return A reference to a vector of Bus objects.
- */
 std::vector<Bus>& InputParser::getBuses() { return buses; }
-
-/**
- * @brief Gets the list of transformers parsed from the input.
- * @return A reference to a vector of Transformer objects.
- */
 std::vector<Transformer>& InputParser::getTransformers() { return transformers; }
-
-/**
- * @brief Gets the list of generators parsed from the input.
- * @return A reference to a vector of Generator objects.
- */
 std::vector<Generator>& InputParser::getGenerators() { return generators; }
-
-/**
- * @brief Gets the list of loads parsed from the input.
- * @return A reference to a vector of Load objects.
- */
 std::vector<Load>& InputParser::getLoads() { return loads; }
-
-/**
- * @brief Gets the list of transmission lines parsed from the input.
- * @return A reference to a vector of TransmissionLine objects.
- */
 std::vector<TransmissionLine>& InputParser::getTransmissionLines() { return transmissionLines; }
-
-/**
- * @brief Gets the list of circuit breakers parsed from the input.
- * @return A reference to a vector of CircuitBreaker objects.
- */
 std::vector<CircuitBreaker>& InputParser::getCircuitBreakers() { return circuitBreakers; }
-
-/**
- * @brief Gets the list of relays parsed from the input.
- * @return A reference to a vector of Relay objects.
- */
 std::vector<Relay>& InputParser::getRelays() { return relays; }
-
-/**
- * @brief Gets the list of capacitors parsed from the input.
- * @return A reference to a vector of Capacitor objects.
- */
 std::vector<Capacitor>& InputParser::getCapacitors() { return capacitors; }
-
-/**
- * @brief Gets the list of reactors parsed from the input.
- * @return A reference to a vector of Reactor objects.
- */
 std::vector<Reactor>& InputParser::getReactors() { return reactors; }
-
-/**
- * @brief Gets the list of grids parsed from the input.
- * @return A reference to a vector of Grid objects.
- */
 std::vector<Grid>& InputParser::getGrids() { return grids; }
-
-/**
- * @brief Gets the list of lines parsed from the input.
- * @return A reference to a vector of Line objects.
- */
 std::vector<Line>& InputParser::getLines() { return lines; }
-// input_parser.cpp
-void InputParser::addBus(
-    const std::string& id,
-    const std::string& type,
-    double voltage,
-    const std::string& angle,
-    double baseKV,
-    double loadP,
-    double loadQ,
-    double generatorP,
-    const std::string& generatorQ,
-    const std::string& shuntConductor,
-    const std::string& voltageRegulator,
-    const std::string& regulatorSetpoint,
-    const std::string& voltageBand,
-    const std::string& emergencyBackup,
-    const std::string& harmonicDistortion
-   /* const std::string& busbarProtection*/
-) {
-    // Example implementation: Print the values to the console
-    std::cout << "Adding BUS with values:\n";
-    std::cout << "ID: " << id << "\n";
-    std::cout << "Type: " << type << "\n";
-    std::cout << "Voltage: " << voltage << "\n";
-    std::cout << "Angle: " << angle << "\n";
-    std::cout << "Base kV: " << baseKV << "\n";
-    std::cout << "Load P: " << loadP << "\n";
-    std::cout << "Load Q: " << loadQ << "\n";
-    std::cout << "Generator P: " << generatorP << "\n";
-    std::cout << "Generator Q: " << generatorQ << "\n";
-    std::cout << "Shunt Conductor: " << shuntConductor << "\n";
-    std::cout << "Voltage Regulator: " << voltageRegulator << "\n";
-    std::cout << "Regulator Setpoint: " << regulatorSetpoint << "\n";
-    std::cout << "Voltage Band: " << voltageBand << "\n";
-    std::cout << "Emergency Backup: " << emergencyBackup << "\n";
-    std::cout << "Harmonic Distortion: " << harmonicDistortion << "\n";
-    //std::cout << "Busbar Protection: " << busbarProtection << "\n";
-    std::cout << "_______________________________\n";
 
-    // Here, you can add code to store the bus data or further process it
+void InputParser::addBus(const std::string& id, const std::string& voltage) {
+    std::cout << "Entering addBus method" << std::endl;
+
+    // Mutex removed for testing
+    // std::lock_guard<std::mutex> lock(busMutex);
+
+    try {
+        std::cout << "Checking buses capacity" << std::endl;
+        std::cout << "Current buses capacity: " << buses.capacity() << std::endl;
+        std::cout << "Creating new Bus object" << std::endl;
+        Bus newBus(id, voltage);
+        std::cout << "New Bus object created successfully" << std::endl;
+        std::cout << "Adding Bus to vector" << std::endl;
+        buses.push_back(newBus);
+        std::cout << "Bus added to the vector. Current size: " << buses.size() << std::endl;
+        std::cout << "Displaying all buses" << std::endl;
+        for (const auto& bus : buses) {
+            bus.displayInfo();
+        }
+    } catch (const std::exception& e) {
+        std::cerr << "Exception caught while adding a bus: " << e.what() << std::endl;
+    }
 }
-    

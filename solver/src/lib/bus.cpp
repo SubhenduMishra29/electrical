@@ -1,153 +1,68 @@
 #include "lib/bus.h"
+#include "lib/parser_utils.h"
+#include <iostream>
+#include <stdexcept> // For std::invalid_argument
 
-Bus::Bus(const std::string& name, const Voltage& busVoltage, BusType type)
-    : busVoltage(busVoltage), type(type), current(0.0), inflowPower(0.0), outflowPower(0.0),
-      id(name), shuntConductor("None"), voltageRegulator("On"), regulatorSetpoint("11kV"),
-      voltageBand("±2%"), emergencyBackup("No"), harmonicDistortion("0.5%"), busbarProtection("Yes") {}
-
-void Bus::addTransmissionLine(TransmissionLine* line) {
-    transmissionLines.push_back(line);
-    recalculateBusState(); // Recalculate bus state whenever a new line is added
+Bus::Bus()
+    : id(""), voltage(24.0), totalCurrent(0.0) { 
+    // No additional initialization required
 }
 
-void Bus::removeTransmissionLine(TransmissionLine* line) {
-    // Correctly remove the transmission line from the vector
-    auto it = std::remove(transmissionLines.begin(), transmissionLines.end(), line);
-    if (it != transmissionLines.end()) {
-        transmissionLines.erase(it, transmissionLines.end());
-        recalculateBusState(); // Recalculate bus state after removal
+Bus::Bus(const std::string& id, const std::string& voltageStr)
+    : id(id), voltage(24.0), totalCurrent(0.0) {
+    try {
+        // Split the voltage string into number and character parts
+        SplitResult result = splitNumberAndChars(voltageStr);
+        std::cout << "IN BUS: Added Bus ID: " << id << " with Voltage: " << result.numberPart << result.charPart << std::endl;
+
+        // Convert the number part of the voltage to a double
+        double voltageValue = std::stod(result.numberPart);  // Converts "11" to 11.0
+        std::cout << "Voltage: " << voltageValue << std::endl;
+        this->voltage = voltageValue; // Set the voltage
+
+        // Initialize totalCurrent
+        this->totalCurrent = 0.0;        
+        std::cout << "Exited bus constructor" << std::endl;
+    } catch (const std::invalid_argument& e) {
+        std::cerr << "Invalid argument error in Bus constructor: " << e.what() << std::endl;
+    } catch (const std::exception& e) {
+        std::cerr << "Error in Bus constructor: " << e.what() << std::endl;
+    }
+    // Display bus information
+        displayInfo();
+}
+
+// Commented out for simplification
+/*
+bool Bus::addLineId(const std::string& lineId) {
+    if (lineIds.find(lineId) == lineIds.end()) {
+        lineIds.insert(lineId);
+        std::cout << "Line ID " << lineId << " added to Bus " << id << std::endl;
+        return true;
+    } else {
+        std::cout << "Line ID " << lineId << " already exists for Bus " << id << std::endl;
+        return false;
     }
 }
 
-Voltage Bus::getVoltage() const {
-    return busVoltage;
+std::vector<std::string> Bus::getLineIds() const {
+    return std::vector<std::string>(lineIds.begin(), lineIds.end());
+}
+*/
+
+void Bus::updateBusValues() {
+    // Placeholder for actual implementation
 }
 
-void Bus::setVoltage(const Voltage& voltage) {
-    this->busVoltage = voltage;
-    recalculateBusState(); // Recalculate bus state whenever voltage is updated
-}
+void Bus::displayInfo() const {
+    std::cout << "____________________Inside Bus Class_____________________" << std::endl
+              << "Bus ID: " << id << std::endl;
 
-double Bus::getCurrent() const {
-    return current;
-}
+    std::cout << "Voltage: " << voltage << " V" << std::endl;
 
-void Bus::setCurrent(double current) {
-    this->current = current;
-    recalculateBusState(); // Recalculate bus state whenever current is updated
-}
-
-double Bus::getInflowPower() const {
-    return inflowPower;
-}
-
-double Bus::getOutflowPower() const {
-    return outflowPower;
-}
-
-BusType Bus::getType() const {
-    return type;
-}
-
-void Bus::setType(BusType type) {
-    this->type = type;
-}
-
-std::string Bus::getId() const {
-    return id;
-}
-
-void Bus::setId(const std::string& id) {
-    this->id = id;
-}
-
-std::string Bus::getShuntConductor() const {
-    return shuntConductor;
-}
-
-void Bus::setShuntConductor(const std::string& shuntConductor) {
-    this->shuntConductor = shuntConductor;
-}
-
-std::string Bus::getVoltageRegulator() const {
-    return voltageRegulator;
-}
-
-void Bus::setVoltageRegulator(const std::string& voltageRegulator) {
-    this->voltageRegulator = voltageRegulator;
-}
-
-std::string Bus::getRegulatorSetpoint() const {
-    return regulatorSetpoint;
-}
-
-void Bus::setRegulatorSetpoint(const std::string& regulatorSetpoint) {
-    this->regulatorSetpoint = regulatorSetpoint;
-}
-
-std::string Bus::getVoltageBand() const {
-    return voltageBand;
-}
-
-void Bus::setVoltageBand(const std::string& voltageBand) {
-    this->voltageBand = voltageBand;
-}
-
-std::string Bus::getEmergencyBackup() const {
-    return emergencyBackup;
-}
-
-void Bus::setEmergencyBackup(const std::string& emergencyBackup) {
-    this->emergencyBackup = emergencyBackup;
-}
-
-std::string Bus::getHarmonicDistortion() const {
-    return harmonicDistortion;
-}
-
-void Bus::setHarmonicDistortion(const std::string& harmonicDistortion) {
-    this->harmonicDistortion = harmonicDistortion;
-}
-
-std::string Bus::getBusbarProtection() const {
-    return busbarProtection;
-}
-
-void Bus::setBusbarProtection(const std::string& busbarProtection) {
-    this->busbarProtection = busbarProtection;
-}
-
-void Bus::recalculateBusState() {
-    // Placeholder method for recalculating voltage and current at the bus
-    // This would involve solving power flow equations, which depend on the specifics
-    // of the system model, including line impedances, connected loads, etc.
-
-    calculatePowerFlow();
-
-    // Update the bus voltage and current based on inflow and outflow power
-    // Placeholder logic: simplistic adjustment based on inflow and outflow
-    double voltageMagnitude = busVoltage.getVoltageMagnitude() - (outflowPower - inflowPower) * 0.01;
-    double voltageAngle = busVoltage.getVoltageAngle(); // Keep the same angle for simplicity
-
-    busVoltage.setVoltage(std::polar(voltageMagnitude, voltageAngle));
-
-    // Assume the current is proportional to the power difference
-    current = std::abs((inflowPower - outflowPower) / voltageMagnitude);
-}
-
-void Bus::calculatePowerFlow() {
-    inflowPower = 0.0;
-    outflowPower = 0.0;
-
-    for (const auto& line : transmissionLines) {
-        // Assume TransmissionLine has methods to get connected bus voltage and current
-        Voltage connectedBusVoltage = line->getConnectedBusVoltage(this);
-        double powerFlow = std::real(busVoltage.getVoltage() * std::conj(connectedBusVoltage.getVoltage() * current));
-
-        if (powerFlow > 0) {
-            inflowPower += powerFlow;
-        } else {
-            outflowPower += -powerFlow;
-        }
-    }
+    // std::cout << "Total Current: " << totalCurrent << std::endl; // Uncomment if needed
+    // std::cout << "Connected Lines: " << std::endl;
+    // for (const auto& lineId : lineIds) {
+    //     std::cout << "Line ID: " << lineId << std::endl; // Print only IDs
+    // }
 }

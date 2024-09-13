@@ -1,41 +1,127 @@
 #include "lib/current.h"
-
-// Constructor
-/**
- * @brief Constructs a Current object with specified attributes.
- * @param magnitude The magnitude of the current in amperes.
- * @param phaseAngle The phase angle of the current in degrees.
- * @param frequency The frequency of the current in Hertz.
- * @param waveformType The type of waveform (e.g., sinusoidal, square).
- */
-Current::Current(double magnitude, double phaseAngle, double frequency, std::string waveformType)
-    : magnitude(magnitude), phaseAngle(phaseAngle), frequency(frequency), waveformType(waveformType) {
-    // Initialize all attributes
-}
-
-// Getter methods...
-
-// Setters...
+#include <cmath>
+#include <stdexcept> // For std::invalid_argument, std::runtime_error
 
 /**
- * @brief Simulates the behavior of the current.
- * 
- * This method simulates the current's behavior under specific conditions, such as varying frequency or amplitude.
+ * @brief Default constructor for the Current class.
  */
-void Current::simulateBehavior() {
-    // Placeholder: Simulate the current behavior
-    // Example: Adjust magnitude or phase angle based on conditions
+Current::Current() : value(0.0, 0.0), frequency(50.0) {}
+
+/**
+ * @brief Constructs a Current object with a specified value and frequency.
+ * @param value The current value as a complex number.
+ * @param frequency The frequency of the current in Hz.
+ * @throw std::invalid_argument if the provided value is invalid.
+ */
+Current::Current(const std::complex<double>& value, double frequency) : value(value), frequency(frequency) {
+    if (std::abs(value) < 0) {
+        throw std::invalid_argument("Current value cannot be negative.");
+    }
+    if (frequency <= 0) {
+        throw std::invalid_argument("Frequency must be positive.");
+    }
+    updateProperties();
 }
 
 /**
- * @brief Calculates the power associated with the current.
- * @param voltage The voltage associated with the current.
- * @return The calculated power in watts.
+ * @brief Constructs a Current object with a double value (imaginary part is zero, default frequency).
+ * @param value The current value as a real number.
  */
-double Current::calculatePower(const Voltage& voltage) const {
-    // Assuming Voltage class has a method getMagnitude() to get voltage magnitude
-    double voltageMagnitude = voltage.getMagnitude();
-    // Calculate power using the formula: P = V * I * cos(θ)
-    // Note: Adjust the formula if phase angle needs to be converted to radians
-    return voltageMagnitude * magnitude * cos(phaseAngle * M_PI / 180.0); // Convert angle to radians
+Current::Current(double value) : value(value, 0.0), frequency(50.0) {
+    updateProperties();
+}
+
+/**
+ * @brief Updates internal properties based on the current value.
+ */
+void Current::updateProperties() {
+    // Implement any property updates needed when the value changes
+    // Example: Update derived values or check constraints
+}
+
+/**
+ * @brief Gets the current value.
+ * @return The current value as a complex number.
+ */
+std::complex<double> Current::getValue() const {
+    return value;
+}
+
+/**
+ * @brief Sets the current value and updates properties.
+ * @param value The current value to set as a complex number.
+ * @throw std::invalid_argument if the provided value is invalid.
+ */
+void Current::setValue(const std::complex<double>& value) {
+    if (std::abs(value) < 0) {
+        throw std::invalid_argument("Current value cannot be negative.");
+    }
+    this->value = value;
+    updateProperties();
+}
+
+/**
+ * @brief Gets the frequency of the current.
+ * @return The frequency in Hz.
+ */
+double Current::getFrequency() const {
+    return frequency;
+}
+
+/**
+ * @brief Sets the frequency of the current.
+ * @param frequency The frequency to set in Hz.
+ */
+void Current::setFrequency(double frequency) {
+    if (frequency <= 0) {
+        throw std::invalid_argument("Frequency must be positive.");
+    }
+    this->frequency = frequency;
+    updateProperties();
+}
+
+/**
+ * @brief Gets the magnitude of the current.
+ * @return The magnitude of the current.
+ */
+double Current::getMagnitude() const {
+    return std::abs(value);
+}
+
+/**
+ * @brief Gets the phase angle of the current.
+ * @return The phase angle of the current in radians.
+ */
+double Current::getPhase() const {
+    return std::arg(value);
+}
+
+/**
+ * @brief Adds another current to this current.
+ * @param other The Current object to add.
+ * @return The resulting Current object after addition.
+ */
+Current Current::operator+(const Current& other) const {
+    return Current(value + other.value, frequency);
+}
+
+/**
+ * @brief Overloads the += operator to add another current to this current.
+ * @param other The Current object to add.
+ * @return Reference to this Current object.
+ */
+Current& Current::operator+=(const Current& other) {
+    value += other.value;
+    updateProperties();
+    return *this;
+}
+
+/**
+ * @brief Prints the current details to the console.
+ */
+void Current::printDetails() const {
+    std::cout << "Current Value: " << value << std::endl;
+    std::cout << "Magnitude: " << getMagnitude() << std::endl;
+    std::cout << "Phase Angle: " << getPhase() << " radians" << std::endl;
+    std::cout << "Frequency: " << frequency << " Hz" << std::endl;
 }

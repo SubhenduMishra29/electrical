@@ -1,79 +1,132 @@
-#include "lib/Voltage.h"
+#include "lib/voltage.h"
 #include <cmath>
-
-/**
- * @file Voltage.cpp
- * @brief Implements the Voltage class representing voltage at a bus in the power system.
- * 
- * This file contains the implementation of the Voltage class methods, including 
- * getters and setters for voltage, active power, reactive power, and power angle, 
- * as well as methods to get the magnitude and angle of the voltage.
- * 
- * @author Subhendu Mishra
- * @date [Date]
- */
-
-/**
- * @brief Constructor for the Voltage class.
- * @param voltage The voltage level as a complex number.
- * @param activePower The active power in MW.
- * @param reactivePower The reactive power in MVAR.
- * @param powerAngle The power angle in degrees.
- */
-Voltage::Voltage(std::complex<double> voltage, double activePower, double reactivePower, double powerAngle)
-    : voltage(voltage), activePower(activePower), reactivePower(reactivePower), powerAngle(powerAngle) {}
+#include <stdexcept> // For std::invalid_argument, std::runtime_error
 
 /**
  * @brief Default constructor for the Voltage class.
  */
-Voltage::Voltage() : voltage(0.0, 0.0), activePower(0.0), reactivePower(0.0), powerAngle(0.0) {}
+Voltage::Voltage() : value(0.0, 0.0), frequency(50.0) {}
 
 /**
- * @brief Gets the voltage level.
- * @return The voltage level as a complex number.
+ * @brief Constructs a Voltage object with specified real and imaginary parts.
+ * @param real The real part of the voltage.
+ * @param imaginary The imaginary part of the voltage.
  */
-std::complex<double> Voltage::getVoltage() const {
-    return voltage;
+Voltage::Voltage(double real, double imaginary)
+    : value(real, imaginary), frequency(50.0) {
+    updateProperties();
 }
 
 /**
- * @brief Sets the voltage level.
- * @param voltage The voltage level to set as a complex number.
+ * @brief Constructs a Voltage object with a specified value and frequency.
+ * @param value The voltage value as a complex number.
+ * @param frequency The frequency of the voltage in Hz.
+ * @throw std::invalid_argument if the provided value or frequency is invalid.
  */
-void Voltage::setVoltage(std::complex<double> voltage) {
-    this->voltage = voltage;
+Voltage::Voltage(const std::complex<double>& value, double frequency)
+    : value(value), frequency(frequency) {
+    if (std::abs(value) < 0) {
+        throw std::invalid_argument("Voltage value cannot be negative.");
+    }
+    if (frequency <= 0) {
+        throw std::invalid_argument("Frequency must be positive.");
+    }
+    updateProperties();
 }
 
 /**
- * @brief Gets the active power.
- * @return The active power in MW.
+ * @brief Updates internal properties based on the voltage value.
+ * This method recalculates derived values such as magnitude and phase.
  */
-double Voltage::getActivePower() const {
-    return activePower;
+void Voltage::updateProperties() {
+    // No need to store magnitude and phase as member variables
+    // Magnitude and phase are calculated dynamically when needed
 }
 
 /**
- * @brief Sets the active power.
- * @param activePower The active power to set in MW.
+ * @brief Sets the real part of the voltage value and updates properties.
+ * @param num The real part to set.
  */
-void Voltage::setActivePower(double activePower) {
-    this->activePower = activePower;
+void Voltage::setReal(double num) {
+    value = std::complex<double>(num, value.imag());
+    std::cout<< "Rael Value set:"<<num<< std::endl;
+    updateProperties();
 }
 
 /**
- * @brief Gets the reactive power.
- * @return The reactive power in MVAR.
+ * @brief Sets the imaginary part of the voltage value and updates properties.
+ * @param num The imaginary part to set.
  */
-double Voltage::getReactivePower() const {
-    return reactivePower;
+void Voltage::setImaginary(double num) {
+    value = std::complex<double>(value.real(), num);
+    std::cout<< "Imaginary Value set:"<<num<< std::endl;
+    updateProperties();
 }
 
 /**
- * @brief Sets the reactive power.
- * @param reactivePower The reactive power to set in MVAR.
+ * @brief Gets the voltage value.
+ * @return The voltage value as a complex number.
  */
-void Voltage::setReactivePower(double reactivePower) {
-    this->reactivePower = reactivePower;
+std::complex<double> Voltage::getValue() const {
+    return value;
+}
+
+/**
+ * @brief Sets the voltage value and updates properties.
+ * @param value The voltage value to set as a complex number.
+ * @throw std::invalid_argument if the provided value is invalid.
+ */
+void Voltage::setValue(const std::complex<double>& value) {
+    if (std::abs(value) < 0) {
+        throw std::invalid_argument("Voltage value cannot be negative.");
+    }
+    this->value = value;
+    updateProperties();
+}
+
+/**
+ * @brief Gets the frequency of the voltage.
+ * @return The frequency in Hz.
+ */
+double Voltage::getFrequency() const {
+    return frequency;
+}
+
+/**
+ * @brief Sets the frequency of the voltage.
+ * @param frequency The frequency to set in Hz.
+ */
+void Voltage::setFrequency(double frequency) {
+    if (frequency <= 0) {
+        throw std::invalid_argument("Frequency must be positive.");
+    }
+    this->frequency = frequency;
+    updateProperties();
+}
+
+/**
+ * @brief Gets the magnitude of the voltage.
+ * @return The magnitude of the voltage.
+ */
+double Voltage::getMagnitude() const {
+    return std::abs(value);
+}
+
+/**
+ * @brief Gets the phase angle of the voltage.
+ * @return The phase angle of the voltage in radians.
+ */
+double Voltage::getPhase() const {
+    return std::arg(value);
+}
+
+/**
+ * @brief Calculates the voltage difference between this voltage and another voltage.
+ * @param other The other Voltage object to compare with.
+ * @return The voltage difference as a complex number.
+ */
+std::complex<double> Voltage::calculateDifference(const Voltage& other) const {
+    return value - other.value;
 }
 
 /**
@@ -81,29 +134,16 @@ void Voltage::setReactivePower(double reactivePower) {
  * @return The power angle in degrees.
  */
 double Voltage::getPowerAngle() const {
-    return powerAngle;
+    return getPhase() * 180.0 / M_PI; // Convert radians to degrees
 }
 
 /**
- * @brief Sets the power angle.
- * @param powerAngle The power angle to set in degrees.
+ * @brief Prints the voltage details to the console.
  */
-void Voltage::setPowerAngle(double powerAngle) {
-    this->powerAngle = powerAngle;
-}
-
-/**
- * @brief Gets the magnitude of the voltage.
- * @return The magnitude of the voltage.
- */
-double Voltage::getVoltageMagnitude() const {
-    return std::abs(voltage);
-}
-
-/**
- * @brief Gets the angle of the voltage.
- * @return The angle of the voltage in degrees.
- */
-double Voltage::getVoltageAngle() const {
-    return std::arg(voltage) * (180.0 / M_PI);  // Convert from radians to degrees
+void Voltage::printDetails() const {
+    std::cout << "Voltage Value: " << value << std::endl;
+    std::cout << "Magnitude: " << getMagnitude() << std::endl;
+    std::cout << "Phase: " << getPhase() << " radians" << std::endl;
+    std::cout << "Power Angle: " << getPowerAngle() << " degrees" << std::endl;
+    std::cout << "Frequency: " << frequency << " Hz" << std::endl;
 }

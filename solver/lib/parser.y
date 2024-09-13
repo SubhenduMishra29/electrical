@@ -11,14 +11,14 @@
 extern int yylex();
 extern void yyerror(const char *s);
 
-InputParser* parser = nullptr;
+InputParser parser;
 %}
 
 /* Define union for YYSTYPE */
 %union {
     int number;
     char* string;
-    int ival;
+    //int ival;
     double dval;
     char *sval;
     struct Bus *busval;
@@ -29,7 +29,7 @@ InputParser* parser = nullptr;
 /* Define tokens and their types */
 %token <sval> STRING ID TYPE VOLTAGE_REGULATOR SHUNT_CONDUCTOR REGULATOR_SETPOINT VOLTAGE_BAND EMERGENCY_BACKUP HARMONIC_DISTORTION TAP_CHANGER COOLING TAP_STEP
 %token <sval> BUSBAR_PROTECTION FROM TO TAP_RANGE TAP_POSITION RATING IMPEDANCE TEMPERATURE_RISE VECTOR_GROUP
-%token <sval> LOAD_TAP_CHANGER NO_LOAD_TAP_CHANGER VOLTAGE BASE_kV 
+%token <sval> LOAD_TAP_CHANGER NO_LOAD_TAP_CHANGER BASE_kV 
 %token <dval> NUMBER LOAD_P LOAD_Q GENERATOR_P GENERATOR_Q ANGLE
 %token GRID TRANSFORMER BUS CT PT CB CONNECTED GENERATION LOAD CONTROL NONE PQ SLACK LINE
 %token VERSION HELP SAVE EXIT CMD
@@ -39,7 +39,7 @@ InputParser* parser = nullptr;
 %token CONTROL_STRATEGY RESPONSE_TIME FAULT_DETECTION CALIBRATION_RECORDS SETTINGS  
 %token <ival> INTEGER
 %token <dval> FLOAT
-
+%token <string> VOLTAGE VOLTAGE_VAL
 
 %type <string> bus_definition
 %type <sval> transformer_definition
@@ -50,6 +50,7 @@ InputParser* parser = nullptr;
 %type <sval> capacitor_definition
 %type <sval> reactor_definition
 %type <sval> relay_definition
+
 
 
 %start input
@@ -101,49 +102,31 @@ cli_command:
     ;
 
 bus_definition:
-    BUS ID STRING TYPE STRING VOLTAGE STRING ANGLE STRING BASE_kV STRING LOAD_P STRING LOAD_Q STRING GENERATOR_P STRING GENERATOR_Q STRING SHUNT_CONDUCTOR STRING VOLTAGE_REGULATOR STRING REGULATOR_SETPOINT STRING VOLTAGE_BAND STRING EMERGENCY_BACKUP STRING HARMONIC_DISTORTION STRING BUSBAR_PROTECTION STRING
+    BUS ID STRING TYPE STRING VOLTAGE STRING 
     {
-        // Assuming parser has addBus method that takes these parameters
+        // Debug: Output the parsed values
         printf("Parsing BUS with values:\n");
-        printf("ID: %s\n", $4);
-        printf("Type: %s\n", $6);
-        printf("Voltage: %lf\n", $8);  // Convert STRING to double
-        printf("Angle: %s\n", $10);
-        printf("Base kV: %lf\n", $12);  // Convert STRING to double
-        printf("Load P: %lf\n", $14);  // Convert STRING to double
-        printf("Load Q: %lf\n", $16);  // Convert STRING to double
-        printf("Generator P: %lf\n", $18);  // Convert STRING to double
-        printf("Generator Q: %lf\n", $20);  // Convert STRING to double
-        printf("Shunt Conductor: %s\n", $22);
-        printf("Voltage Regulator: %s\n", $24);
-        printf("Regulator Setpoint: %s\n", $26);
-        printf("Voltage Band: %s\n", $28);
-        printf("Emergency Backup: %s\n", $30);
-        printf("Harmonic Distortion: %s\n", $32);
-//        printf("Busbar Protection: %s\n", $34);
+        printf("ID: %s\n", $3 ? $3 : "null");
+        printf("Type: %s\n", $6 ? $6 : "null");
+        printf("Voltage: %s\n", $7 ? $7 : "null");
+
+        try {
+            // Convert voltage string to double (already stripped of 'kV')
+            double voltageValue = std::stod($7);
+            // Create Voltage object (imaginary part = 0.0)
+            Voltage voltage(voltageValue, 0.0); // this has to be checked in voltage class 
+            parser.addBus($3, $7);            
+        } catch (const std::invalid_argument& e) {
+            std::cerr << "Error: Invalid voltage format: " << $7 << std::endl;
+            YYABORT;
+        }
+
         printf("_______________________________\n");
-
-        // Call addBus with appropriate types
-        parser->addBus($4, $6, $8, $10, $12, $14, $16, $18, $20, $22, $24, $26, $28, $30, $32 );
-
-        // Free dynamically allocated memory
-        free($2);
-        free($4);
+        
+        // Free the dynamically allocated memory
+        free($3);
         free($6);
-        //free($8);
-        free($10);
-       // free($12);
-       // free($14);
-       // free($16);
-       // free($18);
-        free($20);
-        free($22);
-        free($24);
-        free($26);
-        free($28);
-        free($30);
-        free($32);
-        //free($34);
+        free($7);       
     }
     ;
 //Transformer id "Transformer1" from "Bus1" to "Bus2" rating "100MVA" impedance "0.05+j0.1" 
@@ -206,7 +189,7 @@ grid_definition:
         printf("Voltage: %lf\n", $2);
        // printf("Type: %s\n", $4);
 
-        if ($2 <= 0) {
+        if ($2 == NULL) {
             yyerror("Invalid grid voltage");
         } else {
             // Assuming parser has addGrid method

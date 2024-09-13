@@ -23,14 +23,3 @@ double TransmissionLine::getImpedance() const {
     return impedance;
 }
 
-// Get the voltage of the bus connected by this transmission line
-Voltage TransmissionLine::getConnectedBusVoltage(const Bus* bus) const {
-    if (bus == bus1) {
-        return bus2->getVoltage();
-    } else if (bus == bus2) {
-        return bus1->getVoltage();
-    } else {
-        // Handle error: Bus is not connected by this line
-        throw PowerSystemError("The provided bus is not connected by this transmission line.");
-    }
-}
