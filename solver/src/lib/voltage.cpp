@@ -132,7 +132,7 @@ double Voltage::getPowerAngle() const {
  * @brief Prints the voltage details to the console.
  */
 void Voltage::printDetails() const {
-    std::cout << "----------------Inside Voltage--------------------- " << value << std::endl;
+    std::cout << "----------------Inside Voltage--------------------- " << std::endl;
     std::cout << "Voltage Value: " << value << std::endl;
     std::cout << "Magnitude: " << getMagnitude() << std::endl;
     std::cout << "Phase: " << getPhase() << " radians" << std::endl;

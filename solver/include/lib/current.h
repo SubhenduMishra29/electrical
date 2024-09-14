@@ -32,10 +32,23 @@ public:
      * @brief Constructs a Current object with a specified value and frequency.
      * @param value The current value as a complex number.
      * @param frequency The frequency of the current in Hz.
-     * @throw std::invalid_argument if the provided value is invalid.
+     * @throw std::invalid_argument if the provided value or frequency is invalid.
      */
     Current(const std::complex<double>& value, double frequency);
-    Current(double value);  // New constructor
+
+    /**
+     * @brief Constructs a Current object with a double value (real part, imaginary is 0, default frequency).
+     * @param value The current value as a real number.
+     */
+    Current(double value);
+
+    /**
+     * @brief Constructs a Current object with specified real and imaginary parts.
+     * @param real The real part of the current.
+     * @param imag The imaginary part of the current.
+     */
+    Current(double real, double imag);
+
     /**
      * @brief Gets the current value.
      * @return The current value as a complex number.
@@ -58,6 +71,7 @@ public:
     /**
      * @brief Sets the frequency of the current.
      * @param frequency The frequency to set in Hz.
+     * @throw std::invalid_argument if the provided frequency is invalid.
      */
     void setFrequency(double frequency);
 
@@ -86,6 +100,20 @@ public:
      * @return Reference to this Current object.
      */
     Current& operator+=(const Current& other);
+
+    /**
+     * @brief Adds a complex number to this current.
+     * @param other The complex number to add.
+     * @return The resulting Current object after addition.
+     */
+    Current operator+(const std::complex<double>& other) const;
+
+    /**
+     * @brief Subtracts another current from this current.
+     * @param other The Current object to subtract.
+     * @return The resulting Current object after subtraction.
+     */
+    Current operator-(const Current& other) const;
 
     /**
      * @brief Prints the current details to the console.

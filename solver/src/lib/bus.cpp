@@ -1,67 +1,81 @@
 #include "lib/bus.h"
-#include "lib/parser_utils.h"
 #include <iostream>
-#include <stdexcept> // For std::invalid_argument
+#include <stdexcept> // For error handling
 
 Bus::Bus()
-    : id(""), voltage(), totalCurrent(0.0) { 
-    // No additional initialization required
+    : id(""), voltage(), totalCurrent(0.0, 0.0), type(BusType::PQ) { 
+    // Initialize with default values
 }
 
 Bus::Bus(const std::string& id, const std::string& voltageStr)
-    : id(id), voltage(), totalCurrent(0.0) {
+    : id(id), voltage(), totalCurrent(0.0, 0.0), type(BusType::PQ) {
     try {
-        // Split the voltage string into number and character parts
-        SplitResult result = splitNumberAndChars(voltageStr);
-        std::cout << "IN BUS: Added Bus ID: " << id << " with Voltage: " << result.numberPart << result.charPart << std::endl;
-
-        // Convert the number part of the voltage to a double
-        double voltageValue = std::stod(result.numberPart);  // Converts "11" to 11.0
-        std::cout << "Voltage: " << voltageValue << std::endl;
-        this->voltage = Voltage(voltageValue, 0.0);
-        // Initialize totalCurrent
-        this->totalCurrent = 0.0;        
-        std::cout << "Exited bus constructor" << std::endl;
+        // Parse voltage string and set the initial voltage value
+        double voltageValue = std::stod(voltageStr);
+        this->voltage = Voltage(voltageValue, 0.0); // Assuming initial angle = 0
     } catch (const std::invalid_argument& e) {
-        std::cerr << "Invalid argument error in Bus constructor: " << e.what() << std::endl;
-    } catch (const std::exception& e) {
-        std::cerr << "Error in Bus constructor: " << e.what() << std::endl;
+        std::cerr << "Invalid voltage format for Bus ID: " << id << ". Error: " << e.what() << std::endl;
     }
-    // Display bus information
-        displayInfo();
 }
 
-// Commented out for simplification
-/*
-bool Bus::addLineId(const std::string& lineId) {
-    if (lineIds.find(lineId) == lineIds.end()) {
-        lineIds.insert(lineId);
-        std::cout << "Line ID " << lineId << " added to Bus " << id << std::endl;
-        return true;
+Bus::Bus(const std::string& id, const std::string& voltageStr, BusType type)
+    : id(id), voltage(), totalCurrent(0.0, 0.0), type(type) {
+    try {
+        // Parse voltage string and set the initial voltage value
+        double voltageValue = std::stod(voltageStr);
+        this->voltage = Voltage(voltageValue, 0.0); // Assuming initial angle = 0
+    } catch (const std::invalid_argument& e) {
+        std::cerr << "Invalid voltage format for Bus ID: " << id << ". Error: " << e.what() << std::endl;
+    }
+}
+
+void Bus::addLine(Line* line, bool isIncoming) {
+    if (isIncoming) {
+        incomingLines[line->getId()] = line;
+        std::cout << "Line " << line->getId() << " added to Bus " << id << " as incoming." << std::endl;
     } else {
-        std::cout << "Line ID " << lineId << " already exists for Bus " << id << std::endl;
-        return false;
+        outgoingLines[line->getId()] = line;
+        std::cout << "Line " << line->getId() << " added to Bus " << id << " as outgoing." << std::endl;
     }
 }
-
-std::vector<std::string> Bus::getLineIds() const {
-    return std::vector<std::string>(lineIds.begin(), lineIds.end());
-}
-*/
 
 void Bus::updateBusValues() {
-    // Placeholder for actual implementation
+    // Reset total current to zero before recalculating
+    totalCurrent = Current(0.0, 0.0);
+
+    // Sum the currents from incoming lines
+    for (const auto& pair : incomingLines) {
+        std::complex<double> outCurrent = pair.second->getOutCurrent();
+        Current outCurrentCurrent(outCurrent.real(), outCurrent.imag());
+        totalCurrent = totalCurrent + outCurrentCurrent;
+    }
+
+    // Subtract the currents from outgoing lines
+    for (const auto& pair : outgoingLines) {
+        std::complex<double> outCurrent = pair.second->getOutCurrent();
+        Current outCurrentCurrent(outCurrent.real(), outCurrent.imag());
+        totalCurrent = totalCurrent - outCurrentCurrent;
+    }
+
+    // Output the updated total current
+    std::cout << "Updated total current at Bus " << id << ": ";
+    totalCurrent.printDetails();
 }
 
 void Bus::displayInfo() const {
-    std::cout << "____________________Inside Bus Class_____________________" << std::endl
-              << "Bus ID: " << id << std::endl;
-
-   // std::cout << "Voltage: " << voltage << " V" << std::endl;
+    std::cout << "____________________ Bus Information _____________________" << std::endl;
+    std::cout << "Bus ID: " << id << std::endl;
+    
+    //std::cout << "Voltage: ";
     voltage.printDetails();
-    // std::cout << "Total Current: " << totalCurrent << std::endl; // Uncomment if needed
-    // std::cout << "Connected Lines: " << std::endl;
-    // for (const auto& lineId : lineIds) {
-    //     std::cout << "Line ID: " << lineId << std::endl; // Print only IDs
-    // }
+
+    //std::cout << "Total Current: ";
+    totalCurrent.printDetails();
+
+    std::cout << "Bus Type: " << (type == BusType::SLACK ? "Slack" : 
+                                   type == BusType::PV ? "PV" : "PQ") << std::endl;
+
+    std::cout << "Incoming Lines: " << incomingLines.size() << std::endl;
+    std::cout << "Outgoing Lines: " << outgoingLines.size() << std::endl;
+    std::cout << "____________________________________________________________" << std::endl;
 }

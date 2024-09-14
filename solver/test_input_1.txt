@@ -1,0 +1,15 @@
+# 1. Buses
+Bus id "Bus1" type "Slack" VOLTAGE "11kV" 
+Bus id "Bus2" type "Load" voltage "11kV" 
+Bus id "Bus3" type "Generation" voltage "11kV" 
+
+# Connections
+# BUS STRING LINE STRING
+Bus "Bus1" Line "Line1"
+# LINE STRING PT STRING
+Line "Line1" PT "Pt1"
+
+
+# 2. Transformers
+Transformer id="Transformer1" from="Bus1" to="Bus2" rating="100MVA" impedance="0.05+j0.1" tap_changer="Yes" tap_range="±10%" tap_step="0.5%" tap_position="0" cooling="ONAN" temperature_rise="45°C" vector_group="Dyn11" load_tap_changer="Yes" no_load_tap_changer="No" winding_material="Copper" insulation_material="Oil" insulation_resistance="500MΩ"
+Transformer id="Transformer2" from="Bus2" to="Bus3" rating="50MVA" impedance="0.08+j0.12" tap_changer="No" tap_range="±10%" tap_step="0.5%" tap_position="0" cooling="ONAF" temperature_rise="55°C" vector_group="Yd11" load_tap_changer="No" no_load_tap_changer="Yes" winding_material="Aluminum" insulation_material="Paper" insulation_resistance="200MΩ"

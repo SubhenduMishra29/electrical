@@ -19,17 +19,17 @@ InputParser parser;
     int number;
     char* string;
     //int ival;
-    double dval;
+    //double dval;
     char *sval;
-    struct Bus *busval;
-    struct Grid *gridval;
+    //struct Bus *busval;
+    //struct Grid *gridval;
 } 
 
 
 /* Define tokens and their types */
 %token <sval> STRING ID TYPE VOLTAGE_REGULATOR SHUNT_CONDUCTOR REGULATOR_SETPOINT VOLTAGE_BAND EMERGENCY_BACKUP HARMONIC_DISTORTION TAP_CHANGER COOLING TAP_STEP
 %token <sval> BUSBAR_PROTECTION FROM TO TAP_RANGE TAP_POSITION RATING IMPEDANCE TEMPERATURE_RISE VECTOR_GROUP
-%token <sval> LOAD_TAP_CHANGER NO_LOAD_TAP_CHANGER BASE_kV 
+%token <sval> LOAD_TAP_CHANGER NO_LOAD_TAP_CHANGER BASE_kV SIDE
 %token <dval> NUMBER LOAD_P LOAD_Q GENERATOR_P GENERATOR_Q ANGLE
 %token GRID TRANSFORMER BUS CT PT CB CONNECTED GENERATION LOAD CONTROL NONE PQ SLACK LINE
 %token VERSION HELP SAVE EXIT CMD
@@ -41,15 +41,9 @@ InputParser parser;
 %token <dval> FLOAT
 %token <string> VOLTAGE VOLTAGE_VAL
 
-%type <string> bus_definition
-%type <sval> transformer_definition
-%type <sval> grid_definition
-%type <sval> ct_definition
-%type <sval> pt_definition
-%type <sval> cb_definition
-%type <sval> capacitor_definition
-%type <sval> reactor_definition
-%type <sval> relay_definition
+
+
+
 
 
 
@@ -73,6 +67,7 @@ line:
     | capacitor_definition
     | reactor_definition
     | relay_definition
+    | connection_defination
     ;
 
 cli_command:
@@ -291,6 +286,46 @@ relay_definition:
            // parser->addRelay($2, $4);
         }
 
+        free($2);
+        free($4);
+    }
+    ;
+connection_defination:
+    BUS STRING LINE STRING
+    {
+        printf("Parsing Connection:BUS\n");
+        free($2);
+        free($4);
+    }
+    |
+    LINE STRING PT STRING
+    {
+        printf("Parsing Connection:PT\n");
+        free($2);
+        free($4);
+    }
+    |
+    LINE STRING CT STRING
+    {
+        free($2);
+        free($4);
+    }
+    |
+    LINE STRING RELAY STRING
+    {
+        free($2);
+        free($4);
+    }
+    |
+    LINE STRING TRANSFORMER STRING SIDE STRING
+    {
+        free($2);
+        free($4);
+        free($6);
+    }
+    |
+    LINE STRING LOAD STRING
+    {
         free($2);
         free($4);
     }

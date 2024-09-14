@@ -3,6 +3,7 @@
 
 #include <complex>
 #include <iostream>
+#include <string>
 
 /**
  * @class Line
@@ -47,7 +48,31 @@ public:
     void setOutCurrent(const std::complex<double>& current);
 
     /**
-     * @brief Updates the line properties. This method can be used to adjust line parameters.
+     * @brief Gets the impedance of the line.
+     * @return The impedance.
+     */
+    double getImpedance() const;
+
+    /**
+     * @brief Gets the capacitance of the line.
+     * @return The capacitance.
+     */
+    double getCapacitance() const;
+
+    /**
+     * @brief Gets the inductance of the line.
+     * @return The inductance.
+     */
+    double getInductance() const;
+
+    /**
+     * @brief Gets the ID of the line.
+     * @return The line ID.
+     */
+    std::string getId() const;
+
+    /**
+     * @brief Updates the line properties. This is a placeholder for any necessary adjustments.
      */
     void update();
 
@@ -55,7 +80,6 @@ public:
      * @brief Displays the line information to the console.
      */
     void displayInfo() const;
-    std::string getId() const; // Add this method declaration
 };
 
 #endif // LINE_H
