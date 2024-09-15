@@ -18,11 +18,7 @@ InputParser parser;
 %union {
     int number;
     char* string;
-    //int ival;
-    //double dval;
-    char *sval;
-    //struct Bus *busval;
-    //struct Grid *gridval;
+    char *sval;    
 } 
 
 
@@ -67,7 +63,7 @@ line:
     | capacitor_definition
     | reactor_definition
     | relay_definition
-    | connection_defination
+    | line_connection
     ;
 
 cli_command:
@@ -104,7 +100,6 @@ bus_definition:
         printf("ID: %s\n", $3 ? $3 : "null");
         printf("Type: %s\n", $6 ? $6 : "null");
         printf("Voltage: %s\n", $7 ? $7 : "null");
-
         try {
             // Convert voltage string to double (already stripped of 'kV')
             double voltageValue = std::stod($7);
@@ -115,15 +110,13 @@ bus_definition:
             std::cerr << "Error: Invalid voltage format: " << $7 << std::endl;
             YYABORT;
         }
-
-        printf("_______________________________\n");
-        
+        printf("_______________________________\n");        
         // Free the dynamically allocated memory
         free($3);
         free($6);
         free($7);       
-    }
-    ;
+    };
+
 //Transformer id "Transformer1" from "Bus1" to "Bus2" rating "100MVA" impedance "0.05+j0.1" 
 //    tap_changer "Yes" tap_range "±10%" tap_step "0.5%" tap_position "0" cooling "ONAN" temperature_rise "45°C" 
 //    vector_group "Dyn11" load_tap_changer "Yes" no_load_tap_changer "No" winding_material "Copper" insulation_material "Oil"
@@ -285,49 +278,58 @@ relay_definition:
             // Assuming parser has addRelay method
            // parser->addRelay($2, $4);
         }
-
         free($2);
         free($4);
     }
     ;
-connection_defination:
-    BUS STRING LINE STRING
+line_connection:
+    LINE STRING connection_type
+    {
+        printf("Connection Type: %s\n", $2);
+        // Assuming $2 is dynamically allocated, free it after use
+        parser.addLine($2);
+        free($2);
+    }
+    ;
+
+connection_type:
+    BUS STRING
     {
         printf("Parsing Connection:BUS\n");
         free($2);
-        free($4);
+        
     }
     |
-    LINE STRING PT STRING
+    PT STRING
     {
         printf("Parsing Connection:PT\n");
         free($2);
-        free($4);
+        
     }
     |
-    LINE STRING CT STRING
+    STRING CT STRING
+    {
+        free($3);
+        
+    }
+    |
+    RELAY STRING
+    {
+        free($2);
+        
+    }
+    |
+    TRANSFORMER STRING SIDE STRING
     {
         free($2);
         free($4);
+        
     }
     |
-    LINE STRING RELAY STRING
+    LOAD STRING
     {
         free($2);
-        free($4);
-    }
-    |
-    LINE STRING TRANSFORMER STRING SIDE STRING
-    {
-        free($2);
-        free($4);
-        free($6);
-    }
-    |
-    LINE STRING LOAD STRING
-    {
-        free($2);
-        free($4);
+        
     }
     ;
 

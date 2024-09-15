@@ -70,6 +70,7 @@ public:
     std::vector<Line>& getLines();
 
     void addBus(const std::string& id, const std::string& voltage);
+    void addLine(const std::string& id);
 
 private:
     std::string filename;

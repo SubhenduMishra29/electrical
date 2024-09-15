@@ -25,7 +25,7 @@ public:
      * Initializes all properties to zero.
      */
     Line();
-
+    Line(const std::string& id);
     /**
      * @brief Constructs a Line object with specified properties.
      * @param id The line ID.

@@ -71,6 +71,14 @@ std::string Line::getId() const {
 void Line::update() {
     // Implement specific update logic if needed
 }
+Line::Line(const std::string& id){
+    this->id = id;
+    this->outCurrent = std::complex<double>(0.0, 0.0);
+    this->impedance = 0.0;
+    this->capacitance = 0.0;
+    this->inductance = 0.0;
+    displayInfo();
+}
 
 /**
  * @brief Displays the line information to the console.

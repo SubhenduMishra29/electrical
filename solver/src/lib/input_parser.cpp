@@ -4,6 +4,7 @@
 #include <fstream>
 #include <cerrno>
 #include <cstring> // For strerror
+#include <algorithm>  // Include this for std::find_if
 
 extern "C" {
     void yyerror(const char* msg);
@@ -106,6 +107,7 @@ std::vector<Grid>& InputParser::getGrids() { return grids; }
 std::vector<Line>& InputParser::getLines() { return lines; }
 
 void InputParser::addBus(const std::string& id, const std::string& voltage) {
+    
     std::cout << "Entering addBus method" << std::endl;
 
     // Mutex removed for testing
@@ -126,5 +128,45 @@ void InputParser::addBus(const std::string& id, const std::string& voltage) {
         }
     } catch (const std::exception& e) {
         std::cerr << "Exception caught while adding a bus: " << e.what() << std::endl;
+    }
+}
+
+/**
+ * @brief Adds a line to the collection if the ID is not already present.
+ * @param id The ID of the line to be added.
+ */
+void InputParser::addLine(const std::string& id) {
+    std::cout << "Entering addLine method" << std::endl;
+
+    try {
+        std::cout << "Checking lines capacity" << std::endl;
+        std::cout << "Current lines size: " << lines.size() << std::endl;
+        std::cout << "Creating new Line object" << std::endl;
+        Line newLine(id);  // Assuming Line class has a constructor that takes an ID
+        std::cout << "New Line object created successfully" << std::endl;
+        std::cout << "Adding Line to vector" << std::endl;
+
+        // Check if the ID is already in the vector
+        auto it = std::find_if(lines.begin(), lines.end(), [&id](const Line& line) {
+            return line.getId() == id;
+        });
+
+        if (it == lines.end()) {
+            // ID does not exist, so add the line
+            lines.push_back(newLine);
+            std::cout << "Line added to the vector. Current size: " << lines.size() << std::endl;
+        } else {
+            // ID already exists
+            std::cout << "Line with ID " << id << " already exists. Cannot add duplicate." << std::endl;
+        }
+
+        std::cout << "Displaying all lines" << std::endl;
+
+        // Display all lines
+        for (const auto& line : lines) {
+            line.displayInfo();  // Display the info of each line
+        }
+    } catch (const std::exception& e) {
+        std::cerr << "Exception caught while adding a line: " << e.what() << std::endl;
     }
 }
