@@ -11,7 +11,7 @@
 extern int yylex();
 extern void yyerror(const char *s);
 
-InputParser parser;
+extern InputParser* parser;
 // Declare global or static variables to hold captured values
 std::string lineId;
 std::string busId;
@@ -108,7 +108,7 @@ bus_definition:
             double voltageValue = std::stod($7);
             // Create Voltage object (imaginary part = 0.0)
             Voltage voltage(voltageValue, 0.0); // this has to be checked in voltage class 
-            parser.addBus($3, $7);            
+            parser->addBus($3, $7);            
         } catch (const std::invalid_argument& e) {
             std::cerr << "Error: Invalid voltage format: " << $7 << std::endl;
             YYABORT;
@@ -291,7 +291,7 @@ line_connection:
         printf("Connection Type: %s\n", $2);
         // Store the connection type (e.g., busId) and the lineId
         lineId = $2;
-        parser.addLine(lineId);
+        parser->addLine(lineId);
         free($2);  // Free the lineId if dynamically allocated
     }
     ;
@@ -304,7 +304,7 @@ connection_type:
         busId = $2;
         // Call addConnectionToBus with busId, lineId from line_connection, and a boolean value
         // Assuming a boolean value is required (true or false)
-        parser.addConnectionToBus(busId, lineId, true);  // Replace lineId with the actual variable if needed
+        parser->addConnectionToBus(busId, lineId, true);  // Replace lineId with the actual variable if needed
         free($2);  // Free busId if dynamically allocated
         
     }

@@ -46,7 +46,8 @@ class Grid;
 //class PT;
 class Line;
 class InputParser;
-
+// Define the global parser pointer
+extern InputParser* parser;  // Declare the global variable as extern
 // Class to represent the Single Line Diagram (SLD)
 class SLD {
 public:

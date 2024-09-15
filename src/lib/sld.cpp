@@ -4,7 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include "lib/sld.h"
-
+InputParser* parser = nullptr;
 // Constructor
 SLD::SLD() {
     // Constructor implementation
@@ -30,27 +30,27 @@ void SLD::assemble(const std::string& filename) {
         std::cerr << "Failed to open file: " << filename << std::endl;
         return; // Return early if file cannot be opened
     }
-
-    InputParser parser(filename);
-    parser.parseFile();
-    parser.displayInfo();
+    parser = new InputParser(filename);
+    //InputParser parser(filename);
+    parser->parseFile();
+    parser->displayInfo();
     // Debug prints to verify data
     std::cout << ">>>>>>>>>>>>>>>Assembling SLD from file:<<<<<<<<<<<<<<<<<<<<<<<<<<< " << filename << std::endl;
-    std::cout << "Number of buses parsed: " << parser.getBuses().size() << std::endl;
+    std::cout << "Number of buses parsed: " << parser->getBuses().size() << std::endl;
 
-    buses = parser.getBuses();
+    buses = parser->getBuses();
     std::cout << "Number of buses in SLD after assignment: " << buses.size() << std::endl;
 
-    transformers = parser.getTransformers();
-    generators = parser.getGenerators();
-    loads = parser.getLoads();
-    transmissionLines = parser.getTransmissionLines();
-    circuitBreakers = parser.getCircuitBreakers();
-    relays = parser.getRelays();
-    capacitors = parser.getCapacitors();
-    reactors = parser.getReactors();
-    grids = parser.getGrids();
-    lines = parser.getLines();
+    transformers = parser->getTransformers();
+    generators = parser->getGenerators();
+    loads = parser->getLoads();
+    transmissionLines = parser->getTransmissionLines();
+    circuitBreakers = parser->getCircuitBreakers();
+    relays = parser->getRelays();
+    capacitors = parser->getCapacitors();
+    reactors = parser->getReactors();
+    grids = parser->getGrids();
+    lines = parser->getLines();
 }
 
 // Static method to create SLD from CLI input
