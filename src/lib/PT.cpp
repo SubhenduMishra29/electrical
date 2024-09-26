@@ -1,10 +1,12 @@
-#include "lib/PT.h"
+#include "lib/components/PT.h"
 
 // Constructor definition
-PotentialTransformer::PotentialTransformer(Bus* primaryBus, Bus* secondaryBus, double turnsRatio, double ratedPrimaryVoltage, double ratedSecondaryVoltage,
-                                           double transformationRatio, double nominalRatio, double voltageRatioError, double phaseAngleError)
-    : Transformer(primaryBus, secondaryBus, turnsRatio), ratedPrimaryVoltage(ratedPrimaryVoltage), ratedSecondaryVoltage(ratedSecondaryVoltage),
-      transformationRatio(transformationRatio), nominalRatio(nominalRatio), voltageRatioError(voltageRatioError), phaseAngleError(phaseAngleError) {
+PotentialTransformer::PotentialTransformer(double transformationRatio, double nominalRatio, double voltageRatioError, double phaseAngleError)
+    : Transformer("default_id", 1.0) // Initialize with a default ID and ratio
+    , transformationRatio(transformationRatio)
+    , nominalRatio(nominalRatio)
+    , voltageRatioError(voltageRatioError)
+    , phaseAngleError(phaseAngleError) {
     // Additional initialization if needed
 }
 

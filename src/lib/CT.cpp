@@ -1,10 +1,12 @@
-#include "lib/CT.h"
+#include "lib/components/CT.h"
 
 // Constructor definition
-CurrentTransformer::CurrentTransformer(Bus* primaryBus, Bus* secondaryBus, double turnsRatio, double ratedPrimaryCurrent, double ratedSecondaryCurrent,
-                                       double transformationRatio, double nominalRatio, double currentRatioError, double phaseAngleError)
-    : Transformer(primaryBus, secondaryBus, turnsRatio), ratedPrimaryCurrent(ratedPrimaryCurrent), ratedSecondaryCurrent(ratedSecondaryCurrent),
-      transformationRatio(transformationRatio), nominalRatio(nominalRatio), currentRatioError(currentRatioError), phaseAngleError(phaseAngleError) {
+CurrentTransformer::CurrentTransformer(double transformationRatio, double nominalRatio, double currentRatioError, double phaseAngleError)
+    : Transformer("default_id", 1.0) // Initialize with a default ID and ratio
+    , transformationRatio(transformationRatio)
+    , nominalRatio(nominalRatio)
+    , currentRatioError(currentRatioError)
+    , phaseAngleError(phaseAngleError) {
     // Additional initialization if needed
 }
 

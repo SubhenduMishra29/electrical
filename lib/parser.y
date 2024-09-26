@@ -175,19 +175,21 @@ transformer_definition:
 
 
 grid_definition:
-    GRID VOLTAGE NUMBER TYPE STRING {
+    GRID ID STRING VOLTAGE STRING {
         printf("Parsing GRID with values:\n");
-        printf("Voltage: %lf\n", $2);
+        printf("ID: %lf\n", $3);
        // printf("Type: %s\n", $4);
 
-        if ($2 == NULL) {
+        if ($3 == NULL) {
             yyerror("Invalid grid voltage");
         } else {
             // Assuming parser has addGrid method
-          //  parser->addGrid($2, $4);
+          parser->addGrid($3, $5);
         }
 
-       // free($4); // Free Type
+       free($3);
+       // free($5);
+       // free($7); // Free Type
     }
     ;
 

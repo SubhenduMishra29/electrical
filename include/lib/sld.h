@@ -31,6 +31,9 @@
 #include "lib/reactor.h"
 #include "lib/grid.h"
 #include "lib/line.h"
+#include "lib/components/CT.h"
+#include "lib/components/PT.h"
+
 // Forward declarations to reduce unnecessary header inclusions
 class Bus;
 class Transformer;
@@ -42,8 +45,8 @@ class Relay;
 class Capacitor;
 class Reactor;
 class Grid;
-//class CT;
-//class PT;
+class CT;
+class PT;
 class Line;
 class InputParser;
 // Define the global parser pointer
@@ -86,10 +89,10 @@ public:
     const std::vector<Reactor>& getReactors() const; // Returns a const reference to the list of reactors
     std::vector<Grid>& getGrids(); // Returns a reference to the list of grids
     const std::vector<Grid>& getGrids() const; // Returns a const reference to the list of grids
-   // std::vector<CT>& getCTs(); // Returns a reference to the list of current transformers (CTs)
-   // const std::vector<CT>& getCTs() const; // Returns a const reference to the list of current transformers (CTs)
-   // std::vector<PT>& getPTs(); // Returns a reference to the list of potential transformers (PTs)
-   // const std::vector<PT>& getPTs() const; // Returns a const reference to the list of potential transformers (PTs)
+    std::vector<CT>& getCTs(); // Returns a reference to the list of current transformers (CTs)
+    const std::vector<CT>& getCTs() const; // Returns a const reference to the list of current transformers (CTs)
+    std::vector<PT>& getPTs(); // Returns a reference to the list of potential transformers (PTs)
+    const std::vector<PT>& getPTs() const; // Returns a const reference to the list of potential transformers (PTs)
     std::vector<std::shared_ptr<Line>>& getLines();  // Updated
     const std::vector<std::shared_ptr<Line>>& getLines() const;  // Updated
 

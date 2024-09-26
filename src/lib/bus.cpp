@@ -3,10 +3,10 @@
 #include <stdexcept> // For error handling
 
 Bus::Bus()
-    : id(""), voltage(), totalCurrent(0.0, 0.0), type(BusType::PQ) {}
+    : id(""), voltage(), totalCurrent(0.0, 0.0), type(BusType::PQ), hasGenerator(false), isReferenceBus(false) {}
 
 Bus::Bus(const std::string& id, const std::string& voltageStr)
-    : id(id), voltage(), totalCurrent(0.0, 0.0), type(BusType::PQ) {
+    : id(id), voltage(), totalCurrent(0.0, 0.0), type(BusType::PQ), hasGenerator(false), isReferenceBus(false) {
     try {
         double voltageValue = std::stod(voltageStr);
         this->voltage = Voltage(voltageValue, 0.0); // Assuming initial angle = 0
@@ -16,7 +16,7 @@ Bus::Bus(const std::string& id, const std::string& voltageStr)
 }
 
 Bus::Bus(const std::string& id, const std::string& voltageStr, BusType type)
-    : id(id), voltage(), totalCurrent(0.0, 0.0), type(type) {
+    : id(id), voltage(), totalCurrent(0.0, 0.0), type(type), hasGenerator(false), isReferenceBus(false) {
     try {
         double voltageValue = std::stod(voltageStr);
         this->voltage = Voltage(voltageValue, 0.0);
@@ -25,45 +25,42 @@ Bus::Bus(const std::string& id, const std::string& voltageStr, BusType type)
     }
 }
 
-void Bus::addLine(const std::shared_ptr<Line>& line, bool isIncoming) {
-    if (isIncoming) {
-        incomingLines[line->getId()] = line;
-        std::cout << "Line " << line->getId() << " added to Bus " << id << " as incoming." << std::endl;
-    } else {
-        outgoingLines[line->getId()] = line;
-        std::cout << "Line " << line->getId() << " added to Bus " << id << " as outgoing." << std::endl;
-    }
+void Bus::addLine(const std::shared_ptr<Line>& line) {
+    lines[line->getId()] = line;
+    std::cout << "Line " << line->getId() << " added to Bus " << id << "." << std::endl;
 }
 
 void Bus::updateBusValues() {
     totalCurrent = Current(0.0, 0.0);
 
-    // Sum currents from incoming lines
-    for (const auto& pair : incomingLines) {
-        std::complex<double> inCurrent = pair.second->getOutCurrent();
-        totalCurrent = totalCurrent + Current(inCurrent.real(), inCurrent.imag());
-    }
-
-    // Subtract currents from outgoing lines
-    for (const auto& pair : outgoingLines) {
-        std::complex<double> outCurrent = pair.second->getOutCurrent();
-        totalCurrent = totalCurrent - Current(outCurrent.real(), outCurrent.imag());
+    // Sum currents from all lines
+    for (const auto& pair : lines) {
+        // Adjust the current based on the line state
+        Current lineCurrent = pair.second->getOutCurrent();  // Assuming this returns the current in the desired direction
+        totalCurrent = totalCurrent + lineCurrent;
     }
 
     std::cout << "Updated total current at Bus " << id << ": ";
     totalCurrent.printDetails();
 }
 
+
+void Bus::setVoltage(const Voltage& v) {
+    voltage = v;
+    std::cout << "Voltage set for Bus " << id << ": ";
+    voltage.printDetails(); // Assuming you have a method to display voltage details
+}
+
+
 void Bus::displayInfo() const {
     std::cout << "____________________ Bus Information _____________________" << std::endl;
     std::cout << "Bus ID: " << id << std::endl;
-    
+
     voltage.printDetails();
     totalCurrent.printDetails();
 
     std::cout << "Bus Type: " << (type == BusType::SLACK ? "Slack" :
                                   type == BusType::PV ? "PV" : "PQ") << std::endl;
-    std::cout << "Incoming Lines: " << incomingLines.size() << std::endl;
-    std::cout << "Outgoing Lines: " << outgoingLines.size() << std::endl;
+    std::cout << "Connected Lines: " << lines.size() << std::endl;
     std::cout << "__________________________________________________________" << std::endl;
 }

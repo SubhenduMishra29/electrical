@@ -147,11 +147,17 @@ void InputParser::addConnectionToBus(const std::string& busId, const std::string
     });
 
     if (lineIt != lines.end()) {
-        busIt->addLine(*lineIt, isIncoming);  // Add line as incoming or outgoing
+        busIt->addLine(*lineIt);  // Add line as incoming or outgoing
         std::cout << "Line " << lineId << " connected to Bus " << busId << std::endl;
     } else {
         std::cerr << "Line with ID " << lineId << " not found." << std::endl;
     }
+}
+void InputParser::addGrid(const std::string& id, const std::string& voltage){
+    std::cout << "Entering addGrid method" << std::endl;
+    std::lock_guard<std::mutex> lock(busMutex);  // Ensure thread safety
+    Grid newGrid(id, voltage);
+    grids.push_back(newGrid);
 }
 void InputParser::displayInfo() const {
     std::cout << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>InputParser Data<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << std::endl;
@@ -203,7 +209,7 @@ void InputParser::displayInfo() const {
 
     std::cout << "Grids:" << std::endl;
     for (const auto& grid : grids) {
-        //grid.displayInfo(); // Assuming Grid class has a displayInfo() method
+        grid.displayInfo(); // Assuming Grid class has a displayInfo() method
     }
 
     std::cout << "Lines:" << std::endl;

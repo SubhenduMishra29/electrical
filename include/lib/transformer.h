@@ -2,14 +2,21 @@
 #define TRANSFORMER_H
 
 #include <string>
-#include "lib/bus.h"
-#include "PowerSystemError.h"
-class Bus; // Forward declaration
+#include <memory>
+#include "Line.h"
+#include "Voltage.h"
+#include "Current.h"
+
+/**
+ * @class Transformer
+ * @brief Represents a transformer in a power system.
+ * 
+ * The Transformer class models an electrical transformer with various parameters and properties,
+ * including voltage, current, impedance, and efficiency. It also manages associated lines.
+ */
 class Transformer {
 private:
     std::string id;
-    Bus* primaryBus;
-    Bus* secondaryBus;
     double turnsRatio;
     double impedance;
     double primaryVoltageRating;
@@ -34,21 +41,37 @@ private:
     double totalImpedance;
     double efficiency;
 
-    void calculateDerivedValues();
+    // Voltage and Current for primary and secondary
+    Voltage primaryVoltage;
+    Voltage secondaryVoltage;
+    Current primaryCurrent;
+    Current secondaryCurrent;
+
+    // Tracks connected lines
+    std::shared_ptr<Line> primaryLine; ///< Incoming lines
+    std::shared_ptr<Line> secondaryLine; ///< Outgoing lines
+
+    // Private methods for calculations
+    void calculateTotalImpedance();
+    void calculateEfficiency();
+    void updateCurrents();
+    void updateImpedanceRelatedValues();
 
 public:
     // Basic constructor
-    Transformer(Bus* primaryBus, Bus* secondaryBus, double turnsRatio);
+    Transformer(const std::string& id, double turnsRatio);
 
     // Detailed constructor
-    Transformer(Bus* primaryBus, Bus* secondaryBus, double turnsRatio, double impedance, double primaryVoltageRating, double secondaryVoltageRating, double powerRating, double noLoadLosses, double loadLosses, double tapSetting, std::string oilType, std::string coolingType, bool buchholzRelay, std::string neutralPointConfiguration, std::string primaryWindingType, std::string secondaryWindingType, double xrRatio, double primaryWindingResistance, double secondaryWindingResistance, double magnetizingCurrent, double coreLoss);
+    Transformer(const std::string& id, double turnsRatio, double impedance, double primaryVoltageRating, double secondaryVoltageRating,
+                double powerRating, double noLoadLosses, double loadLosses, double tapSetting, 
+                const std::string& oilType, const std::string& coolingType, bool buchholzRelay,
+                const std::string& neutralPointConfiguration, const std::string& primaryWindingType,
+                const std::string& secondaryWindingType, double xrRatio, double primaryWindingResistance,
+                double secondaryWindingResistance, double magnetizingCurrent, double coreLoss);
 
     // Getters and setters
-    Bus* getPrimaryBus() const;
-    void setPrimaryBus(Bus* bus);
-
-    Bus* getSecondaryBus() const;
-    void setSecondaryBus(Bus* bus);
+    std::string getId() const;
+    void setId(const std::string& id);
 
     double getTurnsRatio() const;
     void setTurnsRatio(double ratio);
@@ -110,10 +133,29 @@ public:
     double getTotalImpedance() const;
     double getEfficiency() const;
 
+    // Voltage and Current management
+    Voltage getPrimaryVoltage() const;
+    void setPrimaryVoltage(const Voltage& voltage);
+
+    Voltage getSecondaryVoltage() const;
+    void setSecondaryVoltage(const Voltage& voltage);
+
+    Current getPrimaryCurrent() const;
+    void setPrimaryCurrent(const Current& current);
+
+    Current getSecondaryCurrent() const;
+    void setSecondaryCurrent(const Current& current);
+
+    // Line management
+    void addLine(const std::shared_ptr<Line>& line, bool isPrimary);
+    void removeLine(bool isPrimary);
+
+    // Display transformer information
+    void displayInfo() const;
+
     // Other methods
     void applyTurnsRatio() const;
     void adjustTap(double newTapSetting);
-    void calculateEfficiency();
 };
 
 #endif // TRANSFORMER_H

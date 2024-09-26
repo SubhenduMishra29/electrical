@@ -61,6 +61,7 @@ public:
     void displayInfo() const;
     void addBus(const std::string& id, const std::string& voltage);
     void addLine(const std::string& id);
+    void addGrid(const std::string& id, const std::string& voltage);
     void addConnectionToBus(const std::string& busId, const std::string& lineId, bool isIncoming);
 private:
     std::string filename;

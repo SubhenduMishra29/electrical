@@ -14,9 +14,9 @@ add_subdirectory(lib)
 message(STATUS "Include directories: ${CMAKE_SOURCE_DIR}/include")
 
 # Specify the path to Flex and Bison if needed
-set(FLEX_EXECUTABLE "C:/GnuWin32/flex.exe")
-set(BISON_EXECUTABLE "C:/GnuWin32/bison.exe")
-set(FL_LIBRARY "C:/GnuWin32/lib/libfl.a")
+set(FLEX_EXECUTABLE "C:/msys64/usr/bin/flex.exe")
+set(BISON_EXECUTABLE "C:/msys64/usr/bin/bison.exe")
+set(FL_LIBRARY "C:/msys64/usr/lib/libfl.a")
 
 # Find Flex and Bison
 find_package(FLEX REQUIRED)

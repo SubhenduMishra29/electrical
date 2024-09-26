@@ -20,36 +20,39 @@ private:
     Current totalCurrent;                             ///< Total current at the bus
     BusType type;                                     ///< Bus type (Slack, PV, PQ)
 
-    // Tracks connected lines, classified as incoming and outgoing
-    std::unordered_map<std::string, std::shared_ptr<Line>> incomingLines; ///< Incoming lines
-    std::unordered_map<std::string, std::shared_ptr<Line>> outgoingLines; ///< Outgoing lines
+    // Tracks connected lines
+    std::unordered_map<std::string, std::shared_ptr<Line>> lines; ///< Lines connected to this bus
+
+    // New attributes for generator and reference status
+    bool hasGenerator;                               ///< Indicates if this bus is connected to a generator
+    bool isReferenceBus;                             ///< Indicates if this bus is the reference (slack) bus
+
+    /**
+     * @brief Dynamically updates the bus type based on conditions (slack bus, generator).
+     */
+    void updateBusType();
 
 public:
     Bus();
     Bus(const std::string& id, const std::string& voltageStr);
     Bus(const std::string& id, const std::string& voltageStr, BusType type);
 
-    /**
-     * @brief Adds a line to the bus as either incoming or outgoing.
-     * @param line The line to connect to the bus.
-     * @param isIncoming True if the line is incoming, false if outgoing.
-     */
-    void addLine(const std::shared_ptr<Line>& line, bool isIncoming);
+    void addLine(const std::shared_ptr<Line>& line);
+    void setVoltage(const Voltage& v);
 
-    /**
-     * @brief Updates the total current at the bus based on connected lines.
-     */
+
     void updateBusValues();
 
-    /**
-     * @brief Displays the bus information.
-     */
     void displayInfo() const;
 
     // Accessors
     std::string getId() const { return id; }
     Voltage getVoltage() const { return voltage; }
     BusType getType() const { return type; }
+
+    // Methods to set generator and reference status
+    void setHasGenerator(bool hasGen) { hasGenerator = hasGen; }
+    void setIsReferenceBus(bool isRef) { isReferenceBus = isRef; }
 };
 
 #endif // BUS_H
