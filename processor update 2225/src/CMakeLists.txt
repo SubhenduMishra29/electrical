@@ -1,0 +1,10 @@
+add_subdirectory(cpu)
+add_subdirectory(memory)
+add_subdirectory(peripherals)
+add_subdirectory(mcu)
+add_subdirectory(twi)
+add_subdirectory(watchdogtimer)
+add_subdirectory(communication)
+
+add_executable(AVR_Simulation main.cpp)
+target_link_libraries(AVR_Simulation CPU Memory Peripherals MCU TWI WatchdogTimer SerialCommunication)
