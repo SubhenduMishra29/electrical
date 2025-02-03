@@ -69,6 +69,7 @@ void CPU::executeInstruction(uint16_t instruction) {
         // Memory Instructions
         case 0x2D: // LDS Rd, Y/Z (Load Direct from SRAM)
             Rd = (instruction >> 8) & 0xF;
+            break;
         case 0x3A: // S
 
             Rd = (instruction >> 8) & 0xF;
