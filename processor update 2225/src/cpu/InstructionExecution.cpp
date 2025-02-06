@@ -3,13 +3,9 @@
 
 // Extract opcode properly for different instruction formats
 uint16_t CPU::extractOpcode(uint16_t instruction) {
-    if ((instruction & 0xF000) == 0x9000) {
-        return instruction & 0xFE0F; // Special handling for LDS, STS, etc.
-    } else if ((instruction & 0xFC00) == 0xC000) {
-        return 0xC000; // RJMP
-    } else if ((instruction & 0xFC00) == 0xD000) {
-        return 0xD000; // RCALL
-    }
+    if ((instruction & 0xF000) == 0x9000) return instruction & 0xFE0F; // Special handling for LDS, STS, etc.
+    if ((instruction & 0xFC00) == 0xC000) return 0xC000; // RJMP
+    if ((instruction & 0xFC00) == 0xD000) return 0xD000; // RCALL
     return instruction >> 12;
 }
 
@@ -26,15 +22,14 @@ void CPU::executeALUOperation(uint16_t opcode, uint8_t Rd, uint8_t Rr, int8_t k)
         case 0x8: registers[Rd] = -registers[Rd]; break; // NEG
         case 0x9: registers[Rd]++; break; // INC
         case 0xA: registers[Rd]--; break; // DEC
-        case 0xB: if (registers[Rd] == 0) sreg |= (1 << 1); break; // TST
+        case 0xB: sreg |= (registers[Rd] == 0) << 1; break; // TST
         case 0xC: registers[Rd] = 0; break; // CLR
         case 0xD: registers[Rd] = 0xFF; break; // SER
         case 0xE: registers[Rd] = ~registers[Rd]; break; // COM
-        case 0x19: registers[Rd] *= registers[Rr]; break; // MULS
-        case 0x1A: registers[Rd] *= registers[Rr]; break; // MULSU
-        case 0x1B: registers[Rd] *= registers[Rr]; break; // FMUL
-        case 0x1C: registers[Rd] *= registers[Rr]; break; // FMULS
-        case 0x1D: registers[Rd] *= registers[Rr]; break; // FMULSU
+        case 0xF: registers[Rd] -= registers[Rr] - (sreg & 1); break; // SBC
+        case 0x10: registers[Rd] -= k - (sreg & 1); break; // SBCI
+        case 0x11: registers[Rd] -= k; break; // SUBI
+        case 0x12: sreg |= (registers[Rd] == k) << 1; break; // CPI
         case 0x1E: registers[Rd] <<= 1; break; // LSL
         case 0x1F: registers[Rd] >>= 1; break; // LSR
         case 0x20: registers[Rd] = (registers[Rd] >> 1) | (registers[Rd] & 0x80); break; // ASR
@@ -51,10 +46,11 @@ void CPU::executeMemoryOperation(uint16_t opcode, uint8_t Rd, uint8_t Rr, uint16
         case 0x80: memory.writeSRAM(addr, registers[Rr]); break; // STS
         case 0x90: registers[Rd] = memory.readIO(addr); break; // IN
         case 0x91: memory.writeIO(addr, registers[Rr]); break; // OUT
-        case 0x92: stackPointer -= 1; memory.writeSRAM(stackPointer, registers[Rd]); break; // PUSH
-        case 0x93: registers[Rd] = memory.readSRAM(stackPointer); stackPointer += 1; break; // POP
+        case 0x92: memory.writeSRAM(--stackPointer, registers[Rd]); break; // PUSH
+        case 0x93: registers[Rd] = memory.readSRAM(stackPointer++); break; // POP
         case 0x94: registers[Rd] = memory.readFlash(addr); break; // LPM
         case 0x95: memory.writeFlash(addr, registers[Rr]); break; // SPM
+        case 0x96: registers[Rd] = memory.readFlash(addr + 1); break; // ELPM
         default: std::cout << "Unhandled Memory operation\n";
     }
 }
@@ -63,11 +59,15 @@ void CPU::executeMemoryOperation(uint16_t opcode, uint8_t Rd, uint8_t Rr, uint16
 void CPU::executeBranchOperation(uint16_t opcode, int16_t k) {
     switch (opcode) {
         case 0xC000: programCounter += k; break; // RJMP
-        case 0xD000: stackPointer -= 2; memory.writeSRAM(stackPointer, programCounter & 0xFF); memory.writeSRAM(stackPointer + 1, (programCounter >> 8) & 0xFF); programCounter += k; break; // RCALL
+        case 0xD000: memory.writeSRAM(--stackPointer, programCounter & 0xFF); memory.writeSRAM(--stackPointer, (programCounter >> 8) & 0xFF); programCounter += k; break; // RCALL
         case 0xE006: if (sreg & (1 << 3)) programCounter += k; break; // BRMI
         case 0xE007: if (!(sreg & (1 << 3))) programCounter += k; break; // BRPL
         case 0xE008: if (!(sreg & (1 << 4))) programCounter += k; break; // BRVC
         case 0xE009: if (sreg & (1 << 4)) programCounter += k; break; // BRVS
+        case 0xE00A: if (!(sreg & (1 << 1))) programCounter += k; break; // BRNE
+        case 0xE00B: if (sreg & (1 << 1)) programCounter += k; break; // BREQ
+        case 0xE00C: if (!(sreg & (1 << 0))) programCounter += k; break; // BRSH
+        case 0xE00D: if (sreg & (1 << 0)) programCounter += k; break; // BRLO
         default: std::cout << "Unhandled Branch operation\n";
     }
 }
@@ -79,13 +79,8 @@ void CPU::executeInstruction(uint16_t instruction) {
     int16_t k = instruction & 0xFFF;
     uint16_t addr = (registers[30] << 8) | registers[31];
     
-    if (opcode < 0x20) {
-        executeALUOperation(opcode, Rd, Rr, k);
-    } else if (opcode >= 0x80 && opcode <= 0x98) {
-        executeMemoryOperation(opcode, Rd, Rr, addr);
-    } else if (opcode >= 0xC000) {
-        executeBranchOperation(opcode, k);
-    } else {
-        std::cout << "Unknown instruction: " << std::hex << instruction << "\n";
-    }
+    if (opcode < 0x20) executeALUOperation(opcode, Rd, Rr, k);
+    else if (opcode >= 0x80 && opcode <= 0x98) executeMemoryOperation(opcode, Rd, Rr, addr);
+    else if (opcode >= 0xC000) executeBranchOperation(opcode, k);
+    else std::cout << "Unknown instruction: " << std::hex << instruction << "\n";
 }
