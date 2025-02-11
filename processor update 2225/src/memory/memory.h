@@ -4,20 +4,23 @@
 #include <vector>
 #include <iostream>
 #include <cstdint>  // For uint8_t
-#include <array>    // FIX: Ensure std::array is properly included
-/*  The memory for here is fixed and we are dsigning for various types of microprocessors 
-    so it should be dinamically declared in MCU.h in config 
+#include <array>    // Ensure std::array is properly included
+
+/*  The memory here is fixed, but we are designing for various types of microprocessors.
+    It should be dynamically declared in MCU.h in config if needed.
 */
 class Memory {
 private:
     static const size_t FLASH_SIZE = 16384; // 16 KB Flash
     static const size_t EEPROM_SIZE = 512;  // 512 Bytes EEPROM
     static const size_t SRAM_SIZE = 1024;   // 1 KB SRAM
+    static const size_t IO_SIZE = 256;      // 256 Bytes I/O Memory
 
     std::vector<uint8_t> flash;  // Flash memory
     std::vector<uint8_t> eeprom; // EEPROM memory
     std::vector<uint8_t> sram;   // SRAM memory
-    std::array<uint8_t, 256> ioMemory; // Declare IO memory space (adjust size as needed)
+    std::array<uint8_t, IO_SIZE> ioMemory; // Fixed-size I/O memory
+
     void waitForEEPROMWriteCompletion() const;
 
 public:
@@ -44,8 +47,10 @@ public:
 
     // Write to SRAM
     void writeSRAM(size_t address, uint8_t value);
-    uint8_t readIO(uint8_t address);
+
+    // Read/Write from I/O Memory
     void writeIO(uint8_t address, uint8_t value);
+    uint8_t readIO(uint8_t address);
     // Reset the memory
     void reset();
 };

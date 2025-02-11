@@ -1,6 +1,14 @@
 #include "CPU.h"
 #include <iostream>
-
+// Update SREG Flags
+void CPU::updateFlags(uint8_t result, uint8_t Rd, uint8_t Rr, bool carry) {
+    sreg = 0;
+    if (result == 0) sreg |= (1 << 1); // Zero flag (Z)
+    if (result & 0x80) sreg |= (1 << 2); // Negative flag (N)
+    if (carry) sreg |= (1 << 0); // Carry flag (C)
+    bool v = ((Rd & 0x80) == (Rr & 0x80)) && ((Rd & 0x80) != (result & 0x80));
+    if (v) sreg |= (1 << 3); // Overflow flag (V)
+}
 // Extract opcode for instruction decoding
 uint16_t CPU::extractOpcode(uint16_t instruction) {
     if ((instruction & 0xF000) == 0x9000) return instruction & 0xFE0F; // Special handling for LDS, STS
@@ -11,13 +19,14 @@ uint16_t CPU::extractOpcode(uint16_t instruction) {
 
 // Execute ALU Operations
 void CPU::executeALUOperation(uint16_t opcode, uint8_t Rd, uint8_t Rr, int8_t k) {
+    uint8_t result = 0;
     switch (opcode) {
-        case 0x1: registers[Rd] += registers[Rr]; break; // ADD
-        case 0x2: registers[Rd] -= registers[Rr]; break; // SUB
+        case 0x1: result = registers[Rd] += registers[Rr]; break; updateFlags(result, registers[Rd], registers[Rr], result < registers[Rd]); registers[Rd] = result; break; // ADD
+        case 0x2: result = registers[Rd] -= registers[Rr]; break; updateFlags(result, registers[Rd], registers[Rr], registers[Rd] < registers[Rr]); registers[Rd] = result; break; // SUB
         case 0x3: registers[Rd] *= registers[Rr]; break; // MUL
-        case 0x4: registers[Rd] &= registers[Rr]; break; // AND
-        case 0x5: registers[Rd] |= registers[Rr]; break; // OR
-        case 0x6: registers[Rd] ^= registers[Rr]; break; // XOR
+        case 0x4: registers[Rd] &= registers[Rr]; break; updateFlags(registers[Rd], 0, 0, false); break; // AND
+        case 0x5: registers[Rd] |= registers[Rr]; break; updateFlags(registers[Rd], 0, 0, false); break; // OR
+        case 0x6: registers[Rd] ^= registers[Rr]; break; updateFlags(registers[Rd], 0, 0, false); break; // XOR
         case 0x7: registers[Rd] = ((registers[Rd] & 0x0F) << 4) | ((registers[Rd] & 0xF0) >> 4); break; // SWAP
         case 0x8: registers[Rd] = -registers[Rd]; break; // NEG
         case 0x9: registers[Rd]++; break; // INC
@@ -166,6 +175,13 @@ void CPU::executeControlInstruction(uint16_t opcode, uint8_t Rd, int16_t k){
 
 // Main instruction decoder
 void CPU::executeInstruction(uint16_t instruction) {
+    // HALT: Check for termination instruction (0xFFFF)
+    if (instruction == 0xFFFF) {
+        halted = true; // Set HALT flag
+        std::cout << "CPU Halted: Execution terminated.\n";
+        return; // Exit function early to stop execution
+    }
+
     uint16_t opcode = extractOpcode(instruction);
     uint8_t Rd = (instruction >> 8) & 0x1F;
     uint8_t Rr = (instruction >> 4) & 0x1F;
@@ -173,8 +189,9 @@ void CPU::executeInstruction(uint16_t instruction) {
     uint16_t addr = (registers[30] << 8) | registers[31];
 
     if (opcode < 0x20) executeALUOperation(opcode, Rd, Rr, k);
-    else if (opcode >= 0x80 && opcode <= 0x98) executeMemoryOperation(opcode, Rd, Rr, addr, k); // Pass `k`
+    else if (opcode >= 0x80 && opcode <= 0x98) executeMemoryOperation(opcode, Rd, Rr, addr, k); 
     else if (opcode >= 0xC000) executeBranchOperation(opcode, k);
     else executeControlInstruction(opcode, Rd, k);
 }
+
 

@@ -222,7 +222,7 @@ public:
     //void executeControlInstruction(uint16_t opcode);
     void executeMemoryOperation(uint16_t opcode, uint8_t Rd, uint8_t Rr, uint16_t addr, int16_t k);
     void executeControlInstruction(uint16_t opcode, uint8_t Rd, int16_t k);
-    
+    void updateFlags(uint8_t result, uint8_t Rd, uint8_t Rr, bool carry);
 };
 
 #endif // CPU_H
