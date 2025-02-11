@@ -87,3 +87,10 @@ void Memory::reset() {
     sram.assign(SRAM_SIZE, 0x00); // SRAM resets to 0x00
     std::cout << "Memory reset to default values.\n";
 }
+uint8_t Memory::readIO(uint8_t address) {
+    return ioMemory[address]; // Assume ioMemory[] is an array representing I/O space
+}
+
+void Memory::writeIO(uint8_t address, uint8_t value) {
+    ioMemory[address] = value;
+}

@@ -2,8 +2,9 @@
 #define MEMORY_H
 
 #include <vector>
-#include <cstdint>
 #include <iostream>
+#include <cstdint>  // For uint8_t
+#include <array>    // FIX: Ensure std::array is properly included
 /*  The memory for here is fixed and we are dsigning for various types of microprocessors 
     so it should be dinamically declared in MCU.h in config 
 */
@@ -16,7 +17,7 @@ private:
     std::vector<uint8_t> flash;  // Flash memory
     std::vector<uint8_t> eeprom; // EEPROM memory
     std::vector<uint8_t> sram;   // SRAM memory
-
+    std::array<uint8_t, 256> ioMemory; // Declare IO memory space (adjust size as needed)
     void waitForEEPROMWriteCompletion() const;
 
 public:
@@ -43,7 +44,8 @@ public:
 
     // Write to SRAM
     void writeSRAM(size_t address, uint8_t value);
-
+    uint8_t readIO(uint8_t address);
+    void writeIO(uint8_t address, uint8_t value);
     // Reset the memory
     void reset();
 };
