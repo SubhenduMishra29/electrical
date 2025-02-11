@@ -63,11 +63,46 @@ void MCU::configureInternalRC() {
 }
 
 void MCU::configureInterruptSources() {
-    std::cout << "External and Internal Interrupt Sources configured.\n";
+    std::cout << "Configuring External and Internal Interrupt Sources...\n";
+    
+    // Enable External Interrupts
+    peripherals.enableExternalInterrupt(0, Peripherals::InterruptTrigger::RISING_EDGE);
+    peripherals.enableExternalInterrupt(1, Peripherals::InterruptTrigger::FALLING_EDGE);
+    
+    // Enable Timer Interrupts
+    peripherals.getTimer(0).enableInterrupt();
+    peripherals.getTimer(1).enableInterrupt();
+    
+    // Enable ADC Interrupt (if ADC is available)
+    if (config.hasADC) {
+        peripherals.getADC().enableInterrupt();
+    }
+    
+    // Enable USART Interrupt (if USART is available)
+    if (config.hasUSART) {
+        peripherals.getUSART().enableInterrupt();
+    }
+    
+    // Enable SPI Interrupt (if SPI is available)
+    if (config.hasSPI) {
+        peripherals.getSPI().enableInterrupt();
+    }
+    
+    std::cout << "External and Internal Interrupt Sources successfully configured.\n";
 }
 
 void MCU::configureSleepModes() {
-    std::cout << "Sleep Modes configured: Idle, ADC Noise Reduction, Power-save, Power-down, Standby, Extended Standby.\n";
+    std::cout << "Configuring Sleep Modes...\n";
+    
+    // Enable different sleep modes based on MCU capabilities
+    peripherals.enableSleepMode(Peripherals::SleepMode::IDLE);
+    peripherals.enableSleepMode(Peripherals::SleepMode::ADC_NOISE_REDUCTION);
+    peripherals.enableSleepMode(Peripherals::SleepMode::POWER_SAVE);
+    peripherals.enableSleepMode(Peripherals::SleepMode::POWER_DOWN);
+    peripherals.enableSleepMode(Peripherals::SleepMode::STANDBY);
+    peripherals.enableSleepMode(Peripherals::SleepMode::EXTENDED_STANDBY);
+    
+    std::cout << "Sleep Modes successfully configured.\n";
 }
 
 void MCU::configureIOLines() {
@@ -96,6 +131,7 @@ void MCU::configurePackageType(const std::string& packageType) {
 }
 
 void MCU::configurePeripherals() {
+    std::cout << "--- Periferals  Configuration started---"<< "\n";
     peripherals.attachPeripheral(10, [](uint8_t value) {
         std::cout << "Peripheral at I/O Register 10 triggered with value: " << (int)value << "\n";
     });
@@ -149,7 +185,7 @@ void MCU::configurePeripherals() {
     configureIOLines();
     configurePackageType("40-pin PDIP");
 
-    std::cout << "Peripherals configured.\n";
+    std::cout << "---Peripherals configured.---\n";
 }
 
 void MCU::reset() {
@@ -180,6 +216,7 @@ Port& MCU::getPort(size_t index) {
 }
 
 void MCU::configurePortA() {
+    std::cout << "---Port A Configuration started---"<< "\n";
     for (size_t i = 0; i < Port::PIN_COUNT; ++i) {
         if (i < Port::PIN_COUNT) {
             peripherals.configureIOLine(i, Peripherals::IOLineMode::Output);
@@ -209,22 +246,31 @@ void MCU::provideInputToPins() {
 }
 
 void MCU::configurePorts() {
+    constexpr size_t PIN_COUNT = 8;  // Explicitly define pin count per port
+    std::cout << "--- Port Configuration Started ---" << "\n";
+    std::cout << "--- Total Ports: " << config.portCount << " ---" << "\n";
+
     for (size_t portIndex = 0; portIndex < config.portCount; ++portIndex) {
         Peripherals::IOLineMode mode = (portIndex == 0) ? Peripherals::IOLineMode::Output : Peripherals::IOLineMode::Input;
         configurePort(portIndex, mode);
 
-        for (size_t pinIndex = 0; pinIndex < Port::PIN_COUNT; ++pinIndex) {
-            size_t ioLineIndex = portIndex * Port::PIN_COUNT + pinIndex;
-            if (ioLineIndex < config.ioLineCount && ioLineIndex < 32) { // Ensure pin index is within valid range
+        for (size_t pinIndex = 0; pinIndex < PIN_COUNT; ++pinIndex) {
+            size_t ioLineIndex = portIndex * PIN_COUNT + pinIndex;
+
+            if (ioLineIndex < config.ioLineCount) {
                 getPort(portIndex).setPin(pinIndex, true);
                 bool pinState = getPort(portIndex).getPin(pinIndex);
                 std::cout << "Port " << portIndex << ", Pin " << pinIndex << " state: " << pinState << std::endl;
             } else {
-                std::cerr << "Error: Invalid I/O line index: " << ioLineIndex << " (Port " << portIndex << ", Pin " << pinIndex << ")\n";
+                std::cerr << "Warning: Out-of-range I/O line index: " << ioLineIndex
+                          << " (Port " << portIndex << ", Pin " << pinIndex << ")\n";
             }
         }
     }
+
+    std::cout << "--- Port Configuration Completed ---" << "\n";
 }
+
 
 // In mcu.cpp
 MCUConfig MCUConfig::createPreset(AVRCoreType coreType) {

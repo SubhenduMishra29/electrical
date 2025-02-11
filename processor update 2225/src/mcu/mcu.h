@@ -15,13 +15,18 @@ enum class AVRCoreType {
     ATmega16,
     ATmega32,
     ATtiny85,
-    ATtiny45,
+    ATtiny45
     // Add more cores as needed
 };
-
+/*  the core is declared but the menory type is still staic which will cause problems wihile loading the MCU
+    this section has to be rechecked and updated. 
+*/
 struct MCUConfig {
     AVRCoreType coreType;
     uint32_t clockFrequency;
+    size_t ramSize;    // RAM size
+    size_t flashSize;  // Flash size
+    size_t eepromSize; // EEPROM size
     size_t portCount;
     size_t ioLineCount;
     bool hasADC;

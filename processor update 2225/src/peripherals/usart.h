@@ -3,7 +3,7 @@
 
 #include <queue>
 #include <cstdint>
-
+#include <iostream>
 class USART {
 private:
     uint32_t baudRate;             // Baud rate for communication
@@ -32,6 +32,10 @@ public:
 
     // Check if USART is enabled
     bool isEnabled() const;
+
+    void enableInterrupt() {
+        std::cout << "USART interrupt enabled.\n";
+    }
 
     // Reset the USART module
     void reset();

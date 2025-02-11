@@ -2,7 +2,7 @@
 #define ADC_H
 
 #include <cstdint>
-
+#include <iostream>
 class ADC {
 private:
     uint16_t adcValue;       // Current ADC value
@@ -50,6 +50,9 @@ public:
 
     // Configure Port C as an 8-bit bi-directional I/O port with internal pull-up resistors
     void configurePortC();
+    void enableInterrupt() {
+        std::cout << "ADC interrupt enabled.\n";
+    }
 };
 
 #endif // ADC_H

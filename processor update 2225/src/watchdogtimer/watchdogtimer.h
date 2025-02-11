@@ -18,6 +18,7 @@ public:
 
     void enable(Timeout timeout);
     void disable();
+    
     // Other Watchdog Timer related methods
 };
 

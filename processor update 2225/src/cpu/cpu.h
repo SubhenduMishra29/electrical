@@ -96,7 +96,7 @@ public:
     void runCycle();
     void displayState() const;
     void writeSPM(uint16_t addr, uint8_t data);
-    void executeALUOperation(uint8_t opcode, uint8_t Rd, uint8_t Rr, int8_t k);
+   // void executeALUOperation(uint8_t opcode, uint8_t Rd, uint8_t Rr, int8_t k);
     void setGlobalInterruptEnable();
     void clearGlobalInterruptEnable();
 
@@ -214,6 +214,12 @@ public:
     void setSystemClockPrescaler(uint8_t prescaler);
 
     uint64_t getCycleCount() const; // Get the current cycle count
+
+    uint16_t extractOpcode(uint16_t instruction);
+    void executeMemoryOperation(uint16_t opcode, uint8_t Rd, uint8_t Rr, uint16_t addr);
+    void executeBranchOperation(uint16_t opcode, int16_t k);
+    void executeALUOperation(uint16_t opcode, uint8_t Rd, uint8_t Rr, int8_t k);
+
 };
 
 #endif // CPU_H

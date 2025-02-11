@@ -4,7 +4,9 @@
 #include <vector>
 #include <cstdint>
 #include <iostream>
-
+/*  The memory for here is fixed and we are dsigning for various types of microprocessors 
+    so it should be dinamically declared in MCU.h in config 
+*/
 class Memory {
 private:
     static const size_t FLASH_SIZE = 16384; // 16 KB Flash

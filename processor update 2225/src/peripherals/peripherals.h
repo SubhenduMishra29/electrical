@@ -23,7 +23,18 @@ public:
         Input,
         Output
     };
-
+    enum class InterruptTrigger { 
+        RISING_EDGE, 
+        FALLING_EDGE,
+        CHANGE 
+    };
+    enum class SleepMode { 
+        IDLE, 
+        ADC_NOISE_REDUCTION, 
+        POWER_SAVE, POWER_DOWN, 
+        STANDBY, 
+        EXTENDED_STANDBY 
+    };
 private:
     static const size_t IO_REGISTER_COUNT = 64; // Number of I/O registers
     std::array<uint8_t, IO_REGISTER_COUNT> ioRegisters; // I/O register storage
@@ -86,6 +97,12 @@ public:
     // Configure I/O line mode
     void configureIOLine(size_t index, IOLineMode mode);
     size_t getPortCount() const; // Declare the function here
+    void enableExternalInterrupt(int interruptNumber, InterruptTrigger trigger) {
+        std::cout << "External Interrupt " << interruptNumber << " enabled with trigger: " << static_cast<int>(trigger) << "\n";
+    }
+    void enableSleepMode(SleepMode mode) {
+        std::cout << "Sleep mode enabled: " << static_cast<int>(mode) << "\n";
+    }
 };
 
 #endif // PERIPHERALS_H

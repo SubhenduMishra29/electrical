@@ -3,7 +3,7 @@
 
 // Define EEPROM control registers and bits for simulation
 uint8_t EECR = 0;
-uint8_t EEAR = 0;
+size_t EEAR = 0;
 uint8_t EEDR = 0;
 const uint8_t EEWE = 1;
 const uint8_t EERE = 2;
@@ -16,6 +16,10 @@ Memory::Memory() : flash(FLASH_SIZE, 0xFF), eeprom(EEPROM_SIZE, 0xFF), sram(SRAM
 
 // Load a program into Flash memory
 void Memory::loadProgram(const std::vector<uint16_t>& program) {
+    if (program.size() * 2 > FLASH_SIZE) {
+        std::cerr << "Error: Program size exceeds Flash memory limit.\n";
+        return;
+    }
     for (size_t i = 0; i < program.size(); ++i) {
         flash[i * 2] = program[i] & 0xFF; // Lower byte
         flash[i * 2 + 1] = (program[i] >> 8) & 0xFF; // Upper byte
@@ -33,38 +37,28 @@ uint8_t Memory::readFlash(size_t address) const {
     }
 }
 
-// Write to Flash memory
+// Write to Flash memory (restricted at runtime)
 void Memory::writeFlash(size_t address, uint8_t value) {
-    if (address < FLASH_SIZE) {
-        flash[address] = value;
-    } else {
-        std::cerr << "Error: Invalid flash memory address: " << address << "\n";
-    }
-}
-
-// Wait for EEPROM write completion
-void Memory::waitForEEPROMWriteCompletion() const {
-    // Wait for completion of previous write
-    while (EECR & (1 << EEWE)) {
-        // Busy wait
-    }
+    std::cerr << "Error: Flash memory is read-only at runtime.\n";
 }
 
 // Read from EEPROM
 uint8_t Memory::readEEPROM(size_t address) const {
-    waitForEEPROMWriteCompletion();
-    EEAR = address;
-    EECR |= (1 << EERE);
-    return EEDR;
+    if (address < EEPROM_SIZE) {
+        return eeprom[address];
+    } else {
+        std::cerr << "Error: Invalid EEPROM address: " << address << "\n";
+        return 0;
+    }
 }
 
 // Write to EEPROM
 void Memory::writeEEPROM(size_t address, uint8_t value) {
-    waitForEEPROMWriteCompletion();
-    EEAR = address;
-    EEDR = value;
-    EECR |= (1 << EEMWE);
-    EECR |= (1 << EEWE);
+    if (address < EEPROM_SIZE) {
+        eeprom[address] = value;
+    } else {
+        std::cerr << "Error: Invalid EEPROM address: " << address << "\n";
+    }
 }
 
 // Read from SRAM
@@ -88,8 +82,8 @@ void Memory::writeSRAM(size_t address, uint8_t value) {
 
 // Reset the memory
 void Memory::reset() {
-    flash.assign(FLASH_SIZE, 0);
-    eeprom.assign(EEPROM_SIZE, 0);
-    sram.assign(SRAM_SIZE, 0);
-    std::cout << "Memory reset.\n";
+    flash.assign(FLASH_SIZE, 0xFF); // Flash usually resets to 0xFF
+    eeprom.assign(EEPROM_SIZE, 0xFF); // EEPROM resets to 0xFF
+    sram.assign(SRAM_SIZE, 0x00); // SRAM resets to 0x00
+    std::cout << "Memory reset to default values.\n";
 }
