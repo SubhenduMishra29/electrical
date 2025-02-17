@@ -9,6 +9,7 @@
 #define EEPROM_DATA_REG 0x3D // Example address for EEPROM Data Register
 #define EEPROM_CTRL_REG 0x3E // Example address for EEPROM Control Register
 
+
 // Define WDTCR as a pointer to a volatile uint8_t (assuming it's a memory-mapped register)
 volatile uint8_t* WDTCR_ptr = reinterpret_cast<volatile uint8_t*>(0x60); // Example address for WDTCR
 

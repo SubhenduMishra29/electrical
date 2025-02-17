@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface xmlns="http://www.gtk.org/ns/gtk" xmlns:gtk="http://www.gtk.org/ns/gtk" version="3.0">
+  <object class="GtkWindow" id="main_window">
+    <property name="title">AVR Simulator</property>
+    <property name="default-width">400</property>
+    <property name="default-height">300</property>
+    <signal name="destroy" handler="gtk_main_quit" swapped="no"/>
+    
+    <child>
+      <object class="GtkBox" orientation="vertical">
+        <property name="spacing">10</property>
+
+        <!-- Buttons -->
+        <child>
+          <object class="GtkButton" id="start_button">
+            <property name="label">Start Simulation</property>
+            <signal name="clicked" handler="on_start_button_clicked" swapped="no"/>
+          </object>
+        </child>
+
+        <child>
+          <object class="GtkButton" id="stop_button">
+            <property name="label">Stop Simulation</property>
+            <signal name="clicked" handler="on_stop_button_clicked" swapped="no"/>
+          </object>
+        </child>
+
+        <child>
+          <object class="GtkButton" id="reset_button">
+            <property name="label">Reset Simulation</property>
+            <signal name="clicked" handler="on_reset_button_clicked" swapped="no"/>
+          </object>
+        </child>
+
+        <!-- Status Label -->
+        <child>
+          <object class="GtkLabel" id="status_label">
+            <property name="label">Simulation Status: Idle</property>
+          </object>
+        </child>
+
+      </object>
+    </child>
+  </object>
+</interface>

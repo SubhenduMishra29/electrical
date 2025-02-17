@@ -1,5 +1,6 @@
 #include "../mcu/mcu.h"
 #include <iostream>
+#include "../gui/src/gui.h"
 
 void simulateMCU(const MCUConfig& config) {
     MCU mcu(config);
@@ -35,7 +36,11 @@ void simulateMCU(const MCUConfig& config) {
     mcu.reset();
 }
 
-int main() {
+int main(int argc, char *argv[]) {
+    // gui initialisation here 
+    init_gui(&argc, &argv);
+    run_gui();
+
     std::cout << "--------------------------\n";
     std::cout << "Simulating ATmega16\n";
     std::cout << "--------------------------\n";

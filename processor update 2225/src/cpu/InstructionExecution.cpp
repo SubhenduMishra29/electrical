@@ -21,12 +21,12 @@ uint16_t CPU::extractOpcode(uint16_t instruction) {
 void CPU::executeALUOperation(uint16_t opcode, uint8_t Rd, uint8_t Rr, int8_t k) {
     uint8_t result = 0;
     switch (opcode) {
-        case 0x1: result = registers[Rd] += registers[Rr]; break; updateFlags(result, registers[Rd], registers[Rr], result < registers[Rd]); registers[Rd] = result; break; // ADD
-        case 0x2: result = registers[Rd] -= registers[Rr]; break; updateFlags(result, registers[Rd], registers[Rr], registers[Rd] < registers[Rr]); registers[Rd] = result; break; // SUB
+        case 0x1: result = registers[Rd] += registers[Rr]; updateFlags(result, registers[Rd], registers[Rr], result < registers[Rd]); registers[Rd] = result; break; // ADD
+        case 0x2: result = registers[Rd] -= registers[Rr];  updateFlags(result, registers[Rd], registers[Rr], registers[Rd] < registers[Rr]); registers[Rd] = result; break; // SUB
         case 0x3: registers[Rd] *= registers[Rr]; break; // MUL
-        case 0x4: registers[Rd] &= registers[Rr]; break; updateFlags(registers[Rd], 0, 0, false); break; // AND
-        case 0x5: registers[Rd] |= registers[Rr]; break; updateFlags(registers[Rd], 0, 0, false); break; // OR
-        case 0x6: registers[Rd] ^= registers[Rr]; break; updateFlags(registers[Rd], 0, 0, false); break; // XOR
+        case 0x4: registers[Rd] &= registers[Rr]; updateFlags(registers[Rd], 0, 0, false); break; // AND
+        case 0x5: registers[Rd] |= registers[Rr]; updateFlags(registers[Rd], 0, 0, false); break; // OR
+        case 0x6: registers[Rd] ^= registers[Rr]; updateFlags(registers[Rd], 0, 0, false); break; // XOR
         case 0x7: registers[Rd] = ((registers[Rd] & 0x0F) << 4) | ((registers[Rd] & 0xF0) >> 4); break; // SWAP
         case 0x8: registers[Rd] = -registers[Rd]; break; // NEG
         case 0x9: registers[Rd]++; break; // INC
